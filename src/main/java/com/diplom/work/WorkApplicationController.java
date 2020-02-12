@@ -46,7 +46,7 @@ public class WorkApplicationController {
 
     @PostMapping("/update")
     public String saveNote(@RequestParam Integer id, @RequestParam String client,
-                           @RequestParam Integer number, @RequestParam String FIOClient) {
+                           @RequestParam String number, @RequestParam String FIOClient) {
         workApplicationService.updateOneRow(id, client, number, FIOClient);
         return "redirect:/";
     }
@@ -57,7 +57,7 @@ public class WorkApplicationController {
     }
 
     @PostMapping("/save")
-    public String updateNote(@RequestParam String client,@RequestParam Integer number, @RequestParam String FIOClient) {
+    public String updateNote(@RequestParam String client, @RequestParam String number, @RequestParam String FIOClient) {
         workApplicationService.saveOneRow(new OneRow(client,number,FIOClient));
         return "redirect:/";
     }

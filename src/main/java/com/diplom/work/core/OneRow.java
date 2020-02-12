@@ -11,7 +11,7 @@ public class OneRow {
     @Column(name = "client")
     private String client;
     @Column(name = "number")
-    private Integer number;
+    private String number;
     @Column(name = "FIOClient")
     private String FIOClient;
 
@@ -19,7 +19,7 @@ public class OneRow {
 
     }
 
-    public OneRow(String clientTelephone, Integer number, String FIOClient){
+    public OneRow(String clientTelephone, String number, String FIOClient){
         this.client = clientTelephone;
         this.number = number;
         this.FIOClient = FIOClient;
@@ -33,7 +33,7 @@ public class OneRow {
         return this.client;
     }
 
-    public Integer getNumber() {
+    public String getNumber() {
         return this.number;
     }
 
@@ -49,7 +49,7 @@ public class OneRow {
         this.client = client;
     }
 
-    public void setNumber(Integer number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 

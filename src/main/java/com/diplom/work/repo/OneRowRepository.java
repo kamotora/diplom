@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface OneRowRepository extends JpaRepository<OneRow,Integer> {
     List<OneRow> findAllByOrderByClientAsc();
+    OneRow findByClient(String clientNumber);
 }

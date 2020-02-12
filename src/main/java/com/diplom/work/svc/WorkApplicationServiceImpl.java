@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class WorkApplicationServiceImpl implements WorkApplicationService {
@@ -29,7 +28,7 @@ public class WorkApplicationServiceImpl implements WorkApplicationService {
     }
 
     @Override
-    public void updateOneRow(Integer id, String client, Integer number, String FIOClient) {
+    public void updateOneRow(Integer id, String client, String number, String FIOClient) {
         OneRow update = oneRowRepository.getOne(id);
         update.setClient(client);
         update.setFIOClient(FIOClient);
