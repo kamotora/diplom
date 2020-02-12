@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+<div class="container">
+    <div th:replace="fragments/header :: header"></div>
+    <div class="container">
+        <form class="form-horizontal" th:action="@{/save}" name="input_form" id="input_form"
+              method="post" role="form">
+            <div class="form-group">
+                <input type="text" class="form-control" id="client" th:name="client" placeholder="Введите номер клиента" maxlength="100"/>
+                <input type="number" class="form-control" id="number" th:name="number" placeholder="Введите номер менеджера" maxlength="100"/>
+                <input type="text" class="form-control" id="FIOClient" th:name="FIOClient" placeholder="Введите ФИО клиента" maxlength="100"/>
+            </div>
+            <button type="submit" class="btn btn-primary">Принять</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

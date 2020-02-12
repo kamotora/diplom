@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="oneRows">
+    <table class="table table-bordered table-hover horizontal-align">
+        <thead>
+        <tr>
+            <th style="width: 5%">#</th>
+            <th style="width: 30%">Телефон</th>
+            <th style ="width: 30%">Номер менеджера</th>
+            <th style ="width: 35%">ФИО клиента</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="oneRow : ${oneRows}">
+            <td th:text="${oneRow.id} " style="text-align: center">#</td>
+            <td th:text="${oneRow.client}" style="text-align: center">Телефон</td>
+            <td th:text="${oneRow.number}" style="text-align: center">Номер менеджера</td>
+            <td th:text="${oneRow.FIOClient}" style="text-align: center">ФИО клиента</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</html>
