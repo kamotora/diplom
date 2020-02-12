@@ -67,7 +67,7 @@ public class WorkApplicationController {
         workApplicationService.deleteOneRow(id);
         return "redirect:/";
     }
-
+    //Ветку потестить
     private List<OneRow> filterAndSort() {
         List<OneRow> oneRows = null;
         switch (sortDateMethod) {
