@@ -57,7 +57,7 @@ public class WorkApplicationController {
     }
 
     @PostMapping("/save")
-    public String updateNote(@RequestParam String client, @RequestParam String number, @RequestParam String FIOClient) {
+    public String updateNote(@RequestParam String client,@RequestParam String number, @RequestParam String FIOClient) {
         workApplicationService.saveOneRow(new OneRow(client,number,FIOClient));
         return "redirect:/";
     }
