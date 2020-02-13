@@ -10,7 +10,7 @@
         <form class="form-horizontal" th:action="@{/saveLogs}" name="input_form" id="input_form"
               method="post" role="form">
             <div class="form-group">
-                <input type="text" class="form-control" id="session" th:name="session" placeholder="Введите номер сессии" maxlength="100"/>
+                <input type="text" class="form-control" id="session" th:name="session_id" placeholder="Введите номер сессии" maxlength="100"/>
                 <input type="text" class="form-control" id="type" th:name="type" placeholder="Введите тип звонка" maxlength="100"/>
                 <input type="text" class="form-control" id="state" th:name="state" placeholder="Введите состояние звонка" maxlength="100"/>
                 <input type="text" class="form-control" id="from_number" th:name="from_number" placeholder="Введите откуда звонят" maxlength="100"/>

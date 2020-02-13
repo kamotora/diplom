@@ -3,6 +3,7 @@ package com.diplom.work;
 import com.diplom.work.core.OneLog;
 import com.diplom.work.core.OneRow;
 import com.diplom.work.svc.WorkApplicationService;
+import com.diplom.work.svc.WorkApplicationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +21,7 @@ public class WorkApplicationController {
     private String sortDateMethod = "ASC";
 
     @Autowired
-    public void setWorkApplicationService(WorkApplicationService workApplicationService){
+    public void setWorkApplicationService(WorkApplicationServiceImpl workApplicationService){
         this.workApplicationService = workApplicationService;
     }
 
@@ -34,7 +35,7 @@ public class WorkApplicationController {
 
     @GetMapping("/logs")
     public String listLogs(Model model){
-        List<OneLog> oneLogs = workApplicationService.findAllByOrderBySessionAsc();
+        List<OneLog> oneLogs = workApplicationService.findAllByOrderByTimestampAsc();
         model.addAttribute("oneLogs", oneLogs);
         model.addAttribute("sort", sortDateMethod);
         return "logs";
@@ -46,6 +47,7 @@ public class WorkApplicationController {
         return "redirect:/";
     }
 
+    /*
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
         OneRow oneRow = workApplicationService.getOneRowById(id);
@@ -94,13 +96,13 @@ public class WorkApplicationController {
     }
 
     @PostMapping("/saveLogs")
-    public String updateLog(@RequestParam String session,
+    public String updateLog(@RequestParam String session_id,
                             @RequestParam String type, @RequestParam String state,
                             @RequestParam String from_number, @RequestParam String request_number) {
-        workApplicationService.saveOneLog(new OneLog(session,type,state, from_number, request_number));
+        workApplicationService.saveOneLog(new OneLog(session_id,type,state, from_number, request_number));
         return "redirect:/";
     }
-
+    */
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
         workApplicationService.deleteOneRow(id);

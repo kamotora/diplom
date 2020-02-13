@@ -17,6 +17,6 @@ public interface WorkApplicationService {
     void saveOneLog(OneLog oneLog);
     void updateOneLog(Integer id, String session_id, String type, String state, String from_number, String request_number);
     void deleteOneLog(Integer id);
-    List<OneLog> findAllByOrderBySessionAsc();
+    List<OneLog> findAllByOrderByTimestampAsc();
 
 }

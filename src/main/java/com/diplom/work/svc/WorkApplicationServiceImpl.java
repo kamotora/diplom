@@ -12,11 +12,12 @@ import java.util.List;
 @Service
 public class WorkApplicationServiceImpl implements WorkApplicationService {
 
+    @Autowired
     private OneRowRepository oneRowRepository;
+    @Autowired
     private OneLogRepository oneLogRepository;
 
-    @Autowired
-    public void setOneRowRepository(OneRowRepository oneRowRepository, OneLogRepository oneLogRepository){
+    public WorkApplicationServiceImpl(OneRowRepository oneRowRepository, OneLogRepository oneLogRepository) {
         this.oneRowRepository = oneRowRepository;
         this.oneLogRepository = oneLogRepository;
     }
@@ -65,7 +66,7 @@ public class WorkApplicationServiceImpl implements WorkApplicationService {
         OneLog update = oneLogRepository.getOne(id);
         update.setFrom_number(from_number);
         update.setRequest_number(request_number);
-        update.setSession(session_id);
+        update.setSession_id(session_id);
         update.setState(state);
         update.setType(type);
         oneLogRepository.save(update);
@@ -77,7 +78,7 @@ public class WorkApplicationServiceImpl implements WorkApplicationService {
     }
 
     @Override
-    public List<OneLog> findAllByOrderBySessionAsc() {
-        return oneLogRepository.findAllByOrderBySessionAsc();
+    public List<OneLog> findAllByOrderByTimestampAsc() {
+        return oneLogRepository.findAllByOrderByTimestampInDateTimeFormatAsc();
     }
 }

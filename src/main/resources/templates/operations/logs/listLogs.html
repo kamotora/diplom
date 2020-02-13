@@ -7,6 +7,7 @@
         <thead>
         <tr>
             <th style="width: 5%">#</th>
+            <th style="width: 10%">Время</th>
             <th style="width: 10%">idСессии</th>
             <th style ="width: 10%">Тип звонка</th>
             <th style ="width: 25%">Состояние</th>
@@ -20,9 +21,10 @@
         <tbody>
         <tr th:each="oneLog : ${oneLogs}">
             <td th:text="${oneLog.id} " style="text-align: center">#</td>
-            <td th:text="${oneLog.session}" style="text-align: center">idСессии</td>
-            <td th:text="${oneLog.type}" style="text-align: center">Тип звонка</td>
-            <td th:text="${oneLog.state}" style="text-align: center">Состояние</td>
+            <td th:text="${oneLog.timestampInDateTimeFormat}" style="text-align: center">Время</td>
+            <td th:text="${oneLog.session_id}" style="text-align: center">idСессии</td>
+            <td th:text="${oneLog.typeName}" style="text-align: center">Тип звонка</td>
+            <td th:text="${oneLog.stateName}" style="text-align: center">Состояние</td>
             <td th:text="${oneLog.from_number}" style="text-align: center">ОтНомер</td>
             <td th:text="${oneLog.request_number}" style="text-align: center">КудаНомер</td>
 

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class NumberInfoController {
     @Autowired
     private OneRowRepository oneRowRepository;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(NumberInfoController.class);
 
     @PostMapping(path = "get_number_info",
