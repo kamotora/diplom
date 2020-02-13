@@ -7,7 +7,6 @@ public class NumberInfoAnswer {
     //Отображаемое имя для добавления информации о вызове. Мб Null при result > 0
     private String displayName;
     private String PIN;
-
     /**
      * Если всё ок
      * @param PIN - куда направить
@@ -17,6 +16,18 @@ public class NumberInfoAnswer {
         this.result = 0;
         this.displayName = displayName;
         this.PIN = PIN;
+    }
+    /**
+     * Если всё ок + сообщение об успехе
+     * @param PIN - куда направить
+     * @param displayName - ин-фа о вызове
+     * @param fromNumber - кто звонит (для вывода сообещния)
+     * */
+    public NumberInfoAnswer(String PIN, String fromNumber, String displayName) {
+        this.result = 0;
+        this.displayName = displayName;
+        this.PIN = PIN;
+        this.resultMessage = String.format("Успешно перенаправили номер %s на внутренний номер %s", fromNumber,PIN);
     }
     /**
      * Если что-то не так ок

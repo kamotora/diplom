@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 /**
  * Для парсинга JSON ответа с сервера, метод call_event
  * @author kamotora
@@ -12,7 +15,7 @@ import java.sql.Timestamp;
 
 public final class NumberInfo {
     private String domain;
-    //private String timestamp;
+    private String timestamp;
     private String from_number;
     private String request_number;
 
@@ -22,6 +25,18 @@ public final class NumberInfo {
 
     public void setDomain(String domain) {
         this.domain = domain;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+    public LocalDateTime getTimestampInDateTimeFormat(){
+        if(timestamp == null)
+            return null;
+        return Timestamp.valueOf(timestamp).toLocalDateTime();
+    }
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getFrom_number() {

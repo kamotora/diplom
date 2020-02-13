@@ -6,14 +6,13 @@ import com.diplom.work.core.json.NumberInfo;
 import com.diplom.work.core.json.NumberInfoAnswer;
 import com.diplom.work.repo.OneRowRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/")
@@ -21,9 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class NumberInfoController {
     @Autowired
     private OneRowRepository oneRowRepository;
-    @GetMapping(path = "get_number_info",
+    private static final Logger LOGGER = LoggerFactory.getLogger(NumberInfoController.class);
+
+    @PostMapping(path = "get_number_info",
             consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<NumberInfoAnswer> getNewCall(@RequestBody NumberInfo numberInfo) {
+        LOGGER.debug("Получили запрос на get_number_info, body = "+numberInfo.toString());
         try{
             OneRow oneRow = oneRowRepository.findByClient(numberInfo.getFrom_number());
             return ResponseEntity.ok(new NumberInfoAnswer(oneRow.getNumber(), oneRow.getClient()));
