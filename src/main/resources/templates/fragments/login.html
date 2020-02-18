@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="eng"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="login(path)">
+    <form action="${path}" method="post">
+        <div><label> User Name : <input type="text" name="username"/> </label></div>
+        <div><label> Password: <input type="password" name="password"/> </label></div>
+        <input type="hidden" name="_csrf" value="${_csrf.token}" />
+        <div><input type="submit" value="Sign In"/></div>
+    </form>
+</div>
+<div th:fragment="logout">
+    <form action="/logout" method="post">
+        <input type="hidden" name="_csrf" value="${_csrf.token}" />
+        <input type="submit" value="Sign Out"/>
+    </form>
+</div>
+</html>

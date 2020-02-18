@@ -1,10 +1,13 @@
-package com.diplom.work;
+package com.diplom.work.controller;
 
 import com.diplom.work.core.OneLog;
 import com.diplom.work.core.OneRow;
+import com.diplom.work.core.user.Role;
 import com.diplom.work.svc.WorkApplicationService;
 import com.diplom.work.svc.WorkApplicationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Controller
@@ -24,7 +28,7 @@ public class WorkApplicationController {
     public void setWorkApplicationService(WorkApplicationServiceImpl workApplicationService){
         this.workApplicationService = workApplicationService;
     }
-
+    @RolesAllowed({"USER", "ADMIN"})
     @GetMapping("/")
     public String list(Model model){
         List<OneRow> oneRows = filterAndSort();
@@ -33,6 +37,7 @@ public class WorkApplicationController {
         return "index";
     }
 
+    @RolesAllowed({"USER", "ADMIN"})
     @GetMapping("/logs")
     public String listLogs(Model model){
         List<OneLog> oneLogs = workApplicationService.findAllByOrderByTimestampAsc();
@@ -103,12 +108,14 @@ public class WorkApplicationController {
         return "redirect:/";
     }
     */
+    @RolesAllowed({"ADMIN"})
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
         workApplicationService.deleteOneRow(id);
         return "redirect:/";
     }
 
+    @RolesAllowed({"ADMIN"})
     @GetMapping("/deleteLogs/{id}")
     public String deleteLog(@PathVariable Integer id) {
         workApplicationService.deleteOneLog(id);

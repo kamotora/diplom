@@ -1,8 +1,7 @@
-package com.diplom.work.api;
+package com.diplom.work.controller.api;
 
 import com.diplom.work.core.OneLog;
 import com.diplom.work.repo.OneLogRepository;
-import com.diplom.work.svc.WorkApplicationServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

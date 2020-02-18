@@ -1,4 +1,4 @@
-package com.diplom.work.api;
+package com.diplom.work.controller.api;
 
 
 import com.diplom.work.core.OneRow;
