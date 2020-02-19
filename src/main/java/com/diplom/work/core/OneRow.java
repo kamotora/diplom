@@ -2,6 +2,11 @@ package com.diplom.work.core;
 
 import javax.persistence.*;
 
+/**
+ * Правило марштутизации вызова
+ * TODO описать поля и методы
+ * */
+
 @Entity
 @Table(name = "managerclient")
 public class OneRow {

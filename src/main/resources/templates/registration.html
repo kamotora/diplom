@@ -1,21 +1,22 @@
-<!-- НЕ РАБОТАЕТ -->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head"></head>
 <body>
-    <div th:if="${param.error}">
-        Неверный логин или пароль
-    </div>
-    <div th:if="${param.logout}">
-        Вы вышли
+    <div th:if="${message}">
+        ${message}
     </div>
     <form th:action="@{/registration}" method="post">
         <div><label> User Name : <input type="text" name="username"/> </label></div>
         <div><label> Password: <input type="password" name="password1"/> </label></div>
         <div><label> Password: <input type="password" name="password2"/> </label></div>
+        <div >
+            <select size="3" multiple name="roles">
+                <option th:each="role : ${roles}" th:value="${role.name()}" th:text="${role.name()}">
+            </select>
+        </div>
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
-        <div><button type="submit" value="Создать"></button></div>
+        <div><button type="submit" value="">Создать</button></div>
     </form>
 </body>
 </html>

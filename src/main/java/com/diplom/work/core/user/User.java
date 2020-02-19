@@ -2,6 +2,7 @@ package com.diplom.work.core.user;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -17,6 +18,11 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private boolean active;
+    @Transient
+    public static final BCryptPasswordEncoder TYPE_ENCRYPT = new BCryptPasswordEncoder();
+    public User() {
+    }
+
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
@@ -113,4 +119,5 @@ public class User implements UserDetails {
     public void setActive(boolean active) {
         this.active = active;
     }
+
 }

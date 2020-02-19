@@ -6,6 +6,7 @@ import com.diplom.work.core.user.Role;
 import com.diplom.work.svc.WorkApplicationService;
 import com.diplom.work.svc.WorkApplicationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,7 @@ public class WorkApplicationController {
     public void setWorkApplicationService(WorkApplicationServiceImpl workApplicationService){
         this.workApplicationService = workApplicationService;
     }
-    @RolesAllowed({"USER", "ADMIN"})
+
     @GetMapping("/")
     public String list(Model model){
         List<OneRow> oneRows = filterAndSort();
@@ -37,7 +38,7 @@ public class WorkApplicationController {
         return "index";
     }
 
-    @RolesAllowed({"USER", "ADMIN"})
+
     @GetMapping("/logs")
     public String listLogs(Model model){
         List<OneLog> oneLogs = workApplicationService.findAllByOrderByTimestampAsc();
@@ -52,7 +53,7 @@ public class WorkApplicationController {
         return "redirect:/";
     }
 
-    /*
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
         OneRow oneRow = workApplicationService.getOneRowById(id);
@@ -60,6 +61,7 @@ public class WorkApplicationController {
         return "operations/edit";
     }
 
+    @Secured("ADMIN")
     @GetMapping("/editLogs/{id}")
     public String editLogs(@PathVariable Integer id, Model model) {
         OneLog oneLog = workApplicationService.getOneLogById(id);
@@ -67,6 +69,7 @@ public class WorkApplicationController {
         return "operations/logs/editLogs";
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/update")
     public String saveNote(@RequestParam Integer id, @RequestParam String client,
                            @RequestParam String number, @RequestParam String FIOClient) {
@@ -74,6 +77,7 @@ public class WorkApplicationController {
         return "redirect:/";
     }
 
+    @Secured("ADMIN")
     @PostMapping("/updateLogs")
     public String saveLog(@RequestParam Integer id, @RequestParam String session,
                            @RequestParam String type, @RequestParam String state,
@@ -83,23 +87,27 @@ public class WorkApplicationController {
         return "redirect:/";
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/new")
     public String newNote() {
         return "operations/new";
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/logs/newLogs")
     public String newLog() {
         return "operations/logs/newLogs";
     }
 
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/save")
     public String updateNote(@RequestParam String client,@RequestParam String number, @RequestParam String FIOClient) {
         workApplicationService.saveOneRow(new OneRow(client,number,FIOClient));
         return "redirect:/";
     }
-
+    /*
+    @Secured("ADMIN")
     @PostMapping("/saveLogs")
     public String updateLog(@RequestParam String session_id,
                             @RequestParam String type, @RequestParam String state,
@@ -107,15 +115,16 @@ public class WorkApplicationController {
         workApplicationService.saveOneLog(new OneLog(session_id,type,state, from_number, request_number));
         return "redirect:/";
     }
-    */
-    @RolesAllowed({"ADMIN"})
+
+     */
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
         workApplicationService.deleteOneRow(id);
         return "redirect:/";
     }
 
-    @RolesAllowed({"ADMIN"})
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/deleteLogs/{id}")
     public String deleteLog(@PathVariable Integer id) {
         workApplicationService.deleteOneLog(id);

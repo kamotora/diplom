@@ -1,6 +1,7 @@
 package com.diplom.work.core;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
@@ -11,12 +12,10 @@ import java.time.LocalDateTime;
  * Для парсинга JSON ответа с сервера, метод call_event
  * Для записи в лог
 *  * */
-
-
 @Entity
 @Table(name = "logs")
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class OneLog {
     @Id
     @GeneratedValue
