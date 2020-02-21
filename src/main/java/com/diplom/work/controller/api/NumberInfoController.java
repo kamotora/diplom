@@ -29,6 +29,8 @@ public class NumberInfoController {
         LOGGER.debug("Получили запрос на get_number_info, body = "+numberInfo.toString());
         try{
             OneRow oneRow = oneRowRepository.findByClient(numberInfo.getFrom_number());
+            if(oneRow == null)
+                throw new IncorrectResultSizeDataAccessException(0);
             return ResponseEntity.ok(new NumberInfoAnswer(oneRow.getNumber(), oneRow.getClient()));
         }catch (IncorrectResultSizeDataAccessException e){
             return ResponseEntity.status(404).body(new NumberInfoAnswer(404, "Не найдено информации о том, куда перенаправлять"));

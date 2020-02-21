@@ -30,6 +30,11 @@ public class WorkApplicationController {
         this.workApplicationService = workApplicationService;
     }
 
+    @PostMapping("/home")
+    public String homePageAfterLogin(Model model){
+        return "redirect:/";
+    }
+
     @GetMapping("/")
     public String list(Model model){
         List<OneRow> oneRows = filterAndSort();

@@ -4,6 +4,7 @@ import com.diplom.work.core.user.User;
 import com.diplom.work.svc.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,14 +31,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     //TODO logout не работает (
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/css/**", "/js/**", "/images/**").permitAll();
-        http
+        http.csrf().ignoringAntMatchers("/api/**").and() //csrf для api отключить
                 .authorizeRequests()
-                .antMatchers("/static/**","/login", "/registration").permitAll() // Доступны всем
+                .antMatchers("/css/**", "/js/**", "/images/**","/login", "/registration").permitAll() // Доступны всем
+                .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .successForwardUrl("/")
+                .successForwardUrl("/home")
                 .loginPage("/login")
                 .permitAll()
                 .and()
