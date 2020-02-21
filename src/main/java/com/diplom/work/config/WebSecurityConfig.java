@@ -33,15 +33,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/css/**", "/js/**", "/images/**").permitAll();
         http
                 .authorizeRequests()
-                .antMatchers("static","/login", "/registration").permitAll() // Доступны всем
+                .antMatchers("/static/**","/login", "/registration").permitAll() // Доступны всем
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")  // Доступны после входа
+                .successForwardUrl("/")
+                .loginPage("/login")
                 .permitAll()
                 .and()
                 .logout()
-                .logoutUrl("/logout")// Выход доступен всем
                 .permitAll();
 
     }
