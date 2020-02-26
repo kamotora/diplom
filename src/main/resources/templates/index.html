@@ -5,8 +5,8 @@
 <body>
 <div class="container">
     <div th:replace="fragments/header :: header"></div>
-    <div th:if="${not #lists.isEmpty(oneRows)}">
-        <div th:replace="operations/list :: oneRows"></div>
+    <div th:if="${not #lists.isEmpty(rules)}">
+        <div th:replace="operations/list :: rules"></div>
     </div>
     <a href="/logs">Логи</a>
     <div th:replace="fragments/footer :: footer"></div>

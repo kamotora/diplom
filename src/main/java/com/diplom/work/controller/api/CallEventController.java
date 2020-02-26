@@ -1,7 +1,7 @@
 package com.diplom.work.controller.api;
 
-import com.diplom.work.core.OneLog;
-import com.diplom.work.repo.OneLogRepository;
+import com.diplom.work.core.Log;
+import com.diplom.work.repo.LogRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CallEventController {
     @Autowired
-    private OneLogRepository oneLogRepository;
+    private LogRepository logRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(CallEventController.class);
 
 
     @PostMapping(path = "call_events",
             consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Void> getNewCall(@RequestBody OneLog callEvent) {
-        oneLogRepository.save(callEvent);
+    public ResponseEntity<Void> getNewCall(@RequestBody Log callEvent) {
+        logRepository.save(callEvent);
         LOGGER.warn("Получили запрос на call_events, body = "+callEvent.toString());
         return ResponseEntity.ok().build();
     }

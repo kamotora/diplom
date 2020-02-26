@@ -2,7 +2,7 @@
 <!--suppress ALL -->
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="oneLogs">
+<div th:fragment="logs">
     <table class="table table-bordered table-hover horizontal-align">
         <thead>
         <tr>
@@ -19,17 +19,17 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="oneLog : ${oneLogs}">
-            <td th:text="${oneLog.id} " style="text-align: center">#</td>
-            <td th:text="${oneLog.timestampInDateTimeFormat}" style="text-align: center">Время</td>
-            <td th:text="${oneLog.session_id}" style="text-align: center">idСессии</td>
-            <td th:text="${oneLog.typeName}" style="text-align: center">Тип звонка</td>
-            <td th:text="${oneLog.stateName}" style="text-align: center">Состояние</td>
-            <td th:text="${oneLog.from_number}" style="text-align: center">ОтНомер</td>
-            <td th:text="${oneLog.request_number}" style="text-align: center">КудаНомер</td>
+        <tr th:each="log : ${logs}">
+            <td th:text="${log.id} " style="text-align: center">#</td>
+            <td th:text="${log.timestampInDateTimeFormat}" style="text-align: center">Время</td>
+            <td th:text="${log.session_id}" style="text-align: center">idСессии</td>
+            <td th:text="${log.typeName}" style="text-align: center">Тип звонка</td>
+            <td th:text="${log.stateName}" style="text-align: center">Состояние</td>
+            <td th:text="${log.from_number}" style="text-align: center">ОтНомер</td>
+            <td th:text="${log.request_number}" style="text-align: center">КудаНомер</td>
 
-            <td style="text-align: center"><a th:href="@{'/editLogs/{id}'(id=${oneLog.id})}"><i class="fa fa-edit" style="font-size:20px"></i></a></td>
-            <td style="text-align: center"><a th:href="@{'/deleteLogs/{id}'(id=${oneLog.id})}"><i class="fa fa-trash" style="font-size:20px"></i></a></td>
+            <td style="text-align: center"><a th:href="@{'/editLogs/{id}'(id=${log.id})}"><i class="fa fa-edit" style="font-size:20px"></i></a></td>
+            <td style="text-align: center"><a th:href="@{'/deleteLogs/{id}'(id=${log.id})}"><i class="fa fa-trash" style="font-size:20px"></i></a></td>
         </tr>
         </tbody>
     </table>

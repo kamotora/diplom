@@ -7,15 +7,15 @@
 <div class="container">
     <div th:replace="fragments/header :: header"></div>
     <div class="container">
-        <form class="form-horizontal" th:object="${oneRow}" th:action="@{/update}" name="edit_form" id="edit_form"
+        <form class="form-horizontal" th:object="${rule}" th:action="@{/update}" name="edit_form" id="edit_form"
               method="post" role="form">
             <div class="form-group">
                 <input type="hidden" id="id" th:name="id" th:value="*{id}"/>
             </div>
             <div class="form-group">
-                <input type="text" class="form-control" id="client" th:name="client" th:value="*{client}" maxlength="100"/>
-                <input type="text" class="form-control" id="number" th:name="number" th:value="*{number}" maxlength="100"/>
-                <input type="text" class="form-control" id="FIOClient" th:name="FIOClient" th:value="*{FIOClient}" maxlength="100"/>
+                <input type="text" class="form-control" id="client" th:name="client" th:value="*{clientNumber}" maxlength="100"/>
+                <input type="text" class="form-control" id="number" th:name="number" th:value="*{managerNumber}" maxlength="100"/>
+                <input type="text" class="form-control" id="FIOClient" th:name="FIOClient" th:value="*{clientName}" maxlength="100"/>
             </div>
             <button type="submit" class="btn btn-primary">Принять</button>
         </form>

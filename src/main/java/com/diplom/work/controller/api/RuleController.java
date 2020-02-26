@@ -1,8 +1,7 @@
 package com.diplom.work.controller.api;
 
-import com.diplom.work.core.OneLog;
-import com.diplom.work.core.OneRow;
-import com.diplom.work.repo.OneRowRepository;
+import com.diplom.work.core.Rule;
+import com.diplom.work.repo.RuleRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RuleController {
     @Autowired
-    private OneRowRepository oneRowRepository;
+    private RuleRepository ruleRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleController.class);
 
     /**
@@ -32,9 +31,9 @@ public class RuleController {
      * */
     @PostMapping(path = "add_rule",
             consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> addRule(@RequestBody OneRow rule) {
+    public ResponseEntity<String> addRule(@RequestBody Rule rule) {
         try {
-            oneRowRepository.save(rule);
+            ruleRepository.save(rule);
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(500).body("Не удалось обработать запрос");

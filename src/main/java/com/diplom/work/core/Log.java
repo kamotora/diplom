@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Table(name = "logs")
 @AllArgsConstructor
 @NoArgsConstructor
-public class OneLog {
+public class Log {
     @Id
     @GeneratedValue
     private int id;

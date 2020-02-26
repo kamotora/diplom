@@ -1,13 +1,11 @@
 package com.diplom.work.controller;
 
-import com.diplom.work.core.OneLog;
-import com.diplom.work.core.OneRow;
-import com.diplom.work.core.user.Role;
+import com.diplom.work.core.Log;
+import com.diplom.work.core.Rule;
 import com.diplom.work.svc.WorkApplicationService;
 import com.diplom.work.svc.WorkApplicationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,11 +14,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Controller
 public class WorkApplicationController {
+
+    //TODO Разделить логи и главную на 2 контроллера
 
     private WorkApplicationService workApplicationService;
     private String sortDateMethod = "ASC";
@@ -37,8 +36,8 @@ public class WorkApplicationController {
 
     @GetMapping("/")
     public String list(Model model){
-        List<OneRow> oneRows = filterAndSort();
-        model.addAttribute("oneRows", oneRows);
+        List<Rule> rules = filterAndSort();
+        model.addAttribute("rules", rules);
         model.addAttribute("sort", sortDateMethod);
         return "index";
     }
@@ -46,8 +45,8 @@ public class WorkApplicationController {
 
     @GetMapping("/logs")
     public String listLogs(Model model){
-        List<OneLog> oneLogs = workApplicationService.findAllByOrderByTimestampAsc();
-        model.addAttribute("oneLogs", oneLogs);
+        List<Log> logs = workApplicationService.findAllByOrderByTimestampAsc();
+        model.addAttribute("logs", logs);
         model.addAttribute("sort", sortDateMethod);
         return "logs";
     }
@@ -61,16 +60,16 @@ public class WorkApplicationController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
-        OneRow oneRow = workApplicationService.getOneRowById(id);
-        model.addAttribute("oneRow", oneRow);
+        Rule rule = workApplicationService.getOneRowById(id);
+        model.addAttribute("rule", rule);
         return "operations/edit";
     }
 
-    @Secured("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/editLogs/{id}")
     public String editLogs(@PathVariable Integer id, Model model) {
-        OneLog oneLog = workApplicationService.getOneLogById(id);
-        model.addAttribute("oneLog", oneLog);
+        Log log = workApplicationService.getOneLogById(id);
+        model.addAttribute("log", log);
         return "operations/logs/editLogs";
     }
 
@@ -82,7 +81,7 @@ public class WorkApplicationController {
         return "redirect:/";
     }
 
-    @Secured("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/updateLogs")
     public String saveLog(@RequestParam Integer id, @RequestParam String session,
                            @RequestParam String type, @RequestParam String state,
@@ -108,7 +107,7 @@ public class WorkApplicationController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/save")
     public String updateNote(@RequestParam String client,@RequestParam String number, @RequestParam String FIOClient) {
-        workApplicationService.saveOneRow(new OneRow(client,number,FIOClient));
+        workApplicationService.saveOneRow(new Rule(client,number,FIOClient));
         return "redirect:/";
     }
     /*
@@ -117,7 +116,7 @@ public class WorkApplicationController {
     public String updateLog(@RequestParam String session_id,
                             @RequestParam String type, @RequestParam String state,
                             @RequestParam String from_number, @RequestParam String request_number) {
-        workApplicationService.saveOneLog(new OneLog(session_id,type,state, from_number, request_number));
+        workApplicationService.saveOneLog(new Log(session_id,type,state, from_number, request_number));
         return "redirect:/";
     }
 
@@ -137,14 +136,14 @@ public class WorkApplicationController {
     }
 
     //Ветку потестить
-    private List<OneRow> filterAndSort() {
-        List<OneRow> oneRows = null;
+    private List<Rule> filterAndSort() {
+        List<Rule> rules = null;
         switch (sortDateMethod) {
             case "ASC":
-                oneRows = workApplicationService.findAllByOrderByClientAsc();
+                rules = workApplicationService.findAllByOrderByClientAsc();
                 break;
         }
-        return oneRows;
+        return rules;
     }
 
 }
