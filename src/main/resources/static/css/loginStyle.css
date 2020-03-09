@@ -116,7 +116,8 @@ form:after {
     display: block;
     height: 100%;
     left: -1px;
-    position: absolute;
+
+;
     width: 100%;
 }
 #content:after {
@@ -125,7 +126,7 @@ form:after {
     -ms-transform: rotate(2deg);
     -o-transform: rotate(2deg);
     transform: rotate(2deg);
-    top: 0;
+
     z-index: -1;
 }
 #content:before {
@@ -134,7 +135,7 @@ form:after {
     -ms-transform: rotate(-3deg);
     -o-transform: rotate(-3deg);
     transform: rotate(-3deg);
-    top: 0;
+
     z-index: -2;
 }
 #content form { margin: 0 20px; position: relative }
