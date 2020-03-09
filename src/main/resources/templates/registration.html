@@ -9,9 +9,7 @@
 <body>
 <div class = "container">
     <section id = "content">
-    <div th:if="${message}">
-        ${message}
-    </div>
+    <div class="message" th:if="${message}" th:text="${message}"></div>
     <form th:action="@{/registration}" method="post" autocomplete="off">
         <h1>Регистрация</h1>
         <div>

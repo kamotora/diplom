@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.constraints.Null;
 import java.util.*;
 
 @Controller
 public class RegistrationController {
     @Autowired
     private UserRepository userRepo;
+
 
     @GetMapping("/registration")
     public String registration(Map<String, Object> model) {
@@ -25,7 +27,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String addUser(User user, @RequestParam List<String> roles, @RequestParam String password1, @RequestParam String password2, Map<String, Object> model) {
+    public String addUser(User user, @RequestParam(defaultValue = "") List<String> roles, @RequestParam String password1, @RequestParam String password2, Map<String, Object> model) {
         User userFromDb = userRepo.findByUsername(user.getUsername());
 
         if (userFromDb != null) {
@@ -36,7 +38,7 @@ public class RegistrationController {
             model.put("message","Пустой логин или пароль, или пароли не совпадают");
             return "registration";
         }
-        if(roles == null || roles.size() == 0) {
+        if(roles == null || roles.isEmpty()) {
             model.put("message","Роль/Роли не выбраны");
             return "registration";
         }
