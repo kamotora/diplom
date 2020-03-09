@@ -107,7 +107,9 @@ public class User implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
-
+    public void setPasswordAndEncrypt(String password){
+        setPassword(User.TYPE_ENCRYPT.encode(password));
+    }
     public void setPassword(String password) {
         this.password = password;
     }

@@ -1,18 +1,23 @@
 package com.diplom.work;
 
-import com.codeborne.selenide.*;
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Selenide;
 import com.diplom.work.core.user.User;
 import com.diplom.work.repo.UserRepository;
-import com.diplom.work.svc.UserService;
 import org.junit.Assert;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
 
-import static com.codeborne.selenide.Selectors.*;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selectors.byName;
+import static com.codeborne.selenide.Selectors.byValue;
+import static com.codeborne.selenide.Selenide.$;
 
 @SpringBootTest
 public class TestRegistration {
@@ -35,6 +40,8 @@ public class TestRegistration {
     }
     @AfterEach
     public void closePage(){
+        Selenide.clearBrowserCookies();
+        Selenide.clearBrowserLocalStorage();
         Selenide.closeWindow();
     }
 

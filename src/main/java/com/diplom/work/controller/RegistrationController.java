@@ -32,20 +32,23 @@ public class RegistrationController {
 
         if (userFromDb != null) {
             model.put("message", "Такой пользователь есть");
+            model.put("roles",Role.values());
             return "registration";
         }
         if(user.getUsername().isEmpty() || password1 == null || password1.isEmpty() || password2 == null || password2.isEmpty() || !password1.equals(password2)){
             model.put("message","Пустой логин или пароль, или пароли не совпадают");
+            model.put("roles",Role.values());
             return "registration";
         }
         if(roles == null || roles.isEmpty()) {
             model.put("message","Роль/Роли не выбраны");
+            model.put("roles",Role.values());
             return "registration";
         }
         Set<Role> roleSet = new HashSet<>();
         roles.forEach(role -> roleSet.add(Role.valueOf(role)));
         user.setRoles(roleSet);
-        user.setPassword(User.TYPE_ENCRYPT.encode(password1));
+        user.setPasswordAndEncrypt(password1);
         user.setActive(true);
         userRepo.save(user);
 

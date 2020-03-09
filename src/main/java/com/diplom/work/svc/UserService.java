@@ -24,6 +24,15 @@ public class UserService implements UserDetailsService {
         userRepo.delete(user);
     }
 
+    public void save(User user){
+        userRepo.save(user);
+    }
+
+    public User findByUsername(String username) throws UsernameNotFoundException {
+        if(userRepo == null)
+            System.out.println("kek");
+        return userRepo.findByUsername(username);
+    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if(userRepo == null)
