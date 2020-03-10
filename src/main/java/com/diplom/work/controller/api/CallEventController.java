@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/")
 @RequiredArgsConstructor
 public class CallEventController {
-    @Autowired
+
     private LogRepository logRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(CallEventController.class);
 
@@ -22,7 +22,7 @@ public class CallEventController {
     @PostMapping(path = "call_events",
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Void> getNewCall(@RequestBody Log callEvent) {
-        logRepository.save(callEvent);
+        //logRepository.save(callEvent);
         LOGGER.warn("Получили запрос на call_events, body = "+callEvent.toString());
         return ResponseEntity.ok().build();
     }

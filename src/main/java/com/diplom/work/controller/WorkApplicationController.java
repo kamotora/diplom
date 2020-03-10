@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class WorkApplicationController {
@@ -77,6 +78,7 @@ public class WorkApplicationController {
     @PostMapping("/update")
     public String saveNote(@RequestParam Integer id, @RequestParam String client,
                            @RequestParam String number, @RequestParam String FIOClient) {
+
         workApplicationService.updateOneRow(id, client, number, FIOClient);
         return "redirect:/";
     }
@@ -106,7 +108,7 @@ public class WorkApplicationController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/save")
-    public String updateNote(@RequestParam String client,@RequestParam String number, @RequestParam String FIOClient) {
+    public String updateNote(Map<String, Object> model, @RequestParam String client, @RequestParam String number, @RequestParam String FIOClient) {
         workApplicationService.saveOneRow(new Rule(client,number,FIOClient));
         return "redirect:/";
     }

@@ -13,11 +13,11 @@ public class Rule {
     @Id
     @GeneratedValue
     private Integer id;
-    @Column(name = "client")
+    @Column(name = "client", nullable = false)
     private String clientNumber;
-    @Column(name = "number")
+    @Column(name = "number", nullable = false)
     private String managerNumber;
-    @Column(name = "FIOClient")
+    @Column(name = "FIOClient", nullable = false)
     private String clientName;
 
     public Rule(){

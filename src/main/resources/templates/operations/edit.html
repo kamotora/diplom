@@ -13,9 +13,9 @@
                 <input type="hidden" id="id" th:name="id" th:value="*{id}"/>
             </div>
             <div class="form-group">
-                <input type="text" class="form-control" id="client" th:name="client" th:value="*{clientNumber}" maxlength="100"/>
-                <input type="text" class="form-control" id="number" th:name="number" th:value="*{managerNumber}" maxlength="100"/>
-                <input type="text" class="form-control" id="FIOClient" th:name="FIOClient" th:value="*{clientName}" maxlength="100"/>
+                <input type="text" class="form-control" id="client" th:name="client" th:value="*{clientNumber}" minlength="11" maxlength="100"/>
+                <input type="text" class="form-control" id="number" th:name="number" th:value="*{managerNumber}" minlength="3" maxlength="100"/>
+                <input type="text" class="form-control" id="FIOClient" th:name="FIOClient" th:value="*{clientName}" minlength="2" maxlength="100"/>
             </div>
             <button type="submit" class="btn btn-primary">Принять</button>
         </form>

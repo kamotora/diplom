@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/")
 @RequiredArgsConstructor
 public class NumberInfoController {
-    @Autowired
+
     private RuleRepository ruleRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NumberInfoController.class);

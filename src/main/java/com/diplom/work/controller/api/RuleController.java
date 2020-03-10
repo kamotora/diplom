@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/")
 @RequiredArgsConstructor
 public class RuleController {
-    @Autowired
+
     private RuleRepository ruleRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleController.class);
 
@@ -33,7 +33,7 @@ public class RuleController {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> addRule(@RequestBody Rule rule) {
         try {
-            ruleRepository.save(rule);
+            //ruleRepository.save(rule);
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(500).body("Не удалось обработать запрос");

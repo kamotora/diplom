@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Set;
 
@@ -32,7 +31,6 @@ public class User implements UserDetails {
      * @return Возвращает права, предоставленные пользователю.
      * */
     @Override
-    @NotNull
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
     }

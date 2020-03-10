@@ -63,6 +63,7 @@ public class WorkApplicationServiceImpl implements WorkApplicationService {
 
     @Override
     public void updateOneLog(Integer id, String session_id, String type, String state, String from_number, String request_number) {
+
         Log update = logRepository.getOne(id);
         update.setFrom_number(from_number);
         update.setRequest_number(request_number);
