@@ -1,22 +1,37 @@
 package com.diplom.work;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Selenide;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
-
-
-import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.*;
+import com.diplom.work.core.Rule;
+import com.diplom.work.repo.RuleRepository;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.*;
 
+
 @SpringBootTest
 public class EditTest {
 
+    @Autowired
+    RuleRepository ruleRepository;
+
+    @BeforeAll
+    public static void config(){
+        Configuration.browser = "chrome";
+        Configuration.screenshots = false;
+        Configuration.timeout = 10000;
+        Configuration.fastSetValue = false;
+        Configuration.holdBrowserOpen = false;
+    }
+
+    @BeforeEach
+    public void openRegistrationForm(){
+        Selenide.sleep(3000);
+    }
+
     /**
-     *
      * Проверка на добавление
      */
     @Test
@@ -27,7 +42,7 @@ public class EditTest {
         Selenide.sleep(3000);
         $(byText("Добавить")).click();
         Selenide.sleep(3000);
-        $(byName("client")).setValue("88005553535");
+        $(byName("client")).setValue("88005553595");
         Selenide.sleep(3000);
         $(byName("number")).setValue("205");
         Selenide.sleep(3000);
@@ -37,15 +52,27 @@ public class EditTest {
         Selenide.sleep(3000);
 
         /**
-         *
          * Если всё правильно попадаем на главную страницу
          */
 
         $(byText("Ред.")).shouldBe(Condition.visible);
+
+        /**
+         * Удалим добавленную запись
+         */
+
+        Rule rule = ruleRepository.findByClientNumber("88005553595");
+        ruleRepository.delete(rule);
+
+        /**
+         * Проверим что удалили
+         */
+
+        $(byName("88005553595")).shouldNotBe(Condition.visible);
+
     }
 
     /**
-     *
      * При следующих данных добавления произойти не должно
      */
 
