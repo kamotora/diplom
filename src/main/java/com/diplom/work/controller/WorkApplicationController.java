@@ -48,7 +48,7 @@ public class WorkApplicationController {
     public String listLogs(Model model){
         List<Log> logs = workApplicationService.findAllByOrderByTimestampAsc();
         model.addAttribute("logs", logs);
-        model.addAttribute("sort", sortDateMethod);
+        //model.addAttribute("sort", sortDateMethod);
         return "logs";
     }
 
@@ -142,7 +142,7 @@ public class WorkApplicationController {
         List<Rule> rules = null;
         switch (sortDateMethod) {
             case "ASC":
-                rules = workApplicationService.findAllByOrderByClientAsc();
+                rules = workApplicationService.findAllByOrderByIdAsc();
                 break;
         }
         return rules;

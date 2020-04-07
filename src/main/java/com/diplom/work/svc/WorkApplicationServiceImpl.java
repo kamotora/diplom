@@ -47,8 +47,8 @@ public class WorkApplicationServiceImpl implements WorkApplicationService {
     }
 
     @Override
-    public List<Rule> findAllByOrderByClientAsc() {
-        return ruleRepository.findAllByOrderByClientNameAsc();
+    public List<Rule> findAllByOrderByIdAsc() {
+        return ruleRepository.findAllByOrderByIdAsc();
     }
 
     @Override

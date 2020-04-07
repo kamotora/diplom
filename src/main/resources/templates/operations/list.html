@@ -18,7 +18,7 @@
         <tbody>
         <tr th:each="rule : ${rules}">
             <td th:text="${rule.id} " style="text-align: center">#</td>
-            <td th:text="${rule.clientNumber}" style="text-align: center">Телефон Клиента</td>
+            <td th:name = "client" th:text="${rule.clientNumber}" style="text-align: center">Телефон Клиента</td>
             <td th:text="${rule.managerNumber}" style="text-align: center">Номер менеджера</td>
             <td th:text="${rule.clientName}" style="text-align: center">ФИО клиента</td>
 

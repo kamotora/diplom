@@ -10,7 +10,7 @@ public interface WorkApplicationService {
     void saveOneRow(Rule rule);
     void updateOneRow(Integer id, String client, String number,String FIOClient);
     void deleteOneRow(Integer id);
-    List<Rule> findAllByOrderByClientAsc();
+    List<Rule> findAllByOrderByIdAsc();
 
     Log getOneLogById(Integer id);
     void saveOneLog(Log log);
