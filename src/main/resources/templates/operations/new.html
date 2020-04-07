@@ -13,7 +13,7 @@
         <form class="form-horizontal" th:action="@{/save}" name="input_form" id="input_form"
               method="post" role="form">
             <div class="form-group">
-                <input type="text" class="form-control" id="client" th:name="client" placeholder="Введите номер клиента" minlength="11" maxlength="100"/>
+                <input type="text" class="form-control" id="client" th:name="client" placeholder="Введите номер клиента" minlength="3" maxlength="100"/>
                 <input type="text" class="form-control" id="number" th:name="number" placeholder="Введите номер менеджера" minlength="3" maxlength="100"/>
                 <input type="text" class="form-control" id="FIOClient" th:name="FIOClient" placeholder="Введите ФИО клиента" minlength="3" maxlength="100"/>
             </div>

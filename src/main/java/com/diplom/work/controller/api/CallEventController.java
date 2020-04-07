@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/")
 @RequiredArgsConstructor
 public class CallEventController {
-
+    @Autowired
     private LogRepository logRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(CallEventController.class);
 
