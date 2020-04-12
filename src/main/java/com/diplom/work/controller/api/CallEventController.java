@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/")
-@RequiredArgsConstructor
 public class CallEventController {
+    private final LogRepository logRepository;
     @Autowired
-    private LogRepository logRepository;
-    private static final Logger LOGGER = LoggerFactory.getLogger(CallEventController.class);
+    public CallEventController(LogRepository logRepository) {
+        this.logRepository = logRepository;
+    }
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CallEventController.class);
 
     @PostMapping(path = "call_events",
             consumes = {MediaType.APPLICATION_JSON_VALUE})

@@ -7,7 +7,7 @@
 <div class="container">
     <div th:replace="fragments/header :: header"></div>
     <div class="container">
-        <form class="form-horizontal" th:action="@{/saveLogs}" name="input_form" id="input_form"
+        <form class="form-horizontal" th:action="@{/logs/save}" name="input_form" id="input_form"
               method="post" role="form">
             <div class="form-group">
                 <input type="text" class="form-control" id="session" th:name="session_id" placeholder="Введите номер сессии" maxlength="100"/>

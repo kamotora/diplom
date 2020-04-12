@@ -28,8 +28,8 @@
             <td th:text="${log.from_number}" style="text-align: center">ОтНомер</td>
             <td th:text="${log.request_number}" style="text-align: center">КудаНомер</td>
 
-            <td style="text-align: center"><a th:href="@{'/editLogs/{id}'(id=${log.id})}"><i class="fa fa-edit" style="font-size:20px"></i></a></td>
-            <td style="text-align: center"><a th:href="@{'/deleteLogs/{id}'(id=${log.id})}"><i class="fa fa-trash" style="font-size:20px"></i></a></td>
+            <td style="text-align: center"><a th:href="@{'/logs/edit/{id}'(id=${log.id})}"><i class="fa fa-edit" style="font-size:20px"></i></a></td>
+            <td style="text-align: center"><a th:href="@{'/logs/delete/{id}'(id=${log.id})}"><i class="fa fa-trash" style="font-size:20px"></i></a></td>
         </tr>
         </tbody>
     </table>

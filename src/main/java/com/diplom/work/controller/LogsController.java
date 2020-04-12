@@ -4,14 +4,14 @@ import com.diplom.work.core.Log;
 import com.diplom.work.svc.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Controller
+@RequestMapping("/logs")
 public class LogsController {
     private final LogService logService;
 
@@ -20,7 +20,7 @@ public class LogsController {
         this.logService = logService;
     }
 
-    @GetMapping("/logs")
+    @GetMapping
     public String listLogs(Model model){
         List<Log> logs = logService.findAllByOrderByTimestampAsc();
         model.addAttribute("logs", logs);
@@ -30,7 +30,7 @@ public class LogsController {
 
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/editLogs/{id}")
+    @GetMapping("/edit/{id}")
     public String editLogs(@PathVariable Integer id, Model model) {
         Log log = logService.getOneLogById(id);
         model.addAttribute("log", log);
@@ -38,18 +38,19 @@ public class LogsController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/updateLogs")
-    public String saveLog(@RequestParam Integer id, @RequestParam String session,
+    @PostMapping("/update")
+    public String saveLog(@RequestParam Integer id, @RequestParam String session_id,
                           @RequestParam String type, @RequestParam String state,
                           @RequestParam String from_number, @RequestParam String request_number
     ) {
-        logService.updateOneLog(id, session, type, state, from_number, request_number);
-        return "redirect:/";
+        logService.updateOneLog(id, session_id, type, state, from_number, request_number);
+        return "redirect:/logs";
     }
 
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/logs/newLogs")
+
+    @GetMapping("/new")
     public String newLog() {
         return "operations/logs/newLogs";
     }
@@ -68,10 +69,10 @@ public class LogsController {
      */
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/deleteLogs/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteLog(@PathVariable Integer id) {
         logService.deleteOneLog(id);
-        return "redirect:/";
+        return "redirect:/logs";
     }
 
 }

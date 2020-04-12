@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/")
-@RequiredArgsConstructor
 public class NumberInfoController {
+    private final RuleRepository ruleRepository;
     @Autowired
-    private RuleRepository ruleRepository;
+    public NumberInfoController(RuleRepository ruleRepository) {
+        this.ruleRepository = ruleRepository;
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NumberInfoController.class);
 
