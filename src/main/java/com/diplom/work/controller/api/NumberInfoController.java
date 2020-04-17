@@ -48,15 +48,7 @@ public class NumberInfoController {
         if(!clientID.equals(myClientID))
             LOGGER.error("ClientID не совпадают");
         try{
-            String myClientSing = Hashing.sha256().hashString(myClientID+new ObjectMapper().writeValueAsString(numberInfo)+myClientKey, StandardCharsets.UTF_8).toString();
-            if(clientSign.equals(myClientSing))
-                LOGGER.warn("Подписи равны");
-            else {
-                LOGGER.error("Подписи не равны");
-                System.err.println("Пришёл header.X-Client-Sign = "+clientSign);
-                System.err.println("Мы получили header.X-Client-Sign = "+myClientSing);
-            }
-
+            Utils.checkSigns(numberInfo,myClientID,myClientKey,clientSign, "get_number_info");
             Rule rule = ruleRepository.findByClientNumber(numberInfo.getFrom_number());
             if(rule == null)
                 throw new IncorrectResultSizeDataAccessException(0);

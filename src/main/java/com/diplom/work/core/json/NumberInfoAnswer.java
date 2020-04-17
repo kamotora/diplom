@@ -1,6 +1,7 @@
 package com.diplom.work.core.json;
 
 import com.diplom.work.core.Rule;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class NumberInfoAnswer {
     private int result;
@@ -8,6 +9,7 @@ public class NumberInfoAnswer {
     private String resultMessage;
     //Отображаемое имя для добавления информации о вызове. Мб Null при result > 0
     private String displayName;
+    // Внутренний номер менеджера
     private String PIN;
 
     /**
@@ -84,6 +86,7 @@ public class NumberInfoAnswer {
         this.displayName = displayName;
     }
 
+    @JsonProperty("PIN")
     public String getPIN() {
         return PIN;
     }

@@ -21,8 +21,27 @@ public class Utils {
         System.out.println(bodyJSON);
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Client-ID", clientID);
-        headers.add("X-Client-Sing",
+        headers.add("X-Client-Sign",
                 Hashing.sha256().hashString(clientID+bodyJSON+clientKey, StandardCharsets.UTF_8).toString());
         return headers;
+    }
+
+    public static boolean checkSigns(Object body, String clientID, String clientKey, String requestClientSign, String name_method){
+        String myClientSing = null;
+        try {
+            myClientSing = Hashing.sha256().hashString(clientID+new ObjectMapper().writeValueAsString(body)+clientKey, StandardCharsets.UTF_8).toString();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        if(requestClientSign.equals(myClientSing)){
+            System.out.println("Подписи "+name_method+" равны");
+            return true;
+        }
+        else {
+            System.err.println("Подписи "+name_method+" не равны");
+            System.err.println("Пришёл header.X-Client-Sign = "+requestClientSign);
+            System.err.println("Мы получили header.X-Client-Sign = "+myClientSing);
+            return false;
+        }
     }
 }
