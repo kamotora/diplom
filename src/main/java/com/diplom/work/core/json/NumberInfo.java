@@ -1,12 +1,9 @@
 package com.diplom.work.core.json;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Для парсинга JSON ответа с сервера, метод call_event
@@ -15,9 +12,11 @@ import java.time.LocalDateTime;
 
 public final class NumberInfo {
     private String domain;
-    private String timestamp;
     private String from_number;
     private String request_number;
+
+    public NumberInfo() {
+    }
 
     public String getDomain() {
         return domain;
@@ -25,18 +24,6 @@ public final class NumberInfo {
 
     public void setDomain(String domain) {
         this.domain = domain;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-    public LocalDateTime getTimestampInDateTimeFormat(){
-        if(timestamp == null)
-            return null;
-        return Timestamp.valueOf(timestamp).toLocalDateTime();
-    }
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
     }
 
     public String getFrom_number() {
@@ -53,5 +40,14 @@ public final class NumberInfo {
 
     public void setRequest_number(String request_number) {
         this.request_number = request_number;
+    }
+
+    @Override
+    public String toString() {
+        return "NumberInfo{" +
+                "domain='" + domain + '\'' +
+                ", from_number='" + from_number + '\'' +
+                ", request_number='" + request_number + '\'' +
+                '}';
     }
 }

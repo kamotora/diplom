@@ -1,5 +1,7 @@
 package com.diplom.work.core.json;
 
+import com.diplom.work.core.Rule;
+
 public class NumberInfoAnswer {
     private int result;
     //Описание результата выполнения запроса. Мб Null при result == 0
@@ -7,6 +9,18 @@ public class NumberInfoAnswer {
     //Отображаемое имя для добавления информации о вызове. Мб Null при result > 0
     private String displayName;
     private String PIN;
+
+    /**
+     * Если всё ок
+     * @param rule - содержит ин-фу о маршрутизации
+     * */
+    public NumberInfoAnswer(Rule rule) {
+        this.result = 0;
+        this.displayName = rule.getClientName();
+        this.PIN = rule.getManagerNumber();
+        this.resultMessage = String.format("Перенаправляем номер %s на внутренний номер %s", rule.getClientNumber(),PIN);
+    }
+
     /**
      * Если всё ок
      * @param PIN - куда направить
@@ -76,5 +90,15 @@ public class NumberInfoAnswer {
 
     public void setPIN(String PIN) {
         this.PIN = PIN;
+    }
+
+    @Override
+    public String toString() {
+        return "NumberInfoAnswer{" +
+                "result=" + result +
+                ", resultMessage='" + resultMessage + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", PIN='" + PIN + '\'' +
+                '}';
     }
 }
