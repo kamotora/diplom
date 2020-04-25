@@ -96,6 +96,13 @@ tbody td {
 .navbar-default .navbar-link:hover {
     color: #dadddd;
 }
+.navbar-header{
+    width: 100%;
+}
+
+.navbar-right:before{
+    margin: 7px 40px;
+}
 
 @media (max-width: 767px) {
     .navbar-default .navbar-nav .open .dropdown-menu > li > a {
@@ -111,4 +118,16 @@ tbody td {
         color: #dadddd;
         background-color: #2b6394;
     }
+}
+
+
+input[id = "output"]{
+    font-size: 12.025px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #F8F8FF;
+    background-color: #337ab7;
+    -webkit-border-radius: 9px;
+    -moz-border-radius: 9px;
+    border-radius: 9px;
 }

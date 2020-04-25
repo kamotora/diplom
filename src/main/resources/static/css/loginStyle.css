@@ -48,6 +48,7 @@ form:after {
     visibility: hidden;
 }
 .container { margin: 25px auto; position: relative; width: 900px; }
+
 #content {
     background: #f9f9f9;
     background: -moz-linear-gradient(top,  rgba(248,248,248,1) 0%, rgba(249,249,249,1) 100%);

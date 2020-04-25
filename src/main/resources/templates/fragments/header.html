@@ -9,9 +9,11 @@
                 <a class="navbar-brand" th:href="@{/}">Таблица с номерами</a>
                 <ul class="nav navbar-nav">
                     <li><a href="#" th:href="@{/new}">Добавить</a></li>
+                </ul>
+                <ul class = "nav navbar-right">
                     <li>
                         <form th:action="@{/logout}" method="post">
-                        <input type="submit" value="Выход"/>
+                            <input type="submit" id = "output" value="Выход"/>
                         </form>
                     </li>
                 </ul>
