@@ -24,6 +24,7 @@ public class Log {
     private String session_id;
     @Column(name = "timestamp")
     private String timestamp;
+    @Transient
     private LocalDateTime timestampInDateTimeFormat;
     @Column(name = "type")
     private String type;

@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Basic Controller which is called for unhandled errors
  */
-@Controller
+
 public class AppErrorController implements ErrorController {
 
     /**

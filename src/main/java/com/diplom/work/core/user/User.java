@@ -1,11 +1,17 @@
 package com.diplom.work.core.user;
 
+import com.diplom.work.core.json.view.UserViews;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -13,20 +19,27 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(UserViews.onlyId.class)
     private Long id;
+    @JsonView(UserViews.idLogin.class)
     private String username;
     private String password;
+    @JsonView(UserViews.forTable.class)
+    private String name;
+    @JsonView(UserViews.forTable.class)
+    private String number;
+    private String email;
     private boolean active;
-    @Transient
-    public static final BCryptPasswordEncoder TYPE_ENCRYPT = new BCryptPasswordEncoder();
+
+
     public User() {
     }
-
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+
+    private Set<Role> roles = new HashSet<>();
     /**
      * @return Возвращает права, предоставленные пользователю.
      * */
@@ -105,9 +118,7 @@ public class User implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
-    public void setPasswordAndEncrypt(String password){
-        setPassword(User.TYPE_ENCRYPT.encode(password));
-    }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -120,4 +131,50 @@ public class User implements UserDetails {
         this.active = active;
     }
 
+    //TODO временно
+
+    @JsonView(UserViews.forTable.class)
+    @JsonGetter("role")
+    public String getFirstRoleName(){
+        return getFirstRole().getAuthority();
+    }
+
+    @Transient
+    public Role getFirstRole(){
+        return roles.iterator().next();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }

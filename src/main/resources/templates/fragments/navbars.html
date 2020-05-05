@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="selectNavbar(user, adminRole, userRole)">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark"
+         th:if="${#lists.contains(user.roles, adminRole)}">
+        <!-- МЕНЮ ДЛЯ АДМИНА -->
+        <a class="navbar-brand" href="/">Название</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <!-- Пункты меню -->
+                <!-- Маршрутизация -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" th:href="@{/rules}" id="navbarRules" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Маршрутизация
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarUsers">
+                        <a class="dropdown-item" th:href="@{/rules}">Список правил</a>
+                        <a class="dropdown-item" th:href="@{/addRule}">Добавить правило</a>
+                    </div>
+                </li>
+
+                <!-- Логи -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/logs}">Логи</a>
+                </li>
+                <!-- Пользователи -->
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" th:href="@{/users}" id="navbarUsers" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Пользователи
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarUsers">
+                        <a class="dropdown-item active" th:href="@{/users}">Список пользователей</a>
+                        <a class="dropdown-item" th:href="@{/addUser}">Добавить пользователя</a>
+                    </div>
+                </li>
+
+                <!-- Настройки -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/settings}">Настройки</a>
+                </li>
+            </ul>
+            <span class="nav-item">
+                <a class="nav-link text-light" href="/user.html" th:text="${user.username}"></a>
+            </span>
+            <!-- Выход -->
+            <form class="form-inline mt-2 mt-md-0" th:action="@{/logout}" th:method="post">
+                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Выйти</button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- МЕНЮ ДЛЯ ПОЛЬЗОВАТЕЛЯ -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" th:if="${#lists.contains(user.roles, userRole)}">
+        <a class="navbar-brand" href="/">Название</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <!-- Пункты меню -->
+                <!-- Маршрутизация -->
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="/users.html" id="navbarRules" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Маршрутизация
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarUsers">
+                        <a class="dropdown-item active" href="/rules.html">Список правил</a>
+                        <a class="dropdown-item" href="/addRule.html">Добавить правило</a>
+                    </div>
+                </li>
+
+                <!-- Логи -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/logs.html">История вызовов</a>
+                </li>
+            </ul>
+            <span class="nav-item">
+                <a class="nav-link text-light" th:href="/user.html" th:text="${user.username}">Username</a>
+            </span>
+            <!-- Выход -->
+            <form class="form-inline mt-2 mt-md-0">
+                <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Выйти</button>
+            </form>
+        </div>
+    </nav>
+    <!-- END МЕНЮ ДЛЯ ПОЛЬЗОВАТЕЛЯ -->
+</div>
+
+
+</html>

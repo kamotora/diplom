@@ -1,34 +1,46 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-
-<head th:replace="fragments/loginHead :: loginhead">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#563d7c">
+    <!--
+    <meta name="description"
+          content="Портал автомастерских. Автомастерские регистрируются на сайте и подписываются на заявки по разным типам услуг (шиномонтаж, замена масла и проч.). Пользователи могут оставить заявку и выбрать из предложений наиболее подходящий по различным условиям (цена, время, место расположения, отзывы).">
+    <meta name="keywords" content="портал автомастерских, ремонт авто">
+    <link rel="icon" type="image/png" href="assets/logo.png" sizes="16x16">
+     -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/signin.css}" rel="stylesheet">
     <title>Вход</title>
 </head>
 <body>
-<div class = "container">
-    <section id = "content">
-    <form th:action="@{/login}" method="post" autocomplete="off">
-        <h1>Вход</h1>
-        <div>
-        <input type="text" id = "user" name="username" placeholder="Логин"/>
+<div class="container-sm">
+    <div th:if="${param.error}" id="messageErrorLogout" class="alert alert-danger" role="alert">Неверный логин или пароль</div>
+    <div th:if="${param.logout}" id="message" class="alert alert-success" role="alert" >Вы вышли</div>
+
+    <form class="form-signin" th:action="@{/login}" method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="${_csrf.token}" />
+        <h1 class="h3 mb-3 font-weight-normal">Вход</h1>
+        <label for="username" class="sr-only">Логин</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">@</span>
+            </div>
+            <input type="text" class="form-control" id="username" th:name="username" placeholder="Логин" required/>
         </div>
-        <div>
-            <input type="password" id = "pass" name="password" placeholder="Пароль"/>
-        </div>
-        <div>
-            <input type = "submit" value="Войти"/>
-            <a href = "/registration">Регистрация</a>
-            <input type="hidden" name="_csrf" value="${_csrf.token}" />
-        </div>
+        <label for="password" class="sr-only">Пароль</label>
+        <input type="password" id="password" th:name="password" class="form-control" placeholder="Пароль" required/>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
     </form>
-    <div th:if="${param.error}">
-        <h4>Неверный логин или пароль</h4>
-    </div>
-    <div th:if="${param.logout}">
-        <h4>Вы вышли</h4>
-    </div>
-    </section>
 </div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<footer th:replace="fragments/footer :: footer"></footer>
 </body>
 </html>

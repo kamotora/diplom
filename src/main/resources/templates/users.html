@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="auto" class="h-100">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#563d7c">
+    <!--
+    <meta name="description"
+          content="Портал автомастерских. Автомастерские регистрируются на сайте и подписываются на заявки по разным типам услуг (шиномонтаж, замена масла и проч.). Пользователи могут оставить заявку и выбрать из предложений наиболее подходящий по различным условиям (цена, время, место расположения, отзывы).">
+    <meta name="keywords" content="портал автомастерских, ремонт авто">
+    <link rel="icon" type="image/png" href="assets/logo.png" sizes="16x16">
+     -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Список пользователей</title>
+</head>
+<body class="d-flex flex-column h-100">
+<header>
+   <div th:replace="fragments/navbars :: selectNavbar(${currentUser}, ${adminRole}, ${userRole})"></div>
+</header>
+<main role="main" class="flex-shrink-0">
+    <div class="container">
+        <h3 class="mt-2">Список пользователей</h3>
+        <div id="toolbar">
+            <button id="remove" class="btn btn-danger" disabled>
+                <i class="glyphicon glyphicon-remove"></i> Удалить выбранные
+            </button>
+            <button id="add" name="add" class="btn btn-primary" th:onclick="|window.location.href='/user'|">
+                Добавить
+            </button>
+        </div>
+        <!-- Колонки и прочее описаны в usersTable.js -->
+        <table
+                id="table"
+                data-toggle="table"
+                data-detail-view="true"
+                data-detail-formatter="detailFormatter"
+                data-locale="ru-RU"
+                data-toolbar="#toolbar"
+                data-search="true"
+                data-show-refresh="true"
+                data-show-toggle="true"
+                data-show-fullscreen="true"
+                data-show-columns="true"
+                data-show-columns-toggle-all="true"
+                data-show-export="true"
+                data-click-to-select="true"
+                data-minimum-count-columns="2"
+                data-show-pagination-switch="true"
+                data-pagination="true"
+                data-page-list="[10, 25, 50, 100, all]"
+                data-url="api/users"
+                class="table table-bordered table-hover table-striped"
+        >
+        </table>
+    </div>
+</main>
+
+<!-- Модальное окно "Вы уверены?" -->
+<div id="askDeleteDialog" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Удаление</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Вы точно хотите удалить?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="yesDelete" type="button" class="btn btn-danger">Да</button>
+                <button type="button" class="btn btn-secondary selected" data-dismiss="modal">Нет</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footerForTables" ></footer>
+<!-- My Script -->
+<script type="text/javascript" th:src="@{/js/usersTable.js}"></script>
+<script>
+    // Подробнее
+    function detailFormatter(index, row) {
+        var html = []
+        $.each(row, function (key, value) {
+            html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+        })
+        return html.join('')
+    }
+</script>
+</body>
+</html>

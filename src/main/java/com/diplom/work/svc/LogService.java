@@ -5,7 +5,8 @@ import com.diplom.work.repo.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.sql.Array;
+import java.util.*;
 
 @Service
 public class LogService {
@@ -40,6 +41,8 @@ public class LogService {
     }
 
     public List<Log> findAllByOrderByTimestampAsc() {
-        return logRepository.findAllByOrderByTimestampInDateTimeFormatAsc();
+        List<Log> all = logRepository.findAll();
+        all.sort(Comparator.comparing(Log::getTimestampInDateTimeFormat));
+        return all;
     }
 }
