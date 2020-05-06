@@ -33,14 +33,14 @@ public class RulesController {
         return "index";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('Администратор')")
     @GetMapping("/new")
     public String newRule() {
         return "operations/new";
     }
 
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('Администратор')")
     @GetMapping("/edit/{id}")
     public String getEditPage(@PathVariable Integer id, Model model) {
         Rule rule = ruleService.getOneRowById(id);
@@ -48,14 +48,14 @@ public class RulesController {
         return "operations/edit";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('Администратор')")
     @PostMapping("/save")
     public String saveRule(Map<String, Object> model, @RequestParam String client, @RequestParam String number, @RequestParam String FIOClient) {
         ruleService.saveOneRow(new Rule(client,number,FIOClient));
         return "redirect:/";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('Администратор')")
     @PostMapping("/update")
     public String saveNote(@RequestParam Integer id, @RequestParam String client,
                            @RequestParam String number, @RequestParam String FIOClient) {
@@ -64,7 +64,7 @@ public class RulesController {
         return "redirect:/";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('Администратор')")
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
         ruleService.deleteOneRow(id);

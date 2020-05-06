@@ -1,9 +1,12 @@
 package com.diplom.work.controller;
 
 import com.diplom.work.core.Log;
+import com.diplom.work.core.user.User;
 import com.diplom.work.svc.LogService;
+import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,15 +32,15 @@ public class LogsController {
     }
 
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('Администратор')")
     @GetMapping("/edit/{id}")
-    public String editLogs(@PathVariable Integer id, Model model) {
+    public String editLogs(@PathVariable Integer id, Model model){
         Log log = logService.getOneLogById(id);
         model.addAttribute("log", log);
         return "operations/logs/editLogs";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('Администратор')")
     @PostMapping("/update")
     public String saveLog(@RequestParam Integer id, @RequestParam String session_id,
                           @RequestParam String type, @RequestParam String state,
@@ -48,16 +51,15 @@ public class LogsController {
     }
 
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-
+    @PreAuthorize("hasAuthority('Администратор')")
     @GetMapping("/new")
-    public String newLog() {
+    public String newLog(Model model){
         return "operations/logs/newLogs";
     }
 
 
     /*
-    @Secured("ADMIN")
+    @Secured("Администратор")
     @PostMapping("/saveLogs")
     public String updateLog(@RequestParam String session_id,
                             @RequestParam String type, @RequestParam String state,
@@ -68,7 +70,7 @@ public class LogsController {
 
      */
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('Администратор')")
     @GetMapping("/delete/{id}")
     public String deleteLog(@PathVariable Integer id) {
         logService.deleteOneLog(id);

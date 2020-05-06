@@ -39,7 +39,31 @@ $(document).ready(function () {
                 "values": ids
             });
             // Удаление с сервера
+            //Смена пароля
+            //Тратата
+            const token = $("meta[name='_csrf']").attr("content");
+            const header = $("meta[name='_csrf_header']").attr("content");
 
+            $.ajax({
+                type: "DELETE",
+                headers: {
+                    'Accept': 'text/plain',
+                    'Content-Type': 'application/json'
+                },
+                data : JSON.stringify(ids),
+                url: "/user",
+                beforeSend: function(xhr) {
+                    // here it is
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function( data ) {
+                    console.log(data);
+                }
+                ,
+                error: function (data) {
+                    console.log(data);
+                }
+            });
             // Закрытие окна
             $deleteDialog.modal('hide');
         })

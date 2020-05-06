@@ -1,12 +1,12 @@
 package com.diplom.work.svc;
 
-import com.diplom.work.controller.api.exceptions.NewPasswordsNotEquals;
-import com.diplom.work.controller.api.exceptions.UsernameAlreadyExist;
+import com.diplom.work.exceptions.NewPasswordsNotEquals;
+import com.diplom.work.exceptions.OldPasswordsNotEquals;
+import com.diplom.work.exceptions.UsernameAlreadyExist;
 import com.diplom.work.core.dto.UserEditDto;
 import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
 import com.diplom.work.repo.UserRepository;
-import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,9 +14,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.function.SupplierUtils;
+import org.thymeleaf.util.StringUtils;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -30,7 +32,7 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean deleteUserById(Long id) throws UsernameNotFoundException {
-        if(id == null || id == 0)
+        if (id == null || id == 0)
             throw new UsernameNotFoundException("Такой пользователь не найден");
         User user = userRepo.findById(id).orElseThrow(() -> new UsernameNotFoundException("Такой пользователь не найден"));
         if (user == null)
@@ -59,7 +61,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User save(UserEditDto user) throws NewPasswordsNotEquals, UsernameAlreadyExist {
-        if (StringUtils.isBlank(user.getPassword1()) || StringUtils.isBlank(user.getPassword2()) || !user.getPassword1().equals(user.getPassword2())) {
+        if (StringUtils.isEmptyOrWhitespace(user.getPassword1()) || StringUtils.isEmptyOrWhitespace(user.getPassword2()) || !user.getPassword1().equals(user.getPassword2())) {
             throw new NewPasswordsNotEquals();
         }
         if ((user.getId() == null || user.getId() == 0) && userRepo.findByUsername(user.getUsername()) != null) {
@@ -76,9 +78,22 @@ public class UserService implements UserDetailsService {
     }
 
     public User findByIdOrCreateNewUser(Long id) {
-        if(id == null)
+        if (id == null)
             return new User();
         return userRepo.findById(id).orElse(new User());
     }
 
+    public boolean changePassword(User oldUser, UserEditDto newUser) throws NewPasswordsNotEquals, OldPasswordsNotEquals {
+        if (StringUtils.isEmptyOrWhitespace(newUser.getPassword1()) || StringUtils.isEmptyOrWhitespace(newUser.getPassword2()) || !newUser.getPassword1().equals(newUser.getPassword2())) {
+            throw new NewPasswordsNotEquals();
+        }
+
+        if(!passwordEncoder.matches(newUser.getOldPassword(), oldUser.getPassword())){
+            throw new OldPasswordsNotEquals();
+        }
+
+        oldUser.setPassword(passwordEncoder.encode(newUser.getPassword1()));
+        save(oldUser);
+        return true;
+    }
 }

@@ -2,10 +2,18 @@ package com.diplom.work.controller;
 import com.diplom.work.core.dto.UserEditDto;
 import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
+import com.diplom.work.exceptions.SignsNotEquals;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.hash.Hashing;
+import org.springframework.http.HttpHeaders;
+import org.springframework.lang.NonNull;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import javax.validation.constraints.NotNull;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -19,8 +27,35 @@ public class ControllerUtils {
         );
         return bindingResult.getFieldErrors().stream().collect(collector);
     }
+    /**
+     * @param body тело запроса в виде объекта для перевода в json
+     * @param clientID уникальный код идентификации  с Ростелекома для подписи запроса
+     * @param clientKey уникальный ключ для подписи
+     * @return требуемые заголовки запроса
+     * */
+    public static HttpHeaders getHeaders(Object body, String clientID, String clientKey) throws JsonProcessingException {
+        String bodyJSON = new ObjectMapper().writeValueAsString(body);
+        System.out.println(bodyJSON);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Client-ID", clientID);
+        headers.add("X-Client-Sign",
+                Hashing.sha256().hashString(clientID+bodyJSON+clientKey, StandardCharsets.UTF_8).toString());
+        return headers;
+    }
 
-    static void InitNavBar(User currentUser, Model model){
-        model.addAttribute("currentUser", currentUser);
+    public static boolean checkSigns(Object body, String clientID, String clientKey, String requestClientSign, String name_method) throws SignsNotEquals {
+        String myClientSing = null;
+        try {
+            myClientSing = Hashing.sha256().hashString(clientID+new ObjectMapper().writeValueAsString(body)+clientKey, StandardCharsets.UTF_8).toString();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        if(requestClientSign.equals(myClientSing)){
+            System.out.println("Подписи "+name_method+" равны");
+            return true;
+        }
+        else {
+            throw new SignsNotEquals(name_method, requestClientSign, myClientSing);
+        }
     }
 }

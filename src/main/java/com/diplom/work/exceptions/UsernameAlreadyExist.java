@@ -1,4 +1,4 @@
-package com.diplom.work.controller.api.exceptions;
+package com.diplom.work.exceptions;
 
 public class UsernameAlreadyExist extends Exception{
     public UsernameAlreadyExist() {

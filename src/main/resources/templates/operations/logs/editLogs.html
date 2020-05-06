@@ -2,10 +2,15 @@
 <!--suppress ALL -->
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head"></head>
+<head th:replace="fragments/head :: head('Редактирование лога')"></head>
 <body>
+<header>
+    <!--/*@thymesVar id="adminRole" type="com.diplom.work.controller.ControllerUtils"*/-->
+    <!--/*@thymesVar id="currentUser" type="com.diplom.work.controller.ControllerUtils"*/-->
+    <!--/*@thymesVar id="userRole" type="com.diplom.work.controller.ControllerUtils"*/-->
+    <div th:replace="fragments/navbars :: selectNavbar(${currentUser}, ${adminRole}, ${userRole})"></div>
+</header>
 <div class="container">
-    <div th:replace="fragments/header :: header"></div>
     <div class="container">
         <form class="form-horizontal" th:object="${log}" th:action="@{/logs/update}" name="edit_form" id="edit_form"
               method="post" role="form">
@@ -23,5 +28,8 @@
         </form>
     </div>
 </div>
+
+<footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footer"></footer>
+
 </body>
 </html>

@@ -10,6 +10,7 @@ public class NumberInfoAnswer {
     //Отображаемое имя для добавления информации о вызове. Мб Null при result > 0
     private String displayName;
     // Внутренний номер менеджера
+    @JsonProperty("PIN")
     private String PIN;
 
     /**

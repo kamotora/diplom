@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head"></head>
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments/head :: headForTable('Таблица с номерами')"/>
+</head>
 <body>
-<div class="container">
-    <div th:replace="fragments/header :: header"></div>
-    <div th:if="${not #lists.isEmpty(rules)}">
-        <div th:replace="operations/list :: rules"></div>
+<header>
+    <div th:replace="fragments/navbars :: selectNavbar"></div>
+</header>
+<main role="main" class="flex-shrink-0">
+    <div class="container">
+        <div th:if="${not #lists.isEmpty(rules)}">
+            <div th:replace="operations/list :: rules"></div>
+        </div>
     </div>
-    <a href="/logs">Логи</a>
-    <div th:replace="fragments/footer :: footer"></div>
-</div>
+</main>
+<footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
 </body>
 </html>

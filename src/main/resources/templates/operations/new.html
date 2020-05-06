@@ -1,25 +1,33 @@
 <!DOCTYPE html>
 <!--suppress ALL -->
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head"></head>
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head :: head('Добавить правило')"></head>
 <body>
+<header>
+    <div th:replace="fragments/navbars :: selectNavbar"></div>
+</header>
 <div class="container">
-    <div th:replace="fragments/header :: header"></div>
     <div class="container">
         <div th:if="${message}">
-            <p>${message}</p>
+            <p th:text="${message}"></p>
         </div>
         <form class="form-horizontal" th:action="@{/save}" name="input_form" id="input_form"
               method="post" role="form">
             <div class="form-group">
-                <input type="text" class="form-control" id="client" th:name="client" placeholder="Введите номер клиента" minlength="3" maxlength="100"/>
-                <input type="text" class="form-control" id="number" th:name="number" placeholder="Введите номер менеджера" minlength="3" maxlength="100"/>
-                <input type="text" class="form-control" id="FIOClient" th:name="FIOClient" placeholder="Введите ФИО клиента" minlength="3" maxlength="100"/>
+                <input type="text" class="form-control" id="client" th:name="client" placeholder="Введите номер клиента"
+                       minlength="3" maxlength="100"/>
+                <input type="text" class="form-control" id="number" th:name="number"
+                       placeholder="Введите номер менеджера" minlength="3" maxlength="100"/>
+                <input type="text" class="form-control" id="FIOClient" th:name="FIOClient"
+                       placeholder="Введите ФИО клиента" minlength="3" maxlength="100"/>
             </div>
             <button type="submit" class="btn btn-primary">Принять</button>
         </form>
     </div>
 </div>
+<footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footer"></footer>
+
 </body>
 </html>

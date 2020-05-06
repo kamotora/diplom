@@ -36,14 +36,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().ignoringAntMatchers("/api/**").and() //csrf для api отключить
                 .authorizeRequests()
-                .antMatchers("/css/**", "/js/**", "/images/**","/login").permitAll() // Доступны всем
+                .antMatchers("/css/**", "/js/**", "/images/**","/login", "/registration").permitAll() // Доступны всем
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")
                 .successForwardUrl("/home")
+                .loginPage("/login")
                 .permitAll()
                 .and()
                 .logout()

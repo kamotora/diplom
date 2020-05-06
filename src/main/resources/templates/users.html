@@ -1,27 +1,16 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="auto" class="h-100">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="auto" class="h-100">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="theme-color" content="#563d7c">
-    <!--
-    <meta name="description"
-          content="Портал автомастерских. Автомастерские регистрируются на сайте и подписываются на заявки по разным типам услуг (шиномонтаж, замена масла и проч.). Пользователи могут оставить заявку и выбрать из предложений наиболее подходящий по различным условиям (цена, время, место расположения, отзывы).">
-    <meta name="keywords" content="портал автомастерских, ремонт авто">
-    <link rel="icon" type="image/png" href="assets/logo.png" sizes="16x16">
-     -->
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <title>Список пользователей</title>
+    <th:block th:replace="fragments/head :: headForTable('Список пользователей')"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body class="d-flex flex-column h-100">
 <header>
-   <div th:replace="fragments/navbars :: selectNavbar(${currentUser}, ${adminRole}, ${userRole})"></div>
+   <div th:replace="fragments/navbars :: selectNavbar"></div>
 </header>
 <main role="main" class="flex-shrink-0">
     <div class="container">
@@ -82,7 +71,7 @@
     </div>
 </div>
 
-<footer th:replace="fragments/footer :: footerForTables" ></footer>
+<footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
 <!-- My Script -->
 <script type="text/javascript" th:src="@{/js/usersTable.js}"></script>
 <script>

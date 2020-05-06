@@ -4,6 +4,12 @@
       xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head"></head>
 <body>
+<header>
+    <!--/*@thymesVar id="adminRole" type="com.diplom.work.controller.ControllerUtils"*/-->
+    <!--/*@thymesVar id="currentUser" type="com.diplom.work.controller.ControllerUtils"*/-->
+    <!--/*@thymesVar id="userRole" type="com.diplom.work.controller.ControllerUtils"*/-->
+    <div th:replace="fragments/navbars :: selectNavbar(${currentUser}, ${adminRole}, ${userRole})"></div>
+</header>
 <div class="container">
     <div th:replace="fragments/header :: header"></div>
     <div class="container">

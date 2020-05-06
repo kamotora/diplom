@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="selectNavbar(user, adminRole, userRole)">
+      xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div th:fragment="selectNavbar">
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark"
-         th:if="${#lists.contains(user.roles, adminRole)}">
+         sec:authorize="hasAuthority('Администратор')">
         <!-- МЕНЮ ДЛЯ АДМИНА -->
         <a class="navbar-brand" href="/">Название</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
@@ -15,13 +15,14 @@
                 <!-- Пункты меню -->
                 <!-- Маршрутизация -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" th:href="@{/rules}" id="navbarRules" data-toggle="dropdown"
+                    <a class="nav-link dropdown-toggle"  th:href="@{/rules}" id="navbarRules" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
                         Маршрутизация
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarUsers">
                         <a class="dropdown-item" th:href="@{/rules}">Список правил</a>
-                        <a class="dropdown-item" th:href="@{/addRule}">Добавить правило</a>
+                        <!--                        TODO заменить путь-->
+                        <a class="dropdown-item" th:href="@{/new}">Добавить правило</a>
                     </div>
                 </li>
 
@@ -30,14 +31,14 @@
                     <a class="nav-link" th:href="@{/logs}">Логи</a>
                 </li>
                 <!-- Пользователи -->
-                <li class="nav-item dropdown active">
+                <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" th:href="@{/users}" id="navbarUsers" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
                         Пользователи
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarUsers">
-                        <a class="dropdown-item active" th:href="@{/users}">Список пользователей</a>
-                        <a class="dropdown-item" th:href="@{/addUser}">Добавить пользователя</a>
+                        <a class="dropdown-item" th:href="@{/users}">Список пользователей</a>
+                        <a class="dropdown-item" th:href="@{/user}">Добавить пользователя</a>
                     </div>
                 </li>
 
@@ -47,18 +48,18 @@
                 </li>
             </ul>
             <span class="nav-item">
-                <a class="nav-link text-light" href="/user.html" th:text="${user.username}"></a>
+                <a class="nav-link text-light" th:href="@{/profile}" th:text="${#authentication.name}"></a>
             </span>
             <!-- Выход -->
             <form class="form-inline mt-2 mt-md-0" th:action="@{/logout}" th:method="post">
-                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
                 <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Выйти</button>
             </form>
         </div>
     </nav>
 
     <!-- МЕНЮ ДЛЯ ПОЛЬЗОВАТЕЛЯ -->
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" th:if="${#lists.contains(user.roles, userRole)}">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" sec:authorize="hasAuthority('Пользователь')">
         <a class="navbar-brand" href="/">Название</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,26 +70,28 @@
                 <!-- Пункты меню -->
                 <!-- Маршрутизация -->
                 <li class="nav-item dropdown active">
-                    <a class="nav-link dropdown-toggle" href="/users.html" id="navbarRules" data-toggle="dropdown"
+                    <a class="nav-link dropdown-toggle"  id="navbarRules" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
                         Маршрутизация
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarUsers">
-                        <a class="dropdown-item active" href="/rules.html">Список правил</a>
-                        <a class="dropdown-item" href="/addRule.html">Добавить правило</a>
+                        <a class="dropdown-item active" th:href="@{/rules}">Список правил</a>
+<!--                        TODO заменить путь-->
+                        <a class="dropdown-item" th:href="@{/new}">Добавить правило</a>
                     </div>
                 </li>
 
                 <!-- Логи -->
                 <li class="nav-item">
-                    <a class="nav-link" href="/logs.html">История вызовов</a>
+                    <a class="nav-link" th:href="@{/logs}">История вызовов</a>
                 </li>
             </ul>
             <span class="nav-item">
-                <a class="nav-link text-light" th:href="/user.html" th:text="${user.username}">Username</a>
+                <a class="nav-link text-light" th:href="@{/profile}" th:text="${#authentication.name}">Username</a>
             </span>
             <!-- Выход -->
-            <form class="form-inline mt-2 mt-md-0">
+            <form class="form-inline mt-2 mt-md-0" th:action="@{/logout}" th:method="post">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
                 <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Выйти</button>
             </form>
         </div>
