@@ -1,5 +1,7 @@
 package com.diplom.work.core;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 /**
@@ -9,6 +11,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "managerclient")
+@Data
 public class Rule {
     @Id
     @GeneratedValue
@@ -28,37 +31,5 @@ public class Rule {
         this.clientNumber = clientTelephone;
         this.managerNumber = managerNumber;
         this.clientName = clientName;
-    }
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public String getClientNumber() {
-        return this.clientNumber;
-    }
-
-    public String getManagerNumber() {
-        return this.managerNumber;
-    }
-
-    public String getClientName() {
-        return this.clientName;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setClientNumber(String client) {
-        this.clientNumber = client;
-    }
-
-    public void setManagerNumber(String number) {
-        this.managerNumber = number;
-    }
-
-    public void setClientName(String FIOClient) {
-        this.clientName = FIOClient;
     }
 }

@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <!--suppress ALL -->
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/head :: head('Редактирование правила')"></head>
 <body>
 <header>
-    <!--/*@thymesVar id="adminRole" type="com.diplom.work.controller.ControllerUtils"*/-->
-    <!--/*@thymesVar id="currentUser" type="com.diplom.work.controller.ControllerUtils"*/-->
-    <!--/*@thymesVar id="userRole" type="com.diplom.work.controller.ControllerUtils"*/-->
-    <div th:replace="fragments/navbars :: selectNavbar(${currentUser}, ${adminRole}, ${userRole})"></div>
+
+    <div th:replace="fragments/navbars :: selectNavbar"></div>
 </header>
 <div class="container">
     <div class="container">

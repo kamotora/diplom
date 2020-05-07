@@ -43,13 +43,8 @@ public class ControllerUtils {
         return headers;
     }
 
-    public static boolean checkSigns(Object body, String clientID, String clientKey, String requestClientSign, String name_method) throws SignsNotEquals {
-        String myClientSing = null;
-        try {
-            myClientSing = Hashing.sha256().hashString(clientID+new ObjectMapper().writeValueAsString(body)+clientKey, StandardCharsets.UTF_8).toString();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    public static boolean checkSigns(String body, String clientID, String clientKey, String requestClientSign, String name_method) throws SignsNotEquals {
+        String myClientSing = Hashing.sha256().hashString(clientID+body+clientKey, StandardCharsets.UTF_8).toString();
         if(requestClientSign.equals(myClientSing)){
             System.out.println("Подписи "+name_method+" равны");
             return true;

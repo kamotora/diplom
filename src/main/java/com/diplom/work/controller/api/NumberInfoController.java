@@ -2,6 +2,7 @@ package com.diplom.work.controller.api;
 
 
 import com.diplom.work.controller.ControllerUtils;
+import com.diplom.work.core.Log;
 import com.diplom.work.core.Rule;
 import com.diplom.work.core.Settings;
 import com.diplom.work.core.json.NumberInfo;
@@ -10,6 +11,7 @@ import com.diplom.work.exceptions.SignsNotEquals;
 import com.diplom.work.repo.RuleRepository;
 import com.diplom.work.svc.SettingsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,15 +47,17 @@ public class NumberInfoController {
      *
      * @param clientID   - идентификатор клиента, должен совпадать с нашим ClientID в настройках @see Settings
      * @param clientSign - подпись запроса = sha256hex(clientid+body+clientkey). Можно проверить, и если не совпадает, игнорить. А можно ничего не делать)
-     * @param numberInfo - звонящий абонент
+     * @param body - запрос, включающий инфу о том, кто и куда звонит
+     * @see NumberInfo
      * @return куда переадресовать звонок или вернуть ошибку
      */
     @PostMapping(path = "get_number_info",
             consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     //TODO required убрать после отладки
-    public ResponseEntity<NumberInfoAnswer> getNewCall(@RequestHeader(name = "X-Client-ID", value = "", required = false) String clientID,
-                                                       @RequestHeader(name = "X-Client-Sign", value = "", required = false) String clientSign,
-                                                       @RequestBody NumberInfo numberInfo) {
+    public ResponseEntity<NumberInfoAnswer> getNewCall(@RequestHeader(name = "X-Client-ID", required = false) String clientID,
+                                                       @RequestHeader(name = "X-Client-Sign", required = false) String clientSign,
+                                                       @RequestBody String body) throws JsonProcessingException {
+        NumberInfo numberInfo = new ObjectMapper().readValue(body, NumberInfo.class);
         // Получаем настройки
         Settings settings;
         try {
@@ -82,7 +86,7 @@ public class NumberInfoController {
 
         try {
             //Проверяем подпись
-            ControllerUtils.checkSigns(numberInfo, myClientID, myClientKey, clientSign, "get_number_info");
+            ControllerUtils.checkSigns(body, myClientID, myClientKey, clientSign, "get_number_info");
             //Находим правило
             Rule rule = ruleRepository.findByClientNumber(numberInfo.getFrom_number());
             if (rule == null)

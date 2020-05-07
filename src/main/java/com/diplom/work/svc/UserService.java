@@ -61,18 +61,34 @@ public class UserService implements UserDetailsService {
     }
 
     public User save(UserEditDto user) throws NewPasswordsNotEquals, UsernameAlreadyExist {
-        if (StringUtils.isEmptyOrWhitespace(user.getPassword1()) || StringUtils.isEmptyOrWhitespace(user.getPassword2()) || !user.getPassword1().equals(user.getPassword2())) {
+        User result = findByIdOrCreateNewUser(user.getId());
+        boolean isNewUser = (user.getId() == null || user.getId() == 0);
+        boolean needSetPassword = false;
+
+        //Если новые пароли пустые
+        if (StringUtils.isEmptyOrWhitespace(user.getPassword1()) || StringUtils.isEmptyOrWhitespace(user.getPassword2())) {
+            //Если это новый пользователь, пароль обязателен
+            if (isNewUser) {
+                throw new NewPasswordsNotEquals();
+            }
+            //Если это существующий и пароли пустые - значит и менять их не надо
+            //Если пароли не пустые, проверяем на одинаковость в любом случае
+        } else if (!user.getPassword1().equals(user.getPassword2()))
             throw new NewPasswordsNotEquals();
-        }
-        if ((user.getId() == null || user.getId() == 0) && userRepo.findByUsername(user.getUsername()) != null) {
+        else
+            //Если пароли не пустые и одинаковые - надо менять
+            needSetPassword = true;
+        if (isNewUser && userRepo.findByUsername(user.getUsername()) != null) {
             throw new UsernameAlreadyExist();
         }
-        User result = findByIdOrCreateNewUser(user.getId());
+
+        //Копируем все поля кроме id
         BeanUtils.copyProperties(user, result, "id");
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(user.getRole());
+        if(needSetPassword)
+            result.setPassword(passwordEncoder.encode(user.getPassword1()));
         result.setRoles(roleSet);
-        result.setPassword(passwordEncoder.encode(user.getPassword1()));
         save(result);
         return result;
     }
@@ -88,7 +104,7 @@ public class UserService implements UserDetailsService {
             throw new NewPasswordsNotEquals();
         }
 
-        if(!passwordEncoder.matches(newUser.getOldPassword(), oldUser.getPassword())){
+        if (!passwordEncoder.matches(newUser.getOldPassword(), oldUser.getPassword())) {
             throw new OldPasswordsNotEquals();
         }
 

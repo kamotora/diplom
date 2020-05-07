@@ -118,10 +118,10 @@ public class UserController {
             userService.save(user);
         } catch (UsernameAlreadyExist | NewPasswordsNotEquals exception) {
             initPage(model, user);
-            model.addAttribute("message", exception.getMessage());
+            model.addAttribute("badMessage", exception.getMessage());
             return "user";
         }
-        model.addAttribute("message", "Сохранено!");
+        model.addAttribute("goodMessage", "Сохранено!");
         initPage(model, user);
         return "user";
     }
