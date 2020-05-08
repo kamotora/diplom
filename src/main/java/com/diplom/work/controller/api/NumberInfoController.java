@@ -86,7 +86,8 @@ public class NumberInfoController {
 
         try {
             //Проверяем подпись
-            ControllerUtils.checkSigns(body, myClientID, myClientKey, clientSign, "get_number_info");
+            if (settings.getIsNeedCheckSign())
+                ControllerUtils.checkSigns(body, myClientID, myClientKey, clientSign, "get_number_info");
             //Находим правило
             Rule rule = ruleRepository.findByClientNumber(numberInfo.getFrom_number());
             if (rule == null)

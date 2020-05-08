@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <th:block th:replace="fragments/head :: head('Вход')"/>
     <link th:href="@{/css/signin.css}" rel="stylesheet">
@@ -29,6 +29,6 @@
 </div>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footer"></footer>
+<th:block th:replace="fragments/footer :: standartScripts"></th:block>
 </body>
 </html>

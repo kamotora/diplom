@@ -18,4 +18,5 @@ public class Settings {
     private Long id;
     private String clientID;
     private String clientKey;
+    private Boolean isNeedCheckSign;
 }

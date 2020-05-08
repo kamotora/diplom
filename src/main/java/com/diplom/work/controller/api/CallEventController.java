@@ -42,7 +42,8 @@ public class CallEventController {
         try {
             Settings settings = settingsService.getSettings();
             //Проверяем подпись
-            ControllerUtils.checkSigns(body, settings.getClientID(), settings.getClientKey(), clientSign, "call_events");
+            if (settings.getIsNeedCheckSign())
+                ControllerUtils.checkSigns(body, settings.getClientID(), settings.getClientKey(), clientSign, "call_events");
         } catch (Exception e) {
             // Настроек нет
             LOGGER.error("############################ ОШИБОЧКА! ############################");
