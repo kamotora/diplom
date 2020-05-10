@@ -1,12 +1,10 @@
 package com.diplom.work.core.user;
 
 import com.diplom.work.core.json.view.UserViews;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -30,19 +28,18 @@ public class User implements UserDetails {
     private String number;
     private String email;
     private boolean active;
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new HashSet<>();
 
 
     public User() {
     }
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-
-    private Set<Role> roles = new HashSet<>();
     /**
      * @return Возвращает права, предоставленные пользователю.
-     * */
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
@@ -57,12 +54,13 @@ public class User implements UserDetails {
     public String getUsername() {
         return username;
     }
+
     /**
      * Указывает, истек ли срок действия учетной записи пользователя. Учетная запись с истекшим сроком не может быть аутентифицирована.
-     * @return
-     * true если учетная запись пользователя действительна (то есть, не истек)
+     *
+     * @return true если учетная запись пользователя действительна (то есть, не истек)
      * false если больше не действительна (т.е. истек)
-     * */
+     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -70,8 +68,9 @@ public class User implements UserDetails {
 
     /**
      * Указывает, истек ли срок действия учетной записи пользователя.
+     *
      * @return true если пользователь не заблокирован, false противном случае
-     * */
+     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
@@ -80,20 +79,21 @@ public class User implements UserDetails {
     /**
      * Указывает, истек ли срок действия учетных данных пользователя (пароля).
      * четные данные с истекшим сроком действия предотвращают аутентификацию.
-     * @return
-     * true если учетные данные пользователя действительны (то есть не истек),
+     *
+     * @return true если учетные данные пользователя действительны (то есть не истек),
      * false если больше не действительны (то есть истек)
-     * */
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
+
     /**
      * Указывает, включен ли пользователь или отключен. Отключенный пользователь не может быть аутентифицирован.
-     * @return
-     * true если пользователь включен
+     *
+     * @return true если пользователь включен
      * false в противном случае
-     * */
+     */
     @Override
     public boolean isEnabled() {
         return isActive();
@@ -132,15 +132,14 @@ public class User implements UserDetails {
     }
 
     //TODO временно
-
     @JsonView(UserViews.forTable.class)
     @JsonGetter("role")
-    public String getFirstRoleName(){
+    public String getFirstRoleName() {
         return getFirstRole().getAuthority();
     }
 
     @Transient
-    public Role getFirstRole(){
+    public Role getFirstRole() {
         return roles.iterator().next();
     }
 

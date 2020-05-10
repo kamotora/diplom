@@ -3,7 +3,6 @@ package com.diplom.work.controller.api;
 import com.diplom.work.controller.ControllerUtils;
 import com.diplom.work.core.Log;
 import com.diplom.work.core.Settings;
-import com.diplom.work.core.json.NumberInfoAnswer;
 import com.diplom.work.exceptions.SignsNotEquals;
 import com.diplom.work.repo.LogRepository;
 import com.diplom.work.svc.SettingsService;
@@ -34,7 +33,7 @@ public class CallEventController {
     @PostMapping(path = "call_events",
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Void> getNewCall(@RequestHeader(name = "X-Client-ID", required = false) String clientID,
-                                           @RequestHeader(name = "X-Client-Sign" , required = false)String clientSign,
+                                           @RequestHeader(name = "X-Client-Sign", required = false) String clientSign,
                                            @RequestBody String body) throws JsonProcessingException {
 
         Log callEvent = new ObjectMapper().readValue(body, Log.class);
@@ -50,14 +49,13 @@ public class CallEventController {
             LOGGER.error(String.format("ТЕКСТ ОШИБКИ: %s Получили запрос на call_events, header.X-Client-ID = %s \n" +
                     "header.X-Client-Sign = %s \n, body = %s", e.getMessage(), clientID, clientSign, callEvent.toString()));
             return ResponseEntity.status(500).build();
-        }
-        catch (SignsNotEquals signsNotEquals) {
+        } catch (SignsNotEquals signsNotEquals) {
             LOGGER.error("############################ ОШИБОЧКА! ############################");
             LOGGER.error(signsNotEquals.getMessage());
             return ResponseEntity.status(403).build();
         }
         logRepository.save(callEvent);
-        LOGGER.warn("Получили запрос на call_events, body = "+callEvent.toString());
+        LOGGER.warn("Получили запрос на call_events, body = " + callEvent.toString());
         return ResponseEntity.ok().build();
     }
 

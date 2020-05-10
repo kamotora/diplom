@@ -4,12 +4,8 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.WebAttributes;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,6 +28,7 @@ public class AppErrorController implements ErrorController {
 
     /**
      * Controller for the Error Controller
+     *
      * @param errorAttributes
      */
     public AppErrorController(ErrorAttributes errorAttributes) {
@@ -40,6 +37,7 @@ public class AppErrorController implements ErrorController {
 
     /**
      * Supports the HTML Error View
+     *
      * @param request
      * @return
      */
@@ -50,6 +48,7 @@ public class AppErrorController implements ErrorController {
 
     /**
      * Supports other formats like JSON, XML
+     *
      * @param request
      * @return
      */
@@ -93,8 +92,7 @@ public class AppErrorController implements ErrorController {
         if (statusCode != null) {
             try {
                 return HttpStatus.valueOf(statusCode);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
             }
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;

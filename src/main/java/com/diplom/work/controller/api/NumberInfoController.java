@@ -2,7 +2,6 @@ package com.diplom.work.controller.api;
 
 
 import com.diplom.work.controller.ControllerUtils;
-import com.diplom.work.core.Log;
 import com.diplom.work.core.Rule;
 import com.diplom.work.core.Settings;
 import com.diplom.work.core.json.NumberInfo;
@@ -16,7 +15,6 @@ import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -47,9 +45,9 @@ public class NumberInfoController {
      *
      * @param clientID   - идентификатор клиента, должен совпадать с нашим ClientID в настройках @see Settings
      * @param clientSign - подпись запроса = sha256hex(clientid+body+clientkey). Можно проверить, и если не совпадает, игнорить. А можно ничего не делать)
-     * @param body - запрос, включающий инфу о том, кто и куда звонит
-     * @see NumberInfo
+     * @param body       - запрос, включающий инфу о том, кто и куда звонит
      * @return куда переадресовать звонок или вернуть ошибку
+     * @see NumberInfo
      */
     @PostMapping(path = "get_number_info",
             consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
