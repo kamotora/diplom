@@ -49,28 +49,7 @@
         </table>
     </div>
 </main>
-
-<!-- Модальное окно "Вы уверены?" -->
-<div id="askDeleteDialog" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Удаление</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Вы точно хотите удалить?</p>
-            </div>
-            <div class="modal-footer">
-                <button id="yesDelete" type="button" class="btn btn-danger">Да</button>
-                <button type="button" class="btn btn-secondary selected" data-dismiss="modal">Нет</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+<div th:replace="fragments/dialogs ::askDeleteDialog"></div>
 <footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
 <!-- My Script -->
 <script type="text/javascript" th:src="@{/js/usersTable.js}"></script>

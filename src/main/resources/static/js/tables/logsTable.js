@@ -1,10 +1,24 @@
 // Используются таблицы bootstrap-table.com
 
-$(document).ready(function () {
-    let $table = $('#LogsTable')
+// Показать подробнее (плюсик)
+function detailFormatter(index, row) {
+    let html = [];
+    $.each(row, function (key, value) {
+        html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+    })
+    return html.join('');
+}
 
-    var $remove = $('#remove')
-    let $deleteDialog = $('#askDeleteDialog')
+let $table = $('#LogsTable')
+
+$(document).ready(function () {
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
+
+    var $remove = $('#remove');
+    let $deleteDialog = $('#askDeleteDialog');
+    let $startFilter = $('#startFilter');
+    let $resetFilter = $('#resetFilter');
     var selections = []
 
     // Получить строки с галочкой
@@ -12,15 +26,6 @@ $(document).ready(function () {
         return $.map($table.bootstrapTable('getSelections'), function (row) {
             return row.id
         })
-    }
-
-    // Показать подробнее (плюсик)
-    function detailFormatter(index, row) {
-        let html = [];
-        $.each(row, function (key, value) {
-            html.push('<p><b>' + key + ':</b> ' + value + '</p>')
-        })
-        return html.join('');
     }
 
     // Удаление по массиву айдишников
@@ -36,9 +41,6 @@ $(document).ready(function () {
             // Удаление с сервера
             //Смена пароля
             //Тратата
-            const token = $("meta[name='_csrf']").attr("content");
-            const header = $("meta[name='_csrf_header']").attr("content");
-
             $.ajax({
                 type: "DELETE",
                 headers: {
@@ -64,6 +66,41 @@ $(document).ready(function () {
         })
 
     }
+    $startFilter.click(function () {
+        const startDate = $('#startDate').val();
+        const finishDate = $('#finishDate').val();
+        if(startDate === undefined || finishDate === undefined || startDate === "" || finishDate === "")
+            // TODO Тут можно вывести красиво
+            return false;
+        $.ajax({
+            type: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            data : JSON.stringify({
+                startDate: startDate,
+                finishDate: finishDate
+            }),
+            url: "/logs",
+            beforeSend: function(xhr) {
+                // here it is
+                xhr.setRequestHeader(header, token);
+            },
+            success: function( data ) {
+                console.log(data);
+                $table.bootstrapTable('load', data);
+            }
+            ,
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $resetFilter.click(function () {
+        $table.bootstrapTable('refresh');
+    });
 
     $(function () {
         $table.bootstrapTable('destroy').bootstrapTable({
@@ -93,6 +130,12 @@ $(document).ready(function () {
             }, {
                 field: 'type',
                 title: 'Тип',
+                sortable: true,
+                align: 'center',
+                filterControl: 'select'
+            }, {
+                field: 'state_call',
+                title: 'Состояние',
                 sortable: true,
                 align: 'center',
                 filterControl: 'select'

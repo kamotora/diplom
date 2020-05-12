@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @PreAuthorize("hasAuthority('Администратор')")
 public class SettingsController {
-    private SettingsService settingsService;
+    private final SettingsService settingsService;
 
     @Autowired
     public SettingsController(SettingsService settingsService) {

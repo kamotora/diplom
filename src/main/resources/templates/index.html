@@ -37,6 +37,7 @@
         </table>
     </div>
 </main>
+<div th:replace="fragments/dialogs ::askDeleteDialog"></div>
 <footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
 <script type="text/javascript" th:src="@{/static/js/tables/routsTable.js}"></script>
 </body>

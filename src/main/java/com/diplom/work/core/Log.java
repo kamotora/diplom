@@ -1,9 +1,7 @@
 package com.diplom.work.core;
 
 import com.diplom.work.core.json.view.LogsViews;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,35 +22,40 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-////Для проверки подписи
-//@JsonPropertyOrder(
-//        {"session_id", "timestamp", "type", "state", "from_number", "from_pin", "request_number", "request_pin", "disconnect_reason", "is_record"})
 public class Log {
     @Id
     @GeneratedValue
     @JsonView(LogsViews.onlyId.class)
-    private int id;
+    private Long id;
+
     @Column(name = "session_id")
     @JsonView(LogsViews.forTable.class)
     private String session_id;
+
     @Column(name = "timestamp")
     @JsonView(LogsViews.forTable.class)
     private String timestamp;
+
     @Transient
     private LocalDateTime timestampInDateTimeFormat;
+
     @Column(name = "type")
-    @JsonView(LogsViews.forTable.class)
     private String type;
+
     @Column(name = "state")
     private String state;
+
     @Column(name = "from_number")
     @JsonView(LogsViews.forTable.class)
     private String from_number;
+
     @Column(name = "from_pin")
     private String from_pin;
+
     @Column(name = "request_number")
     @JsonView(LogsViews.forTable.class)
     private String request_number;
+
     @Column(name = "request_pin")
     private String request_pin;
     private String disconnect_reason;
@@ -66,13 +69,14 @@ public class Log {
         return timestampInDateTimeFormat;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
+
 
     public String getSession_id() {
         return session_id;
@@ -88,10 +92,6 @@ public class Log {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public void setTimestampInDateTimeFormat(LocalDateTime timestampInDateTimeFormat) {
-        this.timestampInDateTimeFormat = timestampInDateTimeFormat;
     }
 
     public String getType() {
@@ -174,6 +174,8 @@ public class Log {
      * disconnected – о завершении разговора
      * end – о завершении вызова
      */
+    @JsonView(LogsViews.forTable.class)
+    @JsonGetter("state_call")
     public String getStateName() {
         switch (state) {
             case "new":
@@ -193,13 +195,15 @@ public class Log {
 
 
     /**
-     * @return Тип уведомления по-русски согласно документации
+     * @return Тип вызова по-русски согласно документации
      * Из документации:
      * Тип вызова:
      * incoming – входящий
      * outbound – исходящий
      * internal – внутренний
      */
+    @JsonView(LogsViews.forTable.class)
+    @JsonGetter("type")
     public String getTypeName() {
         switch (type) {
             case "incoming":
