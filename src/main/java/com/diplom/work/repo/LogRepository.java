@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface LogRepository extends JpaRepository<Log,Integer> {
+public interface LogRepository extends JpaRepository<Log,Long> {
 }

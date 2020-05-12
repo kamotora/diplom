@@ -1,7 +1,9 @@
 package com.diplom.work.core;
 
+import com.diplom.work.core.json.view.LogsViews;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,22 +30,28 @@ import java.time.LocalDateTime;
 public class Log {
     @Id
     @GeneratedValue
+    @JsonView(LogsViews.onlyId.class)
     private int id;
     @Column(name = "session_id")
+    @JsonView(LogsViews.forTable.class)
     private String session_id;
     @Column(name = "timestamp")
+    @JsonView(LogsViews.forTable.class)
     private String timestamp;
     @Transient
     private LocalDateTime timestampInDateTimeFormat;
     @Column(name = "type")
+    @JsonView(LogsViews.forTable.class)
     private String type;
     @Column(name = "state")
     private String state;
     @Column(name = "from_number")
+    @JsonView(LogsViews.forTable.class)
     private String from_number;
     @Column(name = "from_pin")
     private String from_pin;
     @Column(name = "request_number")
+    @JsonView(LogsViews.forTable.class)
     private String request_number;
     @Column(name = "request_pin")
     private String request_pin;
@@ -56,6 +64,98 @@ public class Log {
         if (timestampInDateTimeFormat == null)
             timestampInDateTimeFormat = Timestamp.valueOf(timestamp).toLocalDateTime();
         return timestampInDateTimeFormat;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getSession_id() {
+        return session_id;
+    }
+
+    public void setSession_id(String session_id) {
+        this.session_id = session_id;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setTimestampInDateTimeFormat(LocalDateTime timestampInDateTimeFormat) {
+        this.timestampInDateTimeFormat = timestampInDateTimeFormat;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getFrom_number() {
+        return from_number;
+    }
+
+    public void setFrom_number(String from_number) {
+        this.from_number = from_number;
+    }
+
+    public String getFrom_pin() {
+        return from_pin;
+    }
+
+    public void setFrom_pin(String from_pin) {
+        this.from_pin = from_pin;
+    }
+
+    public String getRequest_number() {
+        return request_number;
+    }
+
+    public void setRequest_number(String request_number) {
+        this.request_number = request_number;
+    }
+
+    public String getRequest_pin() {
+        return request_pin;
+    }
+
+    public void setRequest_pin(String request_pin) {
+        this.request_pin = request_pin;
+    }
+
+    public String getDisconnect_reason() {
+        return disconnect_reason;
+    }
+
+    public void setDisconnect_reason(String disconnect_reason) {
+        this.disconnect_reason = disconnect_reason;
+    }
+
+    public String getIs_record() {
+        return is_record;
+    }
+
+    public void setIs_record(String is_record) {
+        this.is_record = is_record;
     }
 
     public boolean getIs_recordAsBool() {

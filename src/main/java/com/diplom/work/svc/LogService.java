@@ -17,26 +17,7 @@ public class LogService {
         this.logRepository = logRepository;
     }
 
-    public Log getOneLogById(Integer id) {
-        return logRepository.getOne(id);
-    }
-
-    public void saveOneLog(Log log) {
-        logRepository.save(log);
-    }
-
-    public void updateOneLog(Integer id, String session_id, String type, String state, String from_number, String request_number) {
-
-        Log update = logRepository.getOne(id);
-        update.setFrom_number(from_number);
-        update.setRequest_number(request_number);
-        update.setSession_id(session_id);
-        update.setState(state);
-        update.setType(type);
-        logRepository.save(update);
-    }
-
-    public void deleteOneLog(Integer id) {
+    public void deleteOneLog(Long id) {
         logRepository.deleteById(id);
     }
 

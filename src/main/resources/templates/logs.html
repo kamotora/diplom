@@ -11,11 +11,44 @@
 </header>
 <main role="main" class="flex-shrink-0">
     <div class="container">
-        <div th:if="${not #lists.isEmpty(logs)}">
-            <div th:replace="operations/logs/listLogs :: logs"></div>
-        </div>
+        <h3 class="mt-2">Журнал вызовов</h3>
+        <table
+                id="LogsTable"
+                data-toggle="table"
+                data-detail-view="true"
+                data-detail-formatter="detailFormatter"
+                data-locale="ru-RU"
+                data-toolbar="#toolbar"
+                data-search="true"
+                data-show-refresh="true"
+                data-show-toggle="true"
+                data-show-fullscreen="true"
+                data-show-columns="true"
+                data-filter-control = "true"
+                data-show-columns-toggle-all="true"
+                data-show-export="true"
+                data-click-to-select="true"
+                data-minimum-count-columns="2"
+                data-show-pagination-switch="true"
+                data-pagination="true"
+                data-page-list="[10, 25, 50, 100, all]"
+                data-url = "/logs/table"
+                class="table table-bordered table-hover table-striped"
+        >
+        </table>
     </div>
 </main>
 <footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
+<script type="text/javascript" th:src="@{/static/js/tables/logsTable.js}"></script>
+<script>
+    // Подробнее
+    function detailFormatter(index, row) {
+        var html = []
+        $.each(row, function (key, value) {
+            html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+        })
+        return html.join('')
+    }
+</script>
 </body>
 </html>

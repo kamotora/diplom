@@ -16,7 +16,7 @@ public class RuleService {
         this.ruleRepository = ruleRepository;
     }
 
-    public Rule getOneRowById(Integer id) {
+    public Rule getOneRowById(Long id) {
         return ruleRepository.getOne(id);
     }
 
@@ -24,14 +24,14 @@ public class RuleService {
         ruleRepository.save(rule);
     }
 
-    public void updateOneRow(Integer id, String client, String number, String FIOClient) {
+    public void updateOneRow(Long id, String client, String number, String FIOClient) {
         Rule update = ruleRepository.getOne(id);
         update.setClientNumber(client);
         update.setClientName(FIOClient);
         update.setManagerNumber(number);
         ruleRepository.save(update);
     }
-    public void deleteOneRow(Integer id) {
+    public void deleteOneRow(Long id) {
         ruleRepository.deleteById(id);
     }
 
