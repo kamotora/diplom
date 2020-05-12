@@ -31,7 +31,6 @@ public class LogService {
     }
 
     public List<Log> findAllByFilter(LogFilterDto logFilterDto) {
-        System.out.println("kek");
         return logRepository.findAll().stream().filter(log ->
                 log.getTimestampInDateTimeFormat().isAfter(logFilterDto.getStartDate())
                         && log.getTimestampInDateTimeFormat().isBefore(logFilterDto.getFinishDate().plusDays(1)))

@@ -1,7 +1,9 @@
 package com.diplom.work.core;
 
 import com.diplom.work.core.json.view.LogsViews;
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,8 +21,6 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "logs")
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class Log {
     @Id
@@ -33,7 +33,6 @@ public class Log {
     private String session_id;
 
     @Column(name = "timestamp")
-    @JsonView(LogsViews.forTable.class)
     private String timestamp;
 
     @Transient
@@ -69,93 +68,10 @@ public class Log {
         return timestampInDateTimeFormat;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
-    public String getSession_id() {
-        return session_id;
-    }
-
-    public void setSession_id(String session_id) {
-        this.session_id = session_id;
-    }
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
+    @JsonView(LogsViews.forTable.class)
     public String getTimestamp() {
         return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getFrom_number() {
-        return from_number;
-    }
-
-    public void setFrom_number(String from_number) {
-        this.from_number = from_number;
-    }
-
-    public String getFrom_pin() {
-        return from_pin;
-    }
-
-    public void setFrom_pin(String from_pin) {
-        this.from_pin = from_pin;
-    }
-
-    public String getRequest_number() {
-        return request_number;
-    }
-
-    public void setRequest_number(String request_number) {
-        this.request_number = request_number;
-    }
-
-    public String getRequest_pin() {
-        return request_pin;
-    }
-
-    public void setRequest_pin(String request_pin) {
-        this.request_pin = request_pin;
-    }
-
-    public String getDisconnect_reason() {
-        return disconnect_reason;
-    }
-
-    public void setDisconnect_reason(String disconnect_reason) {
-        this.disconnect_reason = disconnect_reason;
-    }
-
-    public String getIs_record() {
-        return is_record;
-    }
-
-    public void setIs_record(String is_record) {
-        this.is_record = is_record;
     }
 
     public boolean getIs_recordAsBool() {
