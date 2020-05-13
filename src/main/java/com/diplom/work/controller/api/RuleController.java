@@ -38,15 +38,15 @@ public class RuleController {
     public ResponseEntity<String> addRule(@RequestBody Rule rule) {
         LOGGER.warn("Получили запрос на добавление правила add_rule, body = " + rule.toString());
         try {
-            if (StringUtils.isEmptyOrWhitespace((rule.getClientNumber())))
-                throw new BadRequestException("ClientNumber == null or empty");
-            if (StringUtils.isEmptyOrWhitespace(rule.getManagerNumber()))
-                throw new BadRequestException("ManagerNumber == null or empty");
-            if (StringUtils.isEmptyOrWhitespace(rule.getClientName()))
-                throw new BadRequestException("ClientName == null or empty");
+//            if (StringUtils.isEmptyOrWhitespace((rule.getClientNumber())))
+//                throw new BadRequestException("ClientNumber == null or empty");
+//            if (StringUtils.isEmptyOrWhitespace(rule.getManagerNumber()))
+//                throw new BadRequestException("ManagerNumber == null or empty");
+//            if (StringUtils.isEmptyOrWhitespace(rule.getClientName()))
+//                throw new BadRequestException("ClientName == null or empty");
             ruleRepository.save(rule);
-        } catch (BadRequestException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+//        } catch (BadRequestException e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Не удалось обработать запрос. Error:" + e.getMessage());

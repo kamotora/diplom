@@ -60,6 +60,10 @@ public class UserService implements UserDetailsService {
         return userRepo.findAll();
     }
 
+    public List<User> findAllByRole(Role role){
+        return userRepo.findAllByRolesContaining(role);
+    }
+
     public User save(UserEditDto user) throws NewPasswordsNotEquals, UsernameAlreadyExist {
         User result = findByIdOrCreateNewUser(user.getId());
         boolean isNewUser = (user.getId() == null || user.getId() == 0);

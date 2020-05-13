@@ -13,9 +13,8 @@ public class WorkApplicationController {
         return "redirect:/";
     }
 
-    //TODO удалить потом
-    @GetMapping("/rules")
+    @GetMapping("/")
     public String temp(Model model){
-        return "redirect:/";
+        return "redirect:/rules";
     }
 }

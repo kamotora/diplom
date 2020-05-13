@@ -87,7 +87,9 @@ public class NumberInfoController {
             if (settings.getIsNeedCheckSign())
                 ControllerUtils.checkSigns(body, myClientID, myClientKey, clientSign, "get_number_info");
             //Находим правило
-            Rule rule = ruleRepository.findByClientNumber(numberInfo.getFrom_number());
+            // todo
+            Rule rule = null;
+            //Rule rule = ruleRepository.findByClientNumber(numberInfo.getFrom_number());
             if (rule == null)
                 throw new IncorrectResultSizeDataAccessException(0);
             // Формируем ответ

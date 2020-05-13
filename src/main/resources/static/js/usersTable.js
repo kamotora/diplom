@@ -47,7 +47,7 @@ $(document).ready(function () {
             $.ajax({
                 type: "DELETE",
                 headers: {
-                    'Accept': 'text/plain',
+                    'Accept': 'text/plain, application/json',
                     'Content-Type': 'application/json'
                 },
                 data : JSON.stringify(ids),

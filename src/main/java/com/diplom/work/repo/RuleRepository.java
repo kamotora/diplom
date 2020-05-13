@@ -6,7 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RuleRepository extends JpaRepository<Rule,Long> {
-    List<Rule> findAllByOrderByClientNameAsc();
-    Rule findByClientNumber(String clientNumber);
     List<Rule> findAllByOrderByIdAsc();
 }

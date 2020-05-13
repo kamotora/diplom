@@ -20,11 +20,12 @@ public class NumberInfoAnswer {
      *
      * @param rule - содержит ин-фу о маршрутизации
      */
+    // TODO: 13.05.2020 kek
     public NumberInfoAnswer(Rule rule) {
         this.result = 0;
-        this.displayName = rule.getClientName();
-        this.PIN = rule.getManagerNumber();
-        this.resultMessage = String.format("Перенаправляем номер %s на внутренний номер %s", rule.getClientNumber(), PIN);
+//        this.displayName = rule.getClientName();
+//        this.PIN = rule.getManagerNumber();
+//        this.resultMessage = String.format("Перенаправляем номер %s на внутренний номер %s", rule.getClientNumber(), PIN);
     }
 
     /**

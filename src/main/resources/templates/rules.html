@@ -19,7 +19,7 @@
             <button id="remove" class="btn btn-danger" disabled>
                 <i class="glyphicon glyphicon-remove"></i> Удалить выбранные
             </button>
-            <button id="add" name="add" class="btn btn-primary" th:onclick="|window.location.href='/new'|">
+            <button id="add" name="add" class="btn btn-primary" th:onclick="|window.location.href='/rule'|">
                 Добавить
             </button>
         </div>
@@ -43,7 +43,7 @@
                 data-show-pagination-switch="true"
                 data-pagination="true"
                 data-page-list="[10, 25, 50, 100, all]"
-                data-url = "api/ruleTable"
+                data-url = "api/rulesForTable"
                 class="table table-bordered table-hover table-striped"
         >
         </table>

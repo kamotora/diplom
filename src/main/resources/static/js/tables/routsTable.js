@@ -28,7 +28,7 @@ $(document).ready(function () {
 
     // Действия по клику на иконку "изменить"
     function onEditClick(value, row, index) {
-        window.location = '/edit/' + row.id;
+        window.location = '/rule/' + row.id;
     }
 
     // Действия по клику на иконку "посмотреть"
@@ -89,20 +89,8 @@ $(document).ready(function () {
                 sortable: true,
                 valign: 'middle'
             }, {
-                field: 'managerNumber',
-                title: 'Номер менеджера',
-                sortable: true,
-                align: 'center',
-                filterControl: 'input'
-            }, {
-                field: 'clientName',
-                title: 'ФИО клиента',
-                sortable: true,
-                align: 'center',
-                filterControl: 'input'
-            }, {
-                field: 'clientNumber',
-                title: 'Номер клиента',
+                field: 'name',
+                title: 'Название',
                 sortable: true,
                 align: 'center',
                 filterControl: 'input'
