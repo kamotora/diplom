@@ -32,14 +32,27 @@ public class Rule {
     @Column(name = "FIOClient", nullable = false)
     @JsonView(LogsViews.forTable.class)
     private String clientName;
+    /*
+    * Наименование правила
+    * */
+    @Column(name = "name", nullable = false)
+    @JsonView(LogsViews.forTable.class)
+    private String name;
+
+
 
     public Rule(){
 
     }
 
-    public Rule(String clientTelephone, String managerNumber, String clientName){
+    public Rule(String clientTelephone, String managerNumber, String clientName, String name){
         this.clientNumber = clientTelephone;
         this.managerNumber = managerNumber;
         this.clientName = clientName;
+        this.name = name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

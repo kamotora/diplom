@@ -1,9 +1,10 @@
 package com.diplom.work.controller;
 
-import com.diplom.work.core.Log;
 import com.diplom.work.core.Rule;
 import com.diplom.work.core.json.view.LogsViews;
+import com.diplom.work.core.user.User;
 import com.diplom.work.svc.RuleService;
+import com.diplom.work.svc.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,11 +22,13 @@ import java.util.Map;
 public class RulesController {
 
     private final RuleService ruleService;
+    private final UserService userService;
     private String sortDateMethod = "ASC";
 
     @Autowired
-    public RulesController(RuleService ruleService) {
+    public RulesController(RuleService ruleService, UserService userService) {
         this.ruleService = ruleService;
+        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -35,6 +38,7 @@ public class RulesController {
         model.addAttribute("sort", sortDateMethod);
         return "index";
     }
+
 
     /**
      * Возврат всех правил для таблицы в виде JSON (таблица на JS)
@@ -49,7 +53,9 @@ public class RulesController {
 
     @PreAuthorize("hasAuthority('Администратор')")
     @GetMapping("/new")
-    public String newRule() {
+    public String newRule(Model model) {
+        List<User> users = userService.findAll();
+        model.addAttribute("users", users);
         return "operations/new";
     }
 
@@ -59,29 +65,32 @@ public class RulesController {
     public String getEditPage(@PathVariable Long id, Model model) {
         Rule rule = ruleService.getOneRowById(id);
         model.addAttribute("rule", rule);
+        List<User> users = userService.findAll();
+        model.addAttribute("users", users);
         return "operations/edit";
+    }
+
+
+    @GetMapping("/view/{id}")
+    public String getViewPage(@PathVariable Long id, Model model) {
+        Rule rule = ruleService.getOneRowById(id);
+        model.addAttribute("rule", rule);
+        return "operations/view";
     }
 
     @PreAuthorize("hasAuthority('Администратор')")
     @PostMapping("/save")
-    public String saveRule(Map<String, Object> model, @RequestParam String client, @RequestParam String number, @RequestParam String FIOClient) {
-        ruleService.saveOneRow(new Rule(client,number,FIOClient));
+    public String saveRule(Map<String, Object> model, @RequestParam String client, @RequestParam String number, @RequestParam String FIOClient, @RequestParam String name) {
+        ruleService.saveOneRow(new Rule(client,number,FIOClient, name));
         return "redirect:/";
     }
 
     @PreAuthorize("hasAuthority('Администратор')")
     @PostMapping("/update")
     public String saveNote(@RequestParam Long id, @RequestParam String client,
-                           @RequestParam String number, @RequestParam String FIOClient) {
+                           @RequestParam String number, @RequestParam String FIOClient, @RequestParam String NameRout) {
 
-        ruleService.updateOneRow(id, client, number, FIOClient);
-        return "redirect:/";
-    }
-
-    @PreAuthorize("hasAuthority('Администратор')")
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
-        ruleService.deleteOneRow(id);
+        ruleService.updateOneRow(id, client, number, FIOClient, NameRout);
         return "redirect:/";
     }
 
@@ -94,9 +103,16 @@ public class RulesController {
         try {
             ids.forEach(ruleService::deleteOneRow);
         } catch (UsernameNotFoundException exception) {
-            //Хз что ответить)
+            exception.printStackTrace(System.err);
+            System.err.println(exception.getMessage());
         }
-        return "redirect:/logs";
+        return "redirect:/";
+    }
+
+    @GetMapping("rule/{id}")
+    public String deleteRule(@PathVariable Long id) {
+        ruleService.deleteOneRow(id);
+        return "redirect:/";
     }
 
     @GetMapping("/sort/{sortDate}")

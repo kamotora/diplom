@@ -4,6 +4,9 @@
       lang="auto" class="h-100">
 <head>
     <th:block th:replace="fragments/head :: headForTable('Таблица с номерами')"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body class="d-flex flex-column h-100">
 <header>
@@ -11,6 +14,15 @@
 </header>
 <main role="main" class="flex-shrink-0">
     <div class="container">
+        <h3 class="mt-2">Список маршрутизации</h3>
+        <div id="toolbar">
+            <button id="remove" class="btn btn-danger" disabled>
+                <i class="glyphicon glyphicon-remove"></i> Удалить выбранные
+            </button>
+            <button id="add" name="add" class="btn btn-primary" th:onclick="|window.location.href='/new'|">
+                Добавить
+            </button>
+        </div>
         <table
                 id="RulesTable"
                 data-toggle="table"

@@ -24,11 +24,12 @@ public class RuleService {
         ruleRepository.save(rule);
     }
 
-    public void updateOneRow(Long id, String client, String number, String FIOClient) {
+    public void updateOneRow(Long id, String client, String number, String FIOClient, String NameRout) {
         Rule update = ruleRepository.getOne(id);
         update.setClientNumber(client);
         update.setClientName(FIOClient);
         update.setManagerNumber(number);
+        update.setName(NameRout);
         ruleRepository.save(update);
     }
     public void deleteOneRow(Long id) {

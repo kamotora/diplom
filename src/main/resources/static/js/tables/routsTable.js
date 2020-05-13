@@ -1,7 +1,19 @@
 // Используются таблицы bootstrap-table.com
 
+// Показать подробнее (плюсик)
+function detailFormatter(index, row) {
+    let html = [];
+    $.each(row, function (key, value) {
+        html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+    })
+    return html.join('');
+}
+
+let $table = $('#RulesTable')
+
 $(document).ready(function () {
-    let $table = $('#RulesTable')
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
 
     var $remove = $('#remove')
     let $deleteDialog = $('#askDeleteDialog')
@@ -14,22 +26,18 @@ $(document).ready(function () {
         })
     }
 
-    // Показать подробнее (плюсик)
-    function detailFormatter(index, row) {
-        let html = [];
-        $.each(row, function (key, value) {
-            html.push('<p><b>' + key + ':</b> ' + value + '</p>')
-        })
-        return html.join('');
-    }
-
     // Действия по клику на иконку "изменить"
     function onEditClick(value, row, index) {
         window.location = '/edit/' + row.id;
     }
 
+    // Действия по клику на иконку "посмотреть"
+    function onViewClick(value, row, index) {
+        window.location = '/view/' + row.id;
+    }
+
     // Удаление по массиву айдишников
-    function deleteLogByIds(ids) {
+    function deleteRuleByIds(ids) {
         //Показали окно
         $deleteDialog.modal('show');
         $('#yesDelete').click(function () {
@@ -41,9 +49,6 @@ $(document).ready(function () {
             // Удаление с сервера
             //Смена пароля
             //Тратата
-            const token = $("meta[name='_csrf']").attr("content");
-            const header = $("meta[name='_csrf_header']").attr("content");
-
             $.ajax({
                 type: "DELETE",
                 headers: {
@@ -100,7 +105,7 @@ $(document).ready(function () {
                 title: 'Номер клиента',
                 sortable: true,
                 align: 'center',
-                filterControl: 'select'
+                filterControl: 'input'
             }, {
                 field: 'operate',
                 title: "Действия",
@@ -108,14 +113,20 @@ $(document).ready(function () {
                 valign: 'middle',
                 clickToSelect: false,
                 events: {
+                    'click .view': function (e, value, row, index) {
+                        onViewClick(value, row, index)
+                    },
                     'click .edit': function (e, value, row, index) {
                         onEditClick(value, row, index)
                     },
                     'click .remove': function (e, value, row, index) {
-                        deleteLogByIds([row.id])
+                        deleteRuleByIds([row.id])
                     }
                 },
                 formatter: [
+                    '<a class="view" href="javascript:void(0)" title="View">',
+                    '<i class="fa fa-eye"></i>',
+                    '</a>  ',
                     '<a class="edit" href="javascript:void(0)" title="Изменить">',
                     '<i class="fas fa-edit"></i>',
                     '</a>  ',
@@ -140,7 +151,7 @@ $(document).ready(function () {
         })
         $remove.click(function () {
             var ids = getIdSelections()
-            deleteLogByIds(ids)
+            deleteRuleByIds(ids)
             $remove.prop('disabled', true)
         })
     })
