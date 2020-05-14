@@ -3,10 +3,7 @@ package com.diplom.work.core;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "settings")
@@ -14,7 +11,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 public class Settings {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String clientID;
     private String clientKey;

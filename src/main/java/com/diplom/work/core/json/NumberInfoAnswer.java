@@ -1,6 +1,6 @@
 package com.diplom.work.core.json;
 
-import com.diplom.work.core.Rule;
+import com.diplom.work.core.Client;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -16,23 +16,21 @@ public class NumberInfoAnswer {
     private String PIN;
 
     /**
-     * Если всё ок
+     * Если всё ок и о клиенте ничего не известно (кроме номера)
      *
-     * @param rule - содержит ин-фу о маршрутизации
+     * @param PIN - куда направить
      */
-    // TODO: 13.05.2020 kek
-    public NumberInfoAnswer(Rule rule) {
+    public NumberInfoAnswer(String PIN) {
         this.result = 0;
-//        this.displayName = rule.getClientName();
-//        this.PIN = rule.getManagerNumber();
-//        this.resultMessage = String.format("Перенаправляем номер %s на внутренний номер %s", rule.getClientNumber(), PIN);
+        this.displayName = "Нет информации о ФИО";
+        this.PIN = PIN;
     }
 
     /**
      * Если всё ок
      *
      * @param PIN         - куда направить
-     * @param displayName - ин-фа о вызове
+     * @param displayName - ин-фа о вызове (например, ФИО клиента)
      */
     public NumberInfoAnswer(String PIN, String displayName) {
         this.result = 0;
@@ -55,6 +53,19 @@ public class NumberInfoAnswer {
     }
 
     /**
+     * Если всё ок + сообщение об успехе
+     *
+     * @param PIN    - куда направить
+     * @param client - ин-фа о клиенте
+     */
+    public NumberInfoAnswer(String PIN, Client client) {
+        this.result = 0;
+        this.displayName = client.getName();
+        this.PIN = PIN;
+        this.resultMessage = String.format("Успешно перенаправили номер %s на внутренний номер %s", client.getNumber(), PIN);
+    }
+
+    /**
      * Если что-то не так ок
      *
      * @param result        - код ошибки > 0
@@ -72,3 +83,4 @@ public class NumberInfoAnswer {
         this.PIN = PIN;
     }
 }
+

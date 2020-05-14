@@ -4,6 +4,7 @@ import com.diplom.work.exceptions.SignsNotEquals;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
+import lombok.NonNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -47,5 +48,27 @@ public class ControllerUtils {
         } else {
             throw new SignsNotEquals(name_method, requestClientSign, myClientSing);
         }
+    }
+
+    /**
+     * @param sip номер в формате sip:number@domain
+     * @return номер
+     */
+    public static String parseNumberFromSip(@NonNull String sip) {
+        int start = sip.indexOf("sip:");
+        if (start == -1)
+            return null;
+        int finish = sip.indexOf('@', start);
+        if (finish == -1)
+            return null;
+        String result;
+        try {
+            result = sip.substring(start, finish);
+            if (result.isEmpty())
+                return null;
+        } catch (Exception exception) {
+            return null;
+        }
+        return result;
     }
 }

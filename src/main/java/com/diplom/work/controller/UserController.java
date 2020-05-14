@@ -49,7 +49,7 @@ public class UserController {
      *
      * @return всех пользователи в виде JSON
      */
-    @GetMapping(path = "api/users", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "users/table", produces = {MediaType.APPLICATION_JSON_VALUE})
     @JsonView(UserViews.forTable.class)
     public ResponseEntity<List<User>> getUsersForTable() {
         return ResponseEntity.ok(userService.findAll());

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -24,8 +25,7 @@ public class ClientService {
     }
 
     public Set<Client> getAllByRule(@NonNull Rule rule) {
-        Set<Client> allByRulesContaining = clientRepository.findAllByRulesContaining(rule);
-        return  allByRulesContaining;
+        return clientRepository.findAllByRulesContaining(rule);
     }
 
     //Клиентов с одинаковым номером быть не должно
@@ -33,6 +33,14 @@ public class ClientService {
         return clientRepository.findFirstByNumber(number);
     }
 
+    public Client updateExistingClient(@NonNull Client client){
+        if(client.getId() == null || client.getId() == 0)
+            return null;
+        Client clientFromDb = clientRepository.getOne(client.getId());
+        clientFromDb.setNumber(client.getNumber());
+        clientFromDb.setName(client.getName());
+        return clientRepository.save(clientFromDb);
+    }
 
     public Client save(@NonNull Client client) {
         //Оставляем в номере только цифры
@@ -67,5 +75,9 @@ public class ClientService {
 
     public Client getById(Long id) {
         return clientRepository.getOne(id);
+    }
+
+    public List<Client> getAll() {
+        return clientRepository.findAll();
     }
 }

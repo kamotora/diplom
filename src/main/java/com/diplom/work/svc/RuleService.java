@@ -1,13 +1,20 @@
 package com.diplom.work.svc;
 
 import com.diplom.work.core.Client;
+import com.diplom.work.core.Days;
 import com.diplom.work.core.Rule;
 import com.diplom.work.exceptions.ManagerIsNull;
 import com.diplom.work.exceptions.TimeIncorrect;
 import com.diplom.work.repo.RuleRepository;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +22,7 @@ import java.util.Set;
 @Service
 public class RuleService {
 
-    private RuleRepository ruleRepository;
+    private final RuleRepository ruleRepository;
 
     @Autowired
     public RuleService(RuleRepository ruleRepository) {
@@ -36,6 +43,15 @@ public class RuleService {
 
     public List<Rule> findAllByOrderByIdAsc() {
         return ruleRepository.findAllByOrderByIdAsc();
+    }
+
+    /**
+     * Получить правила, которые действуют для всех клиентов
+     * @return список правил или null, если таких нету
+     * */
+    public Set<Rule> getRulesForAll(){
+        Set<Rule> all = ruleRepository.findAllByIsForAllClientsIsTrue();
+        return all;
     }
 
     public Rule saveWithClients(Rule rule, Set<Client> clientsForEditableRule) throws ManagerIsNull, TimeIncorrect {
@@ -60,5 +76,48 @@ public class RuleService {
             rule.setClients(clientsForEditableRule);
         }
         return ruleRepository.save(rule);
+    }
+
+    /**
+     * Может ли правило быть использовано в данный момент по времени и дню
+     * @return true - если может, иначе false
+     */
+    public boolean isRuleCanUseNow(Rule rule) {
+        boolean isDayEquals = false;
+        LocalDate nowDate = LocalDate.now();
+        for (Days day : rule.getDays()) {
+            if (day.equals(Days.getByDayOfWeek(DayOfWeek.from(nowDate)))) {
+                isDayEquals = true;
+                break;
+            }
+        }
+
+        if(isDayEquals){
+            LocalTime start = rule.getTimeStart().toLocalTime();
+            LocalTime finish = rule.getTimeFinish().toLocalTime();
+            LocalTime nowTime = LocalTime.now();
+            boolean isRuleStartBeforeNow = start.isBefore(nowTime);
+            boolean isRuleFinishAfterNow = finish.isAfter(nowTime);
+
+            // Если времена в промежутке одного дня
+            // now должно быть в промежутке от start до finish
+            if(start.isBefore(finish)){
+                return isRuleStartBeforeNow && isRuleFinishAfterNow;
+            }
+            // Если времена в переходе с одного дня на другой (20:00 - 10:00)
+            // now должно быть в промежутке от start до 24:00 или от 00:00 до finish
+            else
+                return isRuleStartBeforeNow || isRuleFinishAfterNow;
+        }
+        else
+            return false;
+    }
+
+    /**
+     * Получить первое правило для всех клиентов, которое дейсвтвует в данный момент
+     * @return правило, подходящее под условие или null, если не найдено
+     * */
+    public Rule getFirstRuleForAllCanUseNow(){
+        return getRulesForAll().stream().filter(this::isRuleCanUseNow).findFirst().orElse(null);
     }
 }

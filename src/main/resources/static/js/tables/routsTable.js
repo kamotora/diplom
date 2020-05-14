@@ -33,7 +33,7 @@ $(document).ready(function () {
 
     // Действия по клику на иконку "посмотреть"
     function onViewClick(value, row, index) {
-        window.location = '/view/' + row.id;
+        window.location = '/rule/' + row.id + '/view';
     }
 
     // Удаление по массиву айдишников
@@ -112,7 +112,7 @@ $(document).ready(function () {
                     }
                 },
                 formatter: [
-                    '<a class="view" href="javascript:void(0)" title="View">',
+                    '<a class="view" href="javascript:void(0)" title="Посмотреть">',
                     '<i class="fa fa-eye"></i>',
                     '</a>  ',
                     '<a class="edit" href="javascript:void(0)" title="Изменить">',

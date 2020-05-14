@@ -74,8 +74,7 @@ public class RulesController {
 
     @PreAuthorize("hasAuthority('Администратор')")
     @GetMapping("/rule/{id}")
-    public String getEditPage(@PathVariable Long id, Model model) {
-        Rule rule = ruleService.getOneRowById(id);
+    public String getEditPage(@PathVariable("id") Rule rule, Model model) {
         model.addAttribute("rule", rule);
         model.addAttribute("users", userService.findAll());
         model.addAttribute("allDays", Days.values());
@@ -84,22 +83,24 @@ public class RulesController {
     }
 
 
-    @GetMapping("/rule/view/{id}")
-    public String getViewPage(@PathVariable Long id, Model model) {
-        Rule rule = ruleService.getOneRowById(id);
+    @GetMapping("/rule/{id}/view")
+    public String getViewPage(@PathVariable("id") Rule rule, Model model) {
         model.addAttribute("rule", rule);
-        return "operations/view";
+        model.addAttribute("users", userService.findAll());
+        model.addAttribute("allDays", Days.values());
+        model.addAttribute("isView","true");
+        return "rule";
     }
 
     @PostMapping(value = "/rule")
-    public String saveRule(Model model, @Valid Rule rule) {
+    public String saveRule(Model model, Rule rule) {
         try {
             rule = ruleService.saveWithClients(rule, clientsForEditableRule);
         } catch (ManagerIsNull | TimeIncorrect exception) {
             model.addAttribute("badMessage", exception.getMessage());
         }
         model.addAttribute("goodMessage", "Сохранено");
-        return getEditPage(rule.getId(), model);
+        return getEditPage(rule, model);
     }
 
 

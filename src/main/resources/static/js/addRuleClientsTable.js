@@ -11,14 +11,31 @@ const header = $("meta[name='_csrf_header']").attr("content");
 const clientModal = $('#addClientDialog');
 
 $(document).ready(function () {
-    $('#checkSmartRout').click(function () {
-        const manager = $('#manager');
+
+    //Скрываем поле для ввода менеджера, если умная, и наоборот
+    const managerBlock = $('#manager');
+    const isClever = $('#checkSmartRout');
+    if(isClever.is(':checked'))
+        managerBlock.hide();
+    isClever.click(function () {
         if ($(this).is(':checked')) {
-            manager.hide(100);
+            managerBlock.hide(100);
         } else {
-            manager.show(100);
+            managerBlock.show(100);
         }
     });
+
+    //Скрываем поле для ввода клиентов, если для всех, и наоборот
+    const clientsBlock = $('#clients');
+    if($forAll.prop('checked'))
+    $forAll.change(function () {
+        if ($forAll.prop('checked')) {
+            clientsBlock.hide();
+        } else {
+            clientsBlock.show();
+        }
+    })
+
 
     function onEditClick(value, row, index) {
         let number = clientModal.find('#number_client');
@@ -64,16 +81,6 @@ $(document).ready(function () {
             $deleteDialog.modal('hide');
         })
     }
-
-    $forAll.change(function () {
-        if ($forAll.prop('checked')) {
-            $('#addClient').hide();
-            $table.hide();
-        } else {
-            $('#addClient').show();
-            $table.show();
-        }
-    })
 
     $('#saveClient').click(function () {
             let number = clientModal.find('#number_client');

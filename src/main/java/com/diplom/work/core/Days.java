@@ -1,5 +1,7 @@
 package com.diplom.work.core;
 
+import java.time.DayOfWeek;
+
 public enum Days {
     Monday("Пн"),
     Tuesday("Вт"),
@@ -17,5 +19,18 @@ public enum Days {
 
     public String getName() {
         return name;
+    }
+
+    public static Days getByDayOfWeek(DayOfWeek dayOfWeek){
+        switch (dayOfWeek){
+            case MONDAY: return Monday;
+            case TUESDAY: return Tuesday;
+            case WEDNESDAY: return Wednesday;
+            case THURSDAY: return Thursday;
+            case FRIDAY: return Friday;
+            case SATURDAY: return Saturday;
+            case SUNDAY: return Sunday;
+            default: return null;
+        }
     }
 }

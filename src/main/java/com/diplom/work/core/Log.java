@@ -4,9 +4,7 @@ import com.diplom.work.core.json.view.LogsViews;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -24,7 +22,7 @@ import java.time.LocalDateTime;
 @Data
 public class Log {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView(LogsViews.onlyId.class)
     private Long id;
 
@@ -131,6 +129,38 @@ public class Log {
             default:
                 return "Неизвестный тип вызова";
         }
+    }
+
+    /**
+     * @return true - если этот лог о начале разговора, иначе - false
+     */
+    @Transient
+    public boolean isCall() {
+        return state.equals("connected");
+    }
+
+    /**
+     * @return true - если этот лог для внутреннего вызова
+     */
+    @Transient
+    public boolean isInternal() {
+        return type.equals("internal");
+    }
+
+    /**
+     * @return true - если этот лог для входящего вызова
+     */
+    @Transient
+    public boolean isOutbound() {
+        return type.equals("outbound");
+    }
+
+    /**
+     * @return true - если этот лог для исходящего вызова
+     */
+    @Transient
+    public boolean isIncoming() {
+        return type.equals("incoming");
     }
 
 }
