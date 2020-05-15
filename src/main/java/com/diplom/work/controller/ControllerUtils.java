@@ -1,5 +1,6 @@
 package com.diplom.work.controller;
 
+import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.exceptions.SignsNotEquals;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -54,21 +56,22 @@ public class ControllerUtils {
      * @param sip номер в формате sip:number@domain
      * @return номер
      */
-    public static String parseNumberFromSip(@NonNull String sip) {
-        int start = sip.indexOf("sip:");
+    public static String parseNumberFromSip(@NonNull String sip) throws NumberParseException {
+        final String START_NUM = "sip:";
+        int start = sip.indexOf(START_NUM);
         if (start == -1)
-            return null;
+            throw new NumberParseException(sip);
+
+        start += START_NUM.length();
         int finish = sip.indexOf('@', start);
         if (finish == -1)
-            return null;
+            throw new NumberParseException(sip);
+
         String result;
-        try {
-            result = sip.substring(start, finish);
-            if (result.isEmpty())
-                return null;
-        } catch (Exception exception) {
-            return null;
-        }
+        result = sip.substring(start, finish);
+        if (result.isEmpty())
+            throw new NumberParseException(sip);
+
         return result;
     }
 }

@@ -3,6 +3,7 @@ package com.diplom.work.svc;
 import com.diplom.work.controller.ControllerUtils;
 import com.diplom.work.core.Log;
 import com.diplom.work.core.dto.LogFilterDto;
+import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.repo.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class LogService {
      * Ищем последний pin, с которого был разговор с клиентом clientNumber
      * @return pin или null, если ничего не нашли
      * */
-    public String findLastPinByClientNumber(String clientNumber) {
+    public String findLastPinByClientNumber(String clientNumber) throws NumberParseException {
         if (isEmptyOrWhitespace(clientNumber))
             return null;
         List<Log> connected = logRepository.findAllByState("connected").stream()

@@ -8,6 +8,7 @@ import com.diplom.work.core.Settings;
 import com.diplom.work.core.json.NumberInfo;
 import com.diplom.work.core.json.NumberInfoAnswer;
 import com.diplom.work.exceptions.NotFoundRequestNumberException;
+import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.exceptions.SettingsNotFound;
 import com.diplom.work.exceptions.SignsNotEquals;
 import com.diplom.work.svc.ClientService;
@@ -130,15 +131,15 @@ public class NumberInfoController {
             LOGGER.error("############################ ОШИБОЧКА! ############################");
             LOGGER.error("Не удалось получить JSON ответа");
             return ResponseEntity.status(500).body(new NumberInfoAnswer(500, "Не удалось получить JSON ответа"));
+        } catch (NotFoundRequestNumberException e) {
+            LOGGER.warn("---------------------------- Предупреждение! -----------------------");
+            LOGGER.error(e.getMessage());
+            return ResponseEntity.status(404).body(new NumberInfoAnswer(404, e.getMessage()));
         } catch (Exception e) {
             LOGGER.error("############################ ОШИБОЧКА! ############################");
             LOGGER.error(e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).body(new NumberInfoAnswer(500, "Неизвестная ошибка"));
-        } catch (NotFoundRequestNumberException e) {
-            LOGGER.warn("---------------------------- Предупреждение! -----------------------");
-            LOGGER.error(e.getMessage());
-            return ResponseEntity.status(404).body(new NumberInfoAnswer(404, e.getMessage()));
         }
     }
 
@@ -151,10 +152,10 @@ public class NumberInfoController {
      * @return ответ серверу ВАТС, куда направить
      * @see NumberInfoAnswer
      */
-    public NumberInfoAnswer getAnswer(Client client, Rule rule) {
+    public NumberInfoAnswer getAnswer(Client client, Rule rule) throws NumberParseException {
         if (rule.getIsSmart() && client != null) {
             // Если есть инфа о последнем разговоре
-            if (client.getLastManagerNumber() != null)
+            if (!isEmptyOrWhitespace(client.getLastManagerNumber()))
                 return new NumberInfoAnswer(client.getLastManagerNumber(), client);
             // Если информации нет, не теряем надежды и пробуем найти в логах
             String pin = logService.findLastPinByClientNumber(client.getNumber());
@@ -164,10 +165,10 @@ public class NumberInfoController {
         //Маршрутизируем стандартно - на указанный номер
         else {
             if (rule.getManager() != null && !isEmptyOrWhitespace(rule.getManager().getNumber())) {
-                return new NumberInfoAnswer(rule.getManager().getNumber(),client);
+                return new NumberInfoAnswer(rule.getManager().getNumber(), client);
             }
             if (!isEmptyOrWhitespace(rule.getManagerNumber())) {
-                return new NumberInfoAnswer(rule.getManagerNumber(),client);
+                return new NumberInfoAnswer(rule.getManagerNumber(), client);
             }
         }
         return null;

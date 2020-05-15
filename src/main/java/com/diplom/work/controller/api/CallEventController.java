@@ -4,6 +4,7 @@ import com.diplom.work.controller.ControllerUtils;
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Log;
 import com.diplom.work.core.Settings;
+import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.exceptions.SignsNotEquals;
 import com.diplom.work.repo.LogRepository;
 import com.diplom.work.svc.ClientService;
@@ -60,9 +61,9 @@ public class CallEventController {
                     managerNumber = callEvent.getRequest_pin();
                 } else {
                     clientNumber = ControllerUtils.parseNumberFromSip(callEvent.getRequest_number());
-                    managerNumber = callEvent.getFrom_number();
+                    managerNumber = callEvent.getFrom_pin();
                 }
-                if (clientNumber != null && managerNumber != null) {
+                if (managerNumber != null) {
                     Client client = clientService.getFirstByNumber(clientNumber);
                     if (client == null) {
                         client = new Client();
@@ -71,6 +72,8 @@ public class CallEventController {
                     client.setLastManagerNumber(managerNumber);
                     clientService.save(client);
                 }
+                else
+                    throw new Exception("Не найден номер менеджера");
             }
         } catch (Exception e) {
             // Настроек нет
