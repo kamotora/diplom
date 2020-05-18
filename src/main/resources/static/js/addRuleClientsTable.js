@@ -1,5 +1,13 @@
 'use strict'
 
+/**
+ *  Скрипты для страницы /rule
+ *  Таблица с клиентами для правила
+ *  Таблица с существующими клиентами при добавлении клиента (модальное окно "Добавить клиента")
+ *  Валидация вводимых значений для модального окна "Добавить клиента"
+ *  Мб что то ещё
+ * */
+
 let $clientsInRulesTable = $('#table');
 let $existingClientsTable = $('#modal_table');
 
@@ -12,11 +20,27 @@ const token = $("meta[name='_csrf']").attr("content");
 const header = $("meta[name='_csrf_header']").attr("content");
 const clientModal = $('#addClientDialog');
 
+/**
+ * Добавляем инфу о клиентах перед отправкой формы
+ * */
+let $ruleForm = $('#ruleForm');
+$ruleForm.submit(function (event) {
+    const clients = $clientsInRulesTable.bootstrapTable('getData');
+    $.each(clients, function(i,param){
+        $('<input />').attr('type', 'hidden')
+            .attr('name', 'clients')
+            .attr('value', param.id)
+            .appendTo($ruleForm);
+    });
+
+    return true;
+})
+
 $(document).ready(function () {
 
     //Скрываем поле для ввода менеджера, если умная маршрутизация, и наоборот
     const managerBlock = $('#manager');
-    const isClever = $('#checkSmartRout');
+    const isClever = $('#isSmart');
     if (isClever.is(':checked'))
         managerBlock.hide();
     isClever.click(function () {
@@ -29,17 +53,18 @@ $(document).ready(function () {
 
     //Скрываем поле для ввода клиентов, если в правиле активно "для всех клиентов", и наоборот
     const clientsBlock = $('#clients');
-    if ($forAll.prop('checked'))
-        $forAll.change(function () {
-            if ($forAll.prop('checked')) {
-                clientsBlock.hide();
-            } else {
-                clientsBlock.show();
-            }
-        })
+    $forAll.click(function () {
+        if ($forAll.is(':checked')) {
+            clientsBlock.hide(100);
+        } else {
+            clientsBlock.show(100);
+        }
+    })
 
-
-    function onEditClick(value, row, index) {
+    /**
+     * Отображение формы для редактирования клиента
+     * */
+    function onEditClick(e, value, row, index){
         // Добавляем на форму значения с таблицы
         let number = clientModal.find('#number_client');
         let name = clientModal.find('#name_client');
@@ -50,41 +75,25 @@ $(document).ready(function () {
         clientModal.modal('show');
     }
 
-    function deleteClientsByIds(ids) {
+    /**
+     * Удаление клиентов из правила
+     * */
+    function deleteClientsByIds(id) {
         //Показали окно
         $deleteDialog.modal('show');
         $('#yesDelete').click(function () {
             //Удаление с таблицы
             $clientsInRulesTable.bootstrapTable('remove', {
                 "field": 'id',
-                "values": ids
+                "values": [id]
             });
-            // Удаление с сервера
-            $.ajax({
-                type: "DELETE",
-                headers: {
-                    'Accept': 'text/plain, application/json',
-                    'Content-Type': 'application/json'
-                },
-                data: JSON.stringify(ids),
-                url: "/client",
-                beforeSend: function (xhr) {
-                    // here it is
-                    xhr.setRequestHeader(header, token);
-                },
-                success: function (data) {
-                    console.log(data);
-                }
-                ,
-                error: function (data) {
-                    console.log(data);
-                }
-            });
-            // Закрытие окна
             $deleteDialog.modal('hide');
         })
     }
 
+    /**
+     * Сохранение нового клиента в таблицу и в бд
+     * */
     $('#saveClient').click(function () {
             // Обрабатываем значения для клиента с формы
             let number = clientModal.find('#number_client');
@@ -103,9 +112,9 @@ $(document).ready(function () {
             } else {
                 name.removeClass('is-invalid');
             }
-
             console.log(number.val());
-
+            if(id === undefined || id === '' || id === '0')
+                id = null;
             // Добавляем клиента в базу, а затем и в таблицу
             if (!fail) {
                 $.ajax({
@@ -117,15 +126,15 @@ $(document).ready(function () {
                     data: JSON.stringify({
                         number: number.val(),
                         name: name.val(),
-                        id: id.val()
+                        id: id
                     }),
-                    url: "/client",
+                    url: "/api/client",
                     // обязательно нужно добавить эти заголовки, так как csrf enabled
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
                     },
                     success: function (client) {
-                        console.log(client);
+                        //console.log(client);
                         $clientsInRulesTable.bootstrapTable('append', [{
                             number: client.number,
                             name: client.name,
@@ -138,7 +147,7 @@ $(document).ready(function () {
                     }
                     ,
                     error: function (data) {
-                        console.log(data);
+                        //console.log(data);
                         badMessageModal.text("Ошибка! " + data);
                         badMessageModal.show();
                     }
@@ -201,7 +210,7 @@ $(document).ready(function () {
                 events: {
                     'click .edit': onEditClick,
                     'click .remove': function (e, value, row, index) {
-                        deleteClientsByIds([row.id])
+                        deleteClientsByIds(row.id)
                     }
                 },
                 formatter: [
@@ -219,7 +228,7 @@ $(document).ready(function () {
 
 
     /**
-     * Таблица с Существующими клиентами
+     * Таблица с Существующими клиентами (модальное окно "Добавление клиента")
      * */
     $existingClientsTable.bootstrapTable({
         // Фильтр включён
@@ -256,6 +265,8 @@ $(document).ready(function () {
                         name: row.name,
                         id: row.id
                     }]);
+                    goodMessage.show();
+                    goodMessage.text("Добавлено")
                 }
             },
             formatter: [

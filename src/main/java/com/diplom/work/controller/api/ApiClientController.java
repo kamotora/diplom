@@ -1,8 +1,10 @@
 package com.diplom.work.controller.api;
 
 import com.diplom.work.core.Client;
-import com.diplom.work.core.json.view.ClientViews;
+import com.diplom.work.core.json.view.Views;
+import com.diplom.work.exceptions.ClientException;
 import com.diplom.work.exceptions.ClientNotFound;
+import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.svc.ClientService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +13,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * CRUD для клиентов через json запросы (пока меняется только ФИО и номер)
+ * (мб использовано для удалённого редактированния)
+ */
 @RestController
-@RequestMapping("api/client/")
+@RequestMapping("api/client")
 public class ApiClientController {
 
     private final ClientService clientService;
@@ -23,12 +29,12 @@ public class ApiClientController {
     }
 
     /**
-     * Возврат всех клиентов для в виде JSON
+     * Возврат всех клиентов в виде JSON
      *
-     * @return всех клиентов в виде JSON
+     * @return все клиенты в виде JSON
      */
-    @GetMapping(path = "all", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(ClientViews.forTable.class)
+    @GetMapping(path = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @JsonView(Views.allClient.class)
     public List<Client> getAllClients() {
         return clientService.getAll();
     }
@@ -43,8 +49,8 @@ public class ApiClientController {
      * @see Client
      */
     @PostMapping(path = "", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(ClientViews.forTable.class)
-    public Client addClient(@RequestBody Client client) {
+    @JsonView(Views.allClient.class)
+    public Client addClient(@RequestBody Client client) throws NumberParseException {
         return clientService.save(client);
     }
 
@@ -60,7 +66,7 @@ public class ApiClientController {
      * @see Client
      */
     @PutMapping(path = "", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(ClientViews.forTable.class)
+    @JsonView(Views.allClient.class)
     public Client updateClient(@RequestBody Client client) {
         return clientService.updateExistingClient(client);
     }
@@ -70,12 +76,36 @@ public class ApiClientController {
      * Удаление информации о клиенте по его id
      *
      * @param client удаляемый клиент
-     * @return Изменённый клиент
+     * @return true - удалено, false - ошибка
      * @see Client
      */
-    @DeleteMapping(path = "{id}", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(ClientViews.forTable.class)
-    public boolean deleteClient(@PathVariable("id") Client client) throws ClientNotFound {
-        return clientService.deleteClient(client);
+    @DeleteMapping(path = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @JsonView(Views.allClient.class)
+    public boolean deleteClient(@PathVariable("id") Client client) {
+        try {
+            return clientService.deleteClient(client);
+        } catch (ClientNotFound | ClientException clientNotFound) {
+            return false;
+        }
+    }
+
+    /**
+     * Удаление информации о клиентах по массиву id
+     *
+     * @param ids id удаляемых клиентов
+     * @return true - удалено, false - ошибка
+     * @see Client
+     */
+    @DeleteMapping(path = "", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @JsonView(Views.allClient.class)
+    public boolean deleteClients(@RequestBody List<Long> ids) {
+        for (Long id : ids) {
+            try {
+                clientService.deleteClientById(id);
+            } catch (ClientNotFound | ClientException clientNotFound) {
+                return false;
+            }
+        }
+        return true;
     }
 }

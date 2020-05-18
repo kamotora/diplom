@@ -24,7 +24,18 @@
                         <a class="dropdown-item" th:href="@{/rule}">Добавить правило</a>
                     </div>
                 </li>
+                <!-- Клиенты -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle"  id="navbarClients" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Клиенты
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarClients">
+                        <a class="dropdown-item" th:href="@{/clients}">Список клиентов</a>
 
+                        <a class="dropdown-item" th:href="@{/client}">Добавить клиента</a>
+                    </div>
+                </li>
                 <!-- Логи -->
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/logs}">Логи</a>
@@ -68,15 +79,27 @@
             <ul class="navbar-nav mr-auto">
                 <!-- Пункты меню -->
                 <!-- Маршрутизация -->
-                <li class="nav-item dropdown active">
+                <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle"  id="navbarRules" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
                         Маршрутизация
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarUsers">
-                        <a class="dropdown-item active" th:href="@{/rules}">Список правил</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarRules">
+                        <a class="dropdown-item" th:href="@{/rules}">Список правил</a>
 
                         <a class="dropdown-item" th:href="@{/rule}">Добавить правило</a>
+                    </div>
+                </li>
+                <!-- Клиенты -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle"  id="navbarClients" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Клиенты
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarClients">
+                        <a class="dropdown-item" th:href="@{/clients}">Список клиентов</a>
+
+                        <a class="dropdown-item" th:href="@{/client}">Добавить клиента</a>
                     </div>
                 </li>
 

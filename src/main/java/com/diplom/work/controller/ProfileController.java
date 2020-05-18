@@ -1,9 +1,9 @@
 package com.diplom.work.controller;
 
-import com.diplom.work.exceptions.NewPasswordsNotEquals;
-import com.diplom.work.exceptions.OldPasswordsNotEquals;
 import com.diplom.work.core.dto.UserEditDto;
 import com.diplom.work.core.user.User;
+import com.diplom.work.exceptions.NewPasswordsNotEquals;
+import com.diplom.work.exceptions.OldPasswordsNotEquals;
 import com.diplom.work.svc.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -35,7 +35,7 @@ public class ProfileController {
 
     @PostMapping(path = "profile/changePass", consumes = {MediaType.APPLICATION_JSON_VALUE}
             , produces = {MediaType.TEXT_PLAIN_VALUE})
-    public ResponseEntity<String> changePass(@RequestBody UserEditDto formUser,@AuthenticationPrincipal User user) {
+    public ResponseEntity<String> changePass(@RequestBody UserEditDto formUser, @AuthenticationPrincipal User user) {
         try {
             userService.changePassword(user, formUser);
         } catch (OldPasswordsNotEquals | NewPasswordsNotEquals exception) {

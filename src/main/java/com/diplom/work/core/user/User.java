@@ -1,6 +1,6 @@
 package com.diplom.work.core.user;
 
-import com.diplom.work.core.json.view.UserViews;
+import com.diplom.work.core.json.view.Views;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,20 +17,24 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(UserViews.onlyId.class)
+    @JsonView(Views.onlyId.class)
     private Long id;
-    @JsonView(UserViews.idLogin.class)
+    @JsonView(Views.forTable.class)
     private String username;
+    @JsonView(Views.simpleObject.class)
     private String password;
-    @JsonView(UserViews.forTable.class)
+    @JsonView(Views.forTable.class)
     private String name;
-    @JsonView(UserViews.forTable.class)
+    @JsonView(Views.forTable.class)
     private String number;
+    @JsonView(Views.simpleObject.class)
     private String email;
+    @JsonView(Views.simpleObject.class)
     private boolean active;
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
+    @JsonView(Views.allUser.class)
     private Set<Role> roles = new HashSet<>();
 
 
@@ -132,7 +136,7 @@ public class User implements UserDetails {
     }
 
     //TODO временно
-    @JsonView(UserViews.forTable.class)
+    @JsonView(Views.forTable.class)
     @JsonGetter("role")
     public String getFirstRoleName() {
         return getFirstRole().getAuthority();

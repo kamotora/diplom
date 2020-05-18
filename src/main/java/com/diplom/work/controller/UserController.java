@@ -1,18 +1,17 @@
 package com.diplom.work.controller;
 
-import com.diplom.work.exceptions.NewPasswordsNotEquals;
-import com.diplom.work.exceptions.UsernameAlreadyExist;
 import com.diplom.work.core.dto.UserEditDto;
-import com.diplom.work.core.json.view.UserViews;
+import com.diplom.work.core.json.view.Views;
 import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
+import com.diplom.work.exceptions.NewPasswordsNotEquals;
+import com.diplom.work.exceptions.UsernameAlreadyExist;
 import com.diplom.work.svc.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,7 +33,6 @@ public class UserController {
 
     /**
      * Страница со всеми пользователями
-     *
      */
     @GetMapping(path = "users")
     public String usersPage(Model model) {
@@ -50,7 +48,7 @@ public class UserController {
      * @return всех пользователи в виде JSON
      */
     @GetMapping(path = "users/table", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(UserViews.forTable.class)
+    @JsonView(Views.forTable.class)
     public ResponseEntity<List<User>> getUsersForTable() {
         return ResponseEntity.ok(userService.findAll());
     }
@@ -58,7 +56,6 @@ public class UserController {
 
     /**
      * Страница для добавление пользователя
-     *
      */
     @GetMapping("user")
     public String userAddForm(Model model) {
@@ -95,6 +92,7 @@ public class UserController {
 
     /**
      * Удаление пользователей по массиву IDs
+     *
      * @param ids - массив с ID пользователей
      */
     @DeleteMapping("user")
@@ -110,7 +108,7 @@ public class UserController {
     /**
      * Сохранение изменённого или добавление нового пользователя
      *
-     * @param user        - данные с формы
+     * @param user - данные с формы
      */
     @PostMapping("user")
     public String saveUser(@Valid UserEditDto user, Model model) {
@@ -129,7 +127,7 @@ public class UserController {
     /**
      * Добавление параметров на страницу для добавления/изменения
      *
-     * @param user        - что отобразить на форме и куда данные с формы запишутся
+     * @param user - что отобразить на форме и куда данные с формы запишутся
      */
     private void initPage(Model model, UserEditDto user) {
         model.addAttribute("allRoles", Role.values());

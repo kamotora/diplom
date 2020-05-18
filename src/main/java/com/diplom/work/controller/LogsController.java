@@ -2,15 +2,12 @@ package com.diplom.work.controller;
 
 import com.diplom.work.core.Log;
 import com.diplom.work.core.dto.LogFilterDto;
-import com.diplom.work.core.json.view.LogsViews;
-import com.diplom.work.core.json.view.UserViews;
+import com.diplom.work.core.json.view.Views;
 import com.diplom.work.svc.LogService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +37,7 @@ public class LogsController {
      * @return всех логов в виде JSON
      */
     @GetMapping(path = "/logs", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(LogsViews.forTable.class)
+    @JsonView(Views.forTable.class)
     public ResponseEntity<List<Log>> getLogsForTable() {
         return ResponseEntity.ok(logService.findAllByOrderByTimestampAsc());
     }
@@ -51,7 +48,7 @@ public class LogsController {
      * @return всех логов в виде JSON
      */
     @PostMapping(path = "/logs", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(LogsViews.forTable.class)
+    @JsonView(Views.forTable.class)
     public ResponseEntity<List<Log>> getLogsForTableByFilter(@RequestBody LogFilterDto logFilterDto) {
         List<Log> logs = logService.findAllByFilter(logFilterDto);
         return ResponseEntity.ok(logs);
@@ -59,6 +56,7 @@ public class LogsController {
 
     /**
      * Удаление логов по массиву IDs
+     *
      * @param ids - массив с ID логов
      */
     @DeleteMapping("log")

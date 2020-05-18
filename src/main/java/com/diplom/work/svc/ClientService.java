@@ -2,15 +2,18 @@ package com.diplom.work.svc;
 
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Rule;
+import com.diplom.work.exceptions.ClientException;
 import com.diplom.work.exceptions.ClientNotFound;
+import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.repo.ClientRepository;
+import com.diplom.work.repo.RuleRepository;
 import com.google.common.base.CharMatcher;
 import lombok.NonNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
-import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,10 +21,12 @@ import java.util.Set;
 @Service
 public class ClientService {
     private final ClientRepository clientRepository;
+    private final RuleRepository ruleRepository;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository) {
+    public ClientService(ClientRepository clientRepository, RuleRepository ruleRepository) {
         this.clientRepository = clientRepository;
+        this.ruleRepository = ruleRepository;
     }
 
     public Set<Client> getAllByRule(@NonNull Rule rule) {
@@ -33,8 +38,8 @@ public class ClientService {
         return clientRepository.findFirstByNumber(number);
     }
 
-    public Client updateExistingClient(@NonNull Client client){
-        if(client.getId() == null || client.getId() == 0)
+    public Client updateExistingClient(@NonNull Client client) {
+        if (client.getId() == null || client.getId() == 0)
             return null;
         Client clientFromDb = clientRepository.getOne(client.getId());
         clientFromDb.setNumber(client.getNumber());
@@ -42,31 +47,49 @@ public class ClientService {
         return clientRepository.save(clientFromDb);
     }
 
-    public Client save(@NonNull Client client) {
+    public Client save(@NonNull Client client) throws NumberParseException {
         //Оставляем в номере только цифры
         client.setNumber(CharMatcher.inRange('0', '9').retainFrom(client.getNumber()));
-        //Если id есть, зачем искать в базе дубли
+        if (StringUtils.isEmptyOrWhitespace(client.getNumber()))
+            throw new NumberParseException();
+
+        // Если id есть, сохраняем так
+        // Иначе пробуем поискать по номеру и обновить данные
+        Client clientFromBd = null;
         if (client.getId() == null || client.getId() == 0) {
-            Client findedClient = getFirstByNumber(client.getNumber());
-            if (findedClient != null) {
-                BeanUtils.copyProperties(client, findedClient, "id");
-                return clientRepository.save(findedClient);
+            // Вдруг клиент с таким номером уже есть
+            clientFromBd = getFirstByNumber(client.getNumber());
+        }else
+            clientFromBd = getById(client.getId());
+        if (clientFromBd != null) {
+            // Т.к. rule является "главным", меняем через него
+            // todo сделать попроще
+            for (Rule rule : clientFromBd.getRules()) {
+                rule.getClients().remove(clientFromBd);
+                ruleRepository.save(rule);
             }
+            for (Rule rule : client.getRules()) {
+                rule.getClients().add(client);
+                ruleRepository.save(rule);
+            }
+            BeanUtils.copyProperties(client, clientFromBd, "id");
+            return clientRepository.save(clientFromBd);
         }
         return clientRepository.save(client);
     }
 
-    public boolean deleteClient(Client client) throws ClientNotFound {
+    public boolean deleteClient(Client client) throws ClientNotFound, ClientException {
         if (client == null || client.getId() == 0)
             throw new ClientNotFound();
-        client.setRules(new HashSet<>());
+        if(!client.getRules().isEmpty())
+            throw new ClientException("Не удалось удалить. Данный клиент участвует в правилах. Перейдите в редактирование клиента и удалите его из всех правил. Затем можете попробовать удалить клиента ещё раз");
         clientRepository.save(client);
         clientRepository.delete(client);
         return true;
 
     }
 
-    public boolean deleteClientById(Long id) throws ClientNotFound {
+    public boolean deleteClientById(Long id) throws ClientNotFound, ClientException {
         if (id == null || id == 0)
             throw new ClientNotFound();
         Client client = clientRepository.findById(id).orElseThrow(ClientNotFound::new);
@@ -80,4 +103,5 @@ public class ClientService {
     public List<Client> getAll() {
         return clientRepository.findAll();
     }
+
 }

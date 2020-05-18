@@ -2,18 +2,19 @@ package com.diplom.work.controller;
 
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Rule;
-import com.diplom.work.core.json.view.ClientViews;
-import com.diplom.work.exceptions.ClientNotFound;
+import com.diplom.work.core.json.view.Views;
+import com.diplom.work.exceptions.*;
 import com.diplom.work.svc.ClientService;
+import com.diplom.work.svc.RuleService;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
@@ -21,57 +22,117 @@ import java.util.Set;
 public class ClientController {
 
     private final ClientService clientService;
-    private final RulesController rulesController;
+    private final RuleService ruleService;
 
     @Autowired
-    public ClientController(ClientService clientService, RulesController rulesController) {
+    public ClientController(ClientService clientService, RuleService ruleService) {
         this.clientService = clientService;
-        this.rulesController = rulesController;
+        this.ruleService = ruleService;
     }
 
     /**
-     * Возврат всех клиентов для таблицы в виде JSON (таблица на JS)
+     * Страница с таблицей "Список  клиентов"
+     */
+    @GetMapping("/clients")
+    public String list(Model model) {
+        return "clients";
+    }
+
+    /**
+     * Вывод формы для изменения клиента
+     *
+     * @return заполенная форма
+     */
+    @GetMapping("/client/{id}")
+    public String getPageForEditClient(Model model, @PathVariable("id") Client client) {
+        model.addAttribute("client", client);
+        return "client";
+    }
+
+    /**
+     * Вывод формы для добавления клиента
+     *
+     * @return пустая форма
+     */
+    @GetMapping("/client")
+    public String getPageForAddClient(Model model) {
+        model.addAttribute("client", new Client());
+        return "client";
+    }
+
+    /**
+     * Страница для просмотра клиента
+     *
+     * @return страница
+     */
+    @GetMapping("/client/{id}/view")
+    public String getViewPage(@PathVariable("id") Rule rule, Model model) {
+        model.addAttribute("rule", rule);
+        model.addAttribute("isView", "true");
+        return "client";
+    }
+
+    /**
+     * Возврат всех клиентов для правила
      *
      * @return всех клиентов в виде JSON
      */
     @GetMapping(path = "/rule/{id}/clients", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(ClientViews.forTable.class)
+    @JsonView(Views.forTable.class)
     public ResponseEntity<Set<Client>> getUsersForTable(@PathVariable("id") Rule rule) {
         return ResponseEntity.ok(clientService.getAllByRule(rule));
     }
 
-    @PostMapping(path = "/client", consumes = {MediaType.APPLICATION_JSON_VALUE}
-            , produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> addClient(@RequestBody Client client) {
-        String jsonSavedClient = null;
-        try {
-            Client savedClient = clientService.save(client);
-            rulesController.addClient(savedClient);
-            jsonSavedClient = new ObjectMapper().writeValueAsString(savedClient);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
-        return ResponseEntity.ok(jsonSavedClient);
+    /**
+     * Возврат всех правил для клиента
+     *
+     * @return всех правил в виде JSON
+     */
+    @GetMapping(path = "/client/{id}/rules", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @JsonView(Views.forTable.class)
+    public ResponseEntity<Set<Rule>> getRulesForClient(@PathVariable("id") Client client) {
+        return ResponseEntity.ok(client.getRules());
     }
+
+
+    /**
+     * Сохранение клиента
+     *
+     * @return страница с заполенной формой и сообщение об ошибке/успехе
+     */
+    @PostMapping(value = "/client")
+    public String saveClient(Model model, @Valid Client client) {
+        try {
+            client = clientService.save(client);
+        } catch (NumberParseException e) {
+            model.addAttribute("badMessage", e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("badMessage", "Возникла неизвестная ошибка при сохранении :(");
+        }
+        model.addAttribute("goodMessage", "Сохранено");
+        return getPageForEditClient(model, client);
+    }
+
+
 
     /**
      * Удаление клиентов по массиву IDs
      *
-     * @param ids - массив с ID клиентов
+     * @param ids - массив с ID клиента
      */
-    @DeleteMapping(path = "/client", produces = {MediaType.TEXT_PLAIN_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> deleteUser(@RequestBody List<Long> ids) {
+    @DeleteMapping("/client")
+    public String deleteClient(Model model, @RequestBody List<Long> ids) {
         try {
-            for (Long id : ids) {
-                Client client = clientService.getById(id);
-                rulesController.removeClient(client);
-                clientService.deleteClient(client);
-            }
-        } catch (ClientNotFound exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            for (Long id : ids)
+                clientService.deleteClientById(id);
+            model.addAttribute("goodMessage", "Удалено");
+        } catch (ClientNotFound | ClientException exception) {
+            model.addAttribute("badMessage", exception.getMessage());
+        }catch (Exception exception) {
+            exception.printStackTrace(System.err);
+            System.err.println(exception.getMessage());
+            model.addAttribute("badMessage", "Не удалось удалить!");
         }
-        return ResponseEntity.ok().build();
+        return "clients :: messages";
     }
-
 }

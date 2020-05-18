@@ -1,14 +1,5 @@
 // Используются таблицы bootstrap-table.com
 
-// Показать подробнее (плюсик)
-function detailFormatter(index, row) {
-    let html = [];
-    $.each(row, function (key, value) {
-        html.push('<p><b>' + key + ':</b> ' + value + '</p>')
-    })
-    return html.join('');
-}
-
 let $table = $('#RulesTable')
 
 $(document).ready(function () {
@@ -52,7 +43,7 @@ $(document).ready(function () {
             $.ajax({
                 type: "DELETE",
                 headers: {
-                    'Accept': 'text/plain',
+                    'Accept': 'text/html',
                     'Content-Type': 'application/json'
                 },
                 data : JSON.stringify(ids),
@@ -62,11 +53,11 @@ $(document).ready(function () {
                     xhr.setRequestHeader(header, token);
                 },
                 success: function( data ) {
-                    console.log(data);
+                    $("#messages").replaceWith(data);
                 }
                 ,
                 error: function (data) {
-                    console.log(data);
+                    $("#messages").replaceWith(data);
                 }
             });
             // Закрытие окна

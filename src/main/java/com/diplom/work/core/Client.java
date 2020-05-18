@@ -1,6 +1,7 @@
 package com.diplom.work.core;
 
-import com.diplom.work.core.json.view.ClientViews;
+import com.diplom.work.core.json.view.Views;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,17 +20,19 @@ import java.util.Set;
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(ClientViews.onlyId.class)
+    @JsonView(Views.onlyId.class)
     private Long id;
-    @JsonView(ClientViews.forTable.class)
+    @JsonView(Views.forTable.class)
     private String name;
-    @JsonView(ClientViews.forTable.class)
+    @JsonView(Views.forTable.class)
     @Column(nullable = false)
     private String number;
     @Column(name = "last_manager_number", nullable = true)
+    @JsonView(Views.simpleObject.class)
     private String lastManagerNumber;
 
     @ManyToMany(targetEntity = Rule.class, mappedBy = "clients", fetch = FetchType.EAGER)
+    @JsonView(Views.allClient.class)
     private Set<Rule> rules;
 
     public Client(String number) {

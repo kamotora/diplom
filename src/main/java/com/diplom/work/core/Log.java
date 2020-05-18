@@ -1,6 +1,6 @@
 package com.diplom.work.core;
 
-import com.diplom.work.core.json.view.LogsViews;
+import com.diplom.work.core.json.view.Views;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -23,17 +23,20 @@ import java.time.LocalDateTime;
 public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(LogsViews.onlyId.class)
+    @JsonView(Views.onlyId.class)
     private Long id;
 
     @Column(name = "session_id")
-    @JsonView(LogsViews.forTable.class)
+    @JsonView(Views.forTable.class)
     private String session_id;
 
     @Column(name = "timestamp")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
+    @JsonView(Views.forTable.class)
     private String timestamp;
 
     @Transient
+    @JsonView(Views.simpleObject.class)
     private LocalDateTime timestampInDateTimeFormat;
 
     @Column(name = "type")
@@ -43,20 +46,26 @@ public class Log {
     private String state;
 
     @Column(name = "from_number")
-    @JsonView(LogsViews.forTable.class)
+    @JsonView(Views.forTable.class)
     private String from_number;
 
     @Column(name = "from_pin")
+    @JsonView(Views.simpleObject.class)
     private String from_pin;
 
     @Column(name = "request_number")
-    @JsonView(LogsViews.forTable.class)
+    @JsonView(Views.forTable.class)
     private String request_number;
 
     @Column(name = "request_pin")
+    @JsonView(Views.simpleObject.class)
     private String request_pin;
+
+    @JsonView(Views.simpleObject.class)
     private String disconnect_reason;
+
     //true,false
+    @JsonView(Views.simpleObject.class)
     private String is_record;
 
     @Transient
@@ -64,12 +73,6 @@ public class Log {
         if (timestampInDateTimeFormat == null)
             timestampInDateTimeFormat = Timestamp.valueOf(timestamp).toLocalDateTime();
         return timestampInDateTimeFormat;
-    }
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
-    @JsonView(LogsViews.forTable.class)
-    public String getTimestamp() {
-        return timestamp;
     }
 
     public boolean getIs_recordAsBool() {
@@ -88,7 +91,7 @@ public class Log {
      * disconnected – о завершении разговора
      * end – о завершении вызова
      */
-    @JsonView(LogsViews.forTable.class)
+    @JsonView(Views.forTable.class)
     @JsonGetter("state_call")
     public String getStateName() {
         switch (state) {
@@ -116,7 +119,7 @@ public class Log {
      * outbound – исходящий
      * internal – внутренний
      */
-    @JsonView(LogsViews.forTable.class)
+    @JsonView(Views.forTable.class)
     @JsonGetter("type")
     public String getTypeName() {
         switch (type) {
