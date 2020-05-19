@@ -3,9 +3,10 @@ package com.diplom.work.controller;
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Rule;
 import com.diplom.work.core.json.view.Views;
-import com.diplom.work.exceptions.*;
+import com.diplom.work.exceptions.ClientException;
+import com.diplom.work.exceptions.ClientNotFound;
+import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.svc.ClientService;
-import com.diplom.work.svc.RuleService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
@@ -22,16 +22,16 @@ import java.util.Set;
 public class ClientController {
 
     private final ClientService clientService;
-    private final RuleService ruleService;
 
     @Autowired
-    public ClientController(ClientService clientService, RuleService ruleService) {
+    public ClientController(ClientService clientService) {
         this.clientService = clientService;
-        this.ruleService = ruleService;
     }
 
     /**
      * Страница с таблицей "Список  клиентов"
+     * Данные получаются через api
+     * @see com.diplom.work.controller.api.ApiClientController
      */
     @GetMapping("/clients")
     public String list(Model model) {
@@ -73,17 +73,6 @@ public class ClientController {
     }
 
     /**
-     * Возврат всех клиентов для правила
-     *
-     * @return всех клиентов в виде JSON
-     */
-    @GetMapping(path = "/rule/{id}/clients", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.forTable.class)
-    public ResponseEntity<Set<Client>> getUsersForTable(@PathVariable("id") Rule rule) {
-        return ResponseEntity.ok(clientService.getAllByRule(rule));
-    }
-
-    /**
      * Возврат всех правил для клиента
      *
      * @return всех правил в виде JSON
@@ -101,7 +90,7 @@ public class ClientController {
      * @return страница с заполенной формой и сообщение об ошибке/успехе
      */
     @PostMapping(value = "/client")
-    public String saveClient(Model model, @Valid Client client) {
+    public String saveClient(Model model, Client client) {
         try {
             client = clientService.save(client);
         } catch (NumberParseException e) {
@@ -114,11 +103,11 @@ public class ClientController {
     }
 
 
-
     /**
      * Удаление клиентов по массиву IDs
      *
      * @param ids - массив с ID клиента
+     * @return блок с сообщениями об успехе/ошибке для его вывода через jquery
      */
     @DeleteMapping("/client")
     public String deleteClient(Model model, @RequestBody List<Long> ids) {
@@ -128,11 +117,11 @@ public class ClientController {
             model.addAttribute("goodMessage", "Удалено");
         } catch (ClientNotFound | ClientException exception) {
             model.addAttribute("badMessage", exception.getMessage());
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             exception.printStackTrace(System.err);
             System.err.println(exception.getMessage());
             model.addAttribute("badMessage", "Не удалось удалить!");
         }
-        return "clients :: messages";
+        return "fragments/messages :: messages";
     }
 }

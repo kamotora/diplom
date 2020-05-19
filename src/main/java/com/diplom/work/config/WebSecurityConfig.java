@@ -34,14 +34,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().ignoringAntMatchers("/api/**", "/rule").and() //csrf для api отключить
+        http.csrf().ignoringAntMatchers("/api/**").and() //csrf для api отключить
                 .authorizeRequests()
                 .antMatchers("/css/**", "/js/**", "/images/**","/login", "/registration").permitAll() // Доступны всем
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/**").permitAll()
                 .antMatchers(HttpMethod.PUT, "/api/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/api/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/rule").permitAll()//todo !!!!!!!!!!!!!!!!!
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

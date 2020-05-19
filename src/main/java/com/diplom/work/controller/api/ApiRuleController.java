@@ -32,6 +32,7 @@ public class ApiRuleController {
      * Возврат всех правил для в виде JSON
      *
      * @return все клиенты в виде JSON
+     * todo возвращаются только для таблицы, а не всё
      */
     @GetMapping(path = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
     @JsonView(Views.forTable.class)

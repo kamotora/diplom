@@ -9,8 +9,6 @@ import com.diplom.work.exceptions.TimeIncorrect;
 import com.diplom.work.svc.RuleService;
 import com.diplom.work.svc.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -38,22 +34,13 @@ public class RulesController {
 
     /**
      * Страница с таблицей "Список правил маршрутизации"
+     * Данные получаются через api
+     *
+     * @see com.diplom.work.controller.api.ApiRuleController
      */
     @GetMapping("/rules")
     public String list(Model model) {
         return "rules";
-    }
-
-
-    /**
-     * Возврат всех правил для таблицы в виде JSON (таблица на JS)
-     *
-     * @return всех правил в виде JSON
-     */
-    @GetMapping(path = "api/rulesForTable", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.forTable.class)
-    public ResponseEntity<List<Rule>> getRulesForTable() {
-        return ResponseEntity.ok(ruleService.findAllByOrderByIdAsc());
     }
 
 
@@ -107,7 +94,7 @@ public class RulesController {
      * @return страница с заполенной формой и сообщение об ошибке/успехе
      */
     @PostMapping(value = "/rule")
-    public String saveRule(Model model, @Valid Rule rule) {
+    public String saveRule(Model model, Rule rule) {
         try {
             rule = ruleService.save(rule);
             model.addAttribute("goodMessage", "Сохранено");
@@ -119,11 +106,23 @@ public class RulesController {
         return getPageForEditRule(rule, model);
     }
 
+    /**
+     * Возврат всех клиентов для правила
+     *
+     * @return всех клиентов в виде JSON
+     */
+    @GetMapping(path = "/rule/{id}/clients", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @JsonView(Views.forTable.class)
+    public ResponseEntity<Set<Client>> getUsersForTable(@PathVariable("id") Rule rule) {
+        return ResponseEntity.ok(rule.getClients());
+    }
+
 
     /**
      * Удаление правил по массиву IDs
      *
      * @param ids - массив с ID правила
+     * @return блок с сообщениями об успехе/ошибке для его вывода через jquery
      */
     @DeleteMapping("/rule")
     public String deleteRule(Model model, @RequestBody List<Long> ids) {
@@ -135,7 +134,7 @@ public class RulesController {
             System.err.println(exception.getMessage());
             model.addAttribute("badMessage", "Не удалось удалить!");
         }
-        return "rules :: messages";
+        return "fragments/messages :: messages";
     }
 
 }
