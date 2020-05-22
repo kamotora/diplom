@@ -22,7 +22,7 @@ public class SettingsService {
         List<Settings> all = settingsRepository.findAll();
         if (all.size() > 1) {
             LoggerFactory.getLogger(this.getClass()).error("Для настроек больше 1 записи в таблице! Нельзя так");
-            // ибо нехуй
+            // ибо зачем
             for(int i = 1; i < all.size(); i++)
                 settingsRepository.delete(all.get(i));
         }

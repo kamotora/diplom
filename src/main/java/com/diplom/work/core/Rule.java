@@ -3,9 +3,9 @@ package com.diplom.work.core;
 import com.diplom.work.core.json.view.Views;
 import com.diplom.work.core.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.thymeleaf.util.StringUtils;
 
@@ -24,41 +24,56 @@ import java.util.Set;
 @Entity
 @Table(name = "rule")
 @Data
-@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
+@EqualsAndHashCode(of = {"id","name","isSmart", "isForAllClients"})
+@ToString
 public class Rule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView(Views.onlyId.class)
     private Long id;
 
-    //Наименование правила
+    /**
+     * Наименование правила
+     */
     @Column(name = "name", nullable = false)
     @JsonView(Views.forTable.class)
     private String name;
 
-    //Номер менеджера
+    /**
+     * Номер менеджера (null, если указан <code>manager</code>)
+     */
     @Column(name = "manager_number", nullable = true)
     @JsonView(Views.simpleObject.class)
     private String managerNumber;
 
-    //Или учётная запись менеджера
+    /**
+     * Учётная запись менеджера (null, если указан  <code>managerNumber</code> )
+     */
     @ManyToOne
     @JoinColumn(name = "manager_id", nullable = true)
     @JsonView(Views.allRule.class)
     private User manager;
 
-    //Умная маршрутиазация
+    /**
+     * True, если активирнована умная маршрутиазация
+     */
     @Column(name = "is_smart", nullable = false)
     @JsonView(Views.simpleObject.class)
     private Boolean isSmart;
 
-    // Для всех клиентов
+    /**
+     * True,если правило работает для всех клиентов
+     */
     @Column(name = "is_for_all_clients", nullable = false)
     @JsonView(Views.simpleObject.class)
     private Boolean isForAllClients;
 
-    //Клиенты в правиле
+    /**
+     * Список клиентов для данного правила
+     *
+     * @see Client
+     */
     @ManyToMany(targetEntity = Client.class, fetch = FetchType.EAGER)
     @JoinTable(name = "client_rule",
             joinColumns = @JoinColumn(name = "rule_id", referencedColumnName = "id"),
@@ -67,46 +82,61 @@ public class Rule {
     @JsonView(Views.allRule.class)
     private Set<Client> clients;
 
-    //Дни действия
+    /**
+     * Дни действия правила
+     */
     @ElementCollection(targetClass = Days.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "rule_days", joinColumns = @JoinColumn(name = "rule_id"))
     @Enumerated(EnumType.STRING)
     private Set<Days> days;
 
+    /**
+     * Время начала действия правила
+     * Используется при расчёте, можно ли в данный момент использовать данное правило
+     */
     @Transient
     private Time timeStart;
+
+    /**
+     * Время окончания действия правила
+     * Используется при расчёте, можно ли в данный момент использовать данное правило
+     */
     @Transient
     private Time timeFinish;
 
+    /**
+     * Время начала действия правила в виде строки
+     * Используется для ввода с формы и вывода на форму
+     */
     @JsonView(Views.simpleObject.class)
     private String timeStartString;
+
+
+    /**
+     * Время окончания действия правила в виде строки
+     * Используется для ввода с формы и вывода на форму
+     */
     @JsonView(Views.simpleObject.class)
     private String timeFinishString;
 
     public Rule() {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Rule rule = (Rule) o;
-        return Objects.equals(id, rule.id) &&
-                Objects.equals(name, rule.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
-
-
+    /**
+     * Конвертирует <code>timeStartString</code> в объект класса Time
+     * @return время начала
+     * */
     public Time getTimeStart() {
         if (timeStart == null)
             timeStart = getTimeFromString(timeStartString);
         return timeStart;
     }
 
+
+    /**
+     * Конвертирует <code>timeFinishString</code> в объект класса Time
+     * @return время окончания
+     * */
     public Time getTimeFinish() {
         if (timeFinish == null)
             timeFinish = getTimeFromString(timeFinishString);
