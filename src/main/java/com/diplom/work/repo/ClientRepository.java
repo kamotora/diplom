@@ -11,4 +11,5 @@ import java.util.Set;
 public interface ClientRepository extends JpaRepository<Client, Long> {
     Set<Client> findAllByRulesContaining(Rule rule);
     Client findFirstByNumber(String number);
+    Client findFirstByNumberContaining(String number);
 }

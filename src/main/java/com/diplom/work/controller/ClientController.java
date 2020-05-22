@@ -66,8 +66,8 @@ public class ClientController {
      * @return страница
      */
     @GetMapping("/client/{id}/view")
-    public String getViewPage(@PathVariable("id") Rule rule, Model model) {
-        model.addAttribute("rule", rule);
+    public String getViewPage(@PathVariable("id") Client client, Model model) {
+        model.addAttribute("client", client);
         model.addAttribute("isView", "true");
         return "client";
     }

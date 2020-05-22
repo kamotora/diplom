@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,9 +32,19 @@ public class ClientService {
         return clientRepository.findAllByRulesContaining(rule);
     }
 
-    //Клиентов с одинаковым номером быть не должно
+    /**
+     * Пытаемся найти по поступающему номеру
+     * Если не нашли, пробуем оставить только цифры,
+     * убрать код страны (т.к. 7 или 8 может быть) и пробуем ещё раз
+     * <p>
+     * Клиентов с одинаковым номером быть не должно (надеюсь)
+     */
     public Client getFirstByNumber(@NonNull String number) {
-        return clientRepository.findFirstByNumber(number);
+        Client client = clientRepository.findFirstByNumber(number);
+        if (client == null) {
+            client = clientRepository.findFirstByNumberContaining(getOnlyNumbers(number).substring(1));
+        }
+        return client;
     }
 
     public Client updateExistingClient(@NonNull Client client) {
@@ -49,7 +58,7 @@ public class ClientService {
 
     public Client save(@NonNull Client client) throws NumberParseException {
         //Оставляем в номере только цифры
-        client.setNumber(CharMatcher.inRange('0', '9').retainFrom(client.getNumber()));
+        client.setNumber(getOnlyNumbers(client.getNumber()));
         if (StringUtils.isEmptyOrWhitespace(client.getNumber()))
             throw new NumberParseException();
 
@@ -59,7 +68,7 @@ public class ClientService {
         if (client.getId() == null || client.getId() == 0) {
             // Вдруг клиент с таким номером уже есть
             clientFromBd = getFirstByNumber(client.getNumber());
-        }else
+        } else
             clientFromBd = getById(client.getId());
         if (clientFromBd != null) {
             // Т.к. rule является "главным", меняем через него
@@ -81,7 +90,7 @@ public class ClientService {
     public boolean deleteClient(Client client) throws ClientNotFound, ClientException {
         if (client == null || client.getId() == 0)
             throw new ClientNotFound();
-        if(!client.getRules().isEmpty())
+        if (!client.getRules().isEmpty())
             throw new ClientException("Не удалось удалить. Данный клиент участвует в правилах. Перейдите в редактирование клиента и удалите его из всех правил. Затем можете попробовать удалить клиента ещё раз");
         clientRepository.save(client);
         clientRepository.delete(client);
@@ -102,6 +111,15 @@ public class ClientService {
 
     public List<Client> getAll() {
         return clientRepository.findAll();
+    }
+
+    /**
+     * Возвращает только числа из номера (удаляет плюсики и т.п.)
+     *
+     * @return номер
+     */
+    public String getOnlyNumbers(String number) {
+        return CharMatcher.inRange('0', '9').retainFrom(number);
     }
 
 }
