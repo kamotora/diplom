@@ -34,21 +34,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().ignoringAntMatchers("/api/**").and() //csrf для api отключить
-                .authorizeRequests()
-                .antMatchers("/css/**", "/js/**", "/images/**","/login", "/registration").permitAll() // Доступны всем
-                .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/**").permitAll()
-                .antMatchers(HttpMethod.PUT, "/api/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/api/**").permitAll()
-                .anyRequest().authenticated()
+        http.csrf().ignoringAntMatchers("/api/**")
+                .and() //csrf для api отключить
+                    .authorizeRequests()
+                    .antMatchers("/css/**", "/js/**", "/images/**","/login", "/registration").permitAll() // Доступны всем
+                    .antMatchers( "/api/**").permitAll() // ограничения по ip прописаны в nginx, было бы неплохо заменить на токены
+                    .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .successForwardUrl("/home")
-                .loginPage("/login")
-                .permitAll()
+                    .formLogin()
+                    .successForwardUrl("/home")
+                    .loginPage("/login")
+                    .permitAll()
                 .and()
-                .logout()
+                    .logout()
                 .permitAll();
 
     }

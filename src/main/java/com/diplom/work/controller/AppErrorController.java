@@ -4,46 +4,57 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
- * Basic Controller which is called for unhandled errors
+ * Контроллер для обработки ошибок (/error)
  */
-
+@Controller
 public class AppErrorController implements ErrorController {
 
     /**
      * Error Attributes in the Application
      */
-    private ErrorAttributes errorAttributes;
+    private final ErrorAttributes errorAttributes;
 
     private final static String ERROR_PATH = "/error";
 
-    /**
-     * Controller for the Error Controller
-     *
-     * @param errorAttributes
-     */
+
     public AppErrorController(ErrorAttributes errorAttributes) {
         this.errorAttributes = errorAttributes;
     }
 
     /**
-     * Supports the HTML Error View
-     *
-     * @param request
-     * @return
+     * Смотрим код ошибки и возвращаем страницу для неё, если есть
+     * Если особой страницы нет, возвращаем как обычно
+     * @param request запрос с инфой об ошибке
+     * @return название шаблона для вывода инфы об ошибке
      */
     @RequestMapping(value = ERROR_PATH, produces = "text/html")
-    public ModelAndView errorHtml(HttpServletRequest request) {
-        return new ModelAndView("/errors/error", getErrorAttributes(request, false));
+    public String errorHtml(HttpServletRequest request) {
+        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+
+        if (status != null) {
+            switch (Integer.parseInt(status.toString())){
+                case 403:
+                    return "errors/403";
+                case 404:
+                    return "errors/404";
+                case 500:
+                    return "errors/500";
+                default:
+                    return "error";
+            }
+        }
+        return "error";
     }
 
     /**
