@@ -4,7 +4,6 @@
       lang="auto" class="h-100">
 <head>
     <th:block th:replace="fragments/head :: headForTable('Логи')"/>
-
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <!-- default header name is X-CSRF-TOKEN -->
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
@@ -89,6 +88,7 @@
     </div>
 </main>
 <div th:replace="fragments/dialogs ::askDeleteDialog"></div>
+
 <footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
 
 <script type="text/javascript" th:src="@{/static/js/tables/logsTable.js}"></script>

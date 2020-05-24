@@ -10,6 +10,64 @@ function detailFormatter(index, row) {
 }
 
 
+//Получить графики
+function getGraphics(values){
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    var myChart = new Chart(ctx,{
+        type: 'bar',
+        data: {
+            labels: ["Входящий","Исходящий","Внутренний"],
+            datasets: [{
+                label: 'По типам звонков',
+                data: values,
+                backgroundColor:[
+                    'green',
+                    'blue',
+                    'gray'
+                ],
+                borderColor: [
+                    'green',
+                    'blue',
+                    'gray'
+                ],
+                borderWitdh: 2
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    var ctxP = document.getElementById('pieChart').getContext('2d');
+    var pieChart = new Chart(ctxP,{
+        type: 'pie',
+        data: {
+            labels: ["Принятые", "Пропущенные"],
+            datasets: [{
+                data: [340,20],
+                backgroundColor:[
+                    'blue',
+                    'red'
+                ],
+                hoverBackgroundColor: [
+                    'blue',
+                    'red'
+                ]
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+}
+
 
 let $table = $('#LogsTable')
 
@@ -98,6 +156,30 @@ $(document).ready(function () {
                 console.log(data);
             }
         });
+
+        //Обновим графики
+        $.ajax({
+            type: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            data : JSON.stringify({
+                startDate: startDate,
+                finishDate: finishDate
+            }),
+            url:"/api/logs/updateDataForGraphics",
+            beforeSend: function(xhr) {
+                // here it is
+                xhr.setRequestHeader(header, token);
+            },
+            success: function(data){
+                getGraphics(data);
+            },
+            error:function(data){
+                console.log(data);
+            }
+        })
     });
 
     $resetFilter.click(function () {
@@ -201,9 +283,6 @@ $(document).ready(function () {
 
     //Графики
     $(function () {
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var listData = [];
-
         //Считаем скок каждого вызова
 
         $.ajax({
@@ -211,66 +290,10 @@ $(document).ready(function () {
             async: false,
             url:"/api/logs/dataGraphic",
             success: function(data){
-                listData = data;
+                getGraphics(data);
             },
             error:function(data){
             }
         })
-
-
-        var myChart = new Chart(ctx,{
-            type: 'bar',
-            data: {
-                labels: ["Входящий","Исходящий","Внутренний"],
-                datasets: [{
-                    label: 'По типам звонков',
-                    data: listData,
-                    backgroundColor:[
-                        'green',
-                        'blue',
-                        'gray'
-                    ],
-                    borderColor: [
-                        'green',
-                        'blue',
-                        'gray'
-                    ],
-                    borderWitdh: 2
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
-        });
-
-        var ctxP = document.getElementById('pieChart').getContext('2d');
-        var pieChart = new Chart(ctxP,{
-            type: 'pie',
-            data: {
-                labels: ["Принятые", "Пропущенные"],
-                datasets: [{
-                    data: [340,20],
-                    backgroundColor:[
-                        'blue',
-                        'red'
-                    ],
-                    hoverBackgroundColor: [
-                        'blue',
-                        'red'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true
-            }
-        });
     })
-
-
 })
