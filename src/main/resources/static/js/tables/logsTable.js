@@ -9,6 +9,8 @@ function detailFormatter(index, row) {
     return html.join('');
 }
 
+
+
 let $table = $('#LogsTable')
 
 $(document).ready(function () {
@@ -195,6 +197,79 @@ $(document).ready(function () {
             deleteLogByIds(ids)
             $remove.prop('disabled', true)
         })
+    })
+
+    //Графики
+    $(function () {
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var listData = [];
+
+        //Считаем скок каждого вызова
+
+        $.ajax({
+            type: "GET",
+            async: false,
+            url:"/api/logs/dataGraphic",
+            success: function(data){
+                listData = data;
+            },
+            error:function(data){
+            }
+        })
+
+
+        var myChart = new Chart(ctx,{
+            type: 'bar',
+            data: {
+                labels: ["Входящий","Исходящий","Внутренний"],
+                datasets: [{
+                    label: 'По типам звонков',
+                    data: listData,
+                    backgroundColor:[
+                        'green',
+                        'blue',
+                        'gray'
+                    ],
+                    borderColor: [
+                        'green',
+                        'blue',
+                        'gray'
+                    ],
+                    borderWitdh: 2
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        var ctxP = document.getElementById('pieChart').getContext('2d');
+        var pieChart = new Chart(ctxP,{
+            type: 'pie',
+            data: {
+                labels: ["Принятые", "Пропущенные"],
+                datasets: [{
+                    data: [340,20],
+                    backgroundColor:[
+                        'blue',
+                        'red'
+                    ],
+                    hoverBackgroundColor: [
+                        'blue',
+                        'red'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
     })
 
 

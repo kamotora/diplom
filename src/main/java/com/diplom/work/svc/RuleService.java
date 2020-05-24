@@ -3,6 +3,7 @@ package com.diplom.work.svc;
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Days;
 import com.diplom.work.core.Rule;
+import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.ManagerIsNull;
 import com.diplom.work.exceptions.TimeIncorrect;
 import com.diplom.work.repo.RuleRepository;
@@ -122,6 +123,11 @@ public class RuleService {
 
     public List<Rule> getAll() {
         return ruleRepository.findAll();
+    }
+
+    //Список правил для сотрудника
+    public List<Rule> getRulesForUser(User user){
+        return ruleRepository.findAllByManager(user);
     }
 
     public Rule save(Rule rule) throws TimeIncorrect, ManagerIsNull {

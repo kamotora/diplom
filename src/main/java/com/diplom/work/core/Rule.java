@@ -90,6 +90,11 @@ public class Rule {
     @Enumerated(EnumType.STRING)
     private Set<Days> days;
 
+    //Приоритет
+    @Column(name = "priority", nullable = true)
+    @JsonView(Views.forTable.class)
+    private Integer priority;
+
     /**
      * Время начала действия правила
      * Используется при расчёте, можно ли в данный момент использовать данное правило

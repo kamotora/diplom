@@ -2,12 +2,14 @@ package com.diplom.work.controller.api;
 
 import com.diplom.work.core.Rule;
 import com.diplom.work.core.json.view.Views;
+import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.ManagerIsNull;
 import com.diplom.work.exceptions.TimeIncorrect;
 import com.diplom.work.svc.RuleService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,9 +36,12 @@ public class ApiRuleController {
      * @return все клиенты в виде JSON
      * todo возвращаются только для таблицы, а не всё
      */
-    @GetMapping(path = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(path = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
     @JsonView(Views.forTable.class)
-    public List<Rule> getAllRules() {
+    public List<Rule> getAllRules(@AuthenticationPrincipal User user) {
+        //Проверяем если пользователь то только его правила
+        if(user.getFirstRoleName().equals("Пользователь"))
+            return ruleService.getRulesForUser(user);
         return ruleService.getAll();
     }
 
