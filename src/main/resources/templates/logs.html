@@ -16,6 +16,9 @@
 <main role="main" class="flex-shrink-0">
     <div class="container-fluid">
         <h3 class="mt-2">Журнал вызовов</h3>
+
+        <div id="messages" th:replace="fragments/messages :: messages"></div>
+
         <div id="toolbar">
             <form class="form-inline">
                 <button id="remove" class="btn btn-danger" disabled>

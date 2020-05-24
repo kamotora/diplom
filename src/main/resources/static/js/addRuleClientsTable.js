@@ -9,7 +9,7 @@
  * */
 
 let $clientsInRulesTable = $('#table');
-let $existingClientsTable = $('#modal_table');
+let $allClientsInModal = $('#modal_table');
 
 let $forAll = $('#forAll');
 let $deleteDialog = $('#askDeleteDialog');
@@ -26,7 +26,7 @@ const clientModal = $('#addClientDialog');
 let $ruleForm = $('#ruleForm');
 $ruleForm.submit(function (event) {
     const clients = $clientsInRulesTable.bootstrapTable('getData');
-    $.each(clients, function(i,param){
+    $.each(clients, function (i, param) {
         $('<input />').attr('type', 'hidden')
             .attr('name', 'clients')
             .attr('value', param.id)
@@ -37,6 +37,9 @@ $ruleForm.submit(function (event) {
 })
 
 $(document).ready(function () {
+    // Если кнопка скрыта - мы в режиме просмотра
+    // Скроем колонку с действиями
+    const isView = $('#addClient').is(':hidden')
 
     //Скрываем поле для ввода менеджера, если умная маршрутизация, и наоборот
     const managerBlock = $('#manager');
@@ -64,7 +67,7 @@ $(document).ready(function () {
     /**
      * Отображение формы для редактирования клиента
      * */
-    function onEditClick(e, value, row, index){
+    function onEditClick(e, value, row, index) {
         // Добавляем на форму значения с таблицы
         let number = clientModal.find('#number_client');
         let name = clientModal.find('#name_client');
@@ -113,7 +116,7 @@ $(document).ready(function () {
                 name.removeClass('is-invalid');
             }
             console.log(number.val());
-            if(id === undefined || id === '' || id === '0')
+            if (id === undefined || id === '' || id === '0')
                 id = null;
             // Добавляем клиента в базу, а затем и в таблицу
             if (!fail) {
@@ -206,6 +209,7 @@ $(document).ready(function () {
                 title: "Действия",
                 align: 'center',
                 valign: 'middle',
+                visible: !isView,
                 clickToSelect: false,
                 events: {
                     'click .edit': onEditClick,
@@ -226,11 +230,10 @@ $(document).ready(function () {
         })
     })
 
-
     /**
      * Таблица с Существующими клиентами (модальное окно "Добавление клиента")
      * */
-    $existingClientsTable.bootstrapTable({
+    $allClientsInModal.bootstrapTable({
         // Фильтр включён
         filterControl: true,
         columns: [{
@@ -277,6 +280,7 @@ $(document).ready(function () {
         }
         ]
     })
+
     $.ajax({
         type: "GET",
         headers: {
@@ -288,7 +292,7 @@ $(document).ready(function () {
             xhr.setRequestHeader(header, token);
         },
         success: function (data) {
-            $existingClientsTable.bootstrapTable('load', data);
+            $allClientsInModal.bootstrapTable('load', data);
         }
     })
 })

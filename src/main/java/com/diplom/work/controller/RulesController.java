@@ -4,7 +4,6 @@ import com.diplom.work.core.Client;
 import com.diplom.work.core.Days;
 import com.diplom.work.core.Rule;
 import com.diplom.work.core.json.view.Views;
-import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.ManagerIsNull;
 import com.diplom.work.exceptions.TimeIncorrect;
 import com.diplom.work.svc.RuleService;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +40,7 @@ public class RulesController {
      * Страница с таблицей "Список правил маршрутизации"
      */
     @GetMapping("/rules")
-    public String list(Model model, @AuthenticationPrincipal User user) {
+    public String list(Model model) {
         return "rules";
     }
 
@@ -64,20 +62,11 @@ public class RulesController {
      *
      * @return заполненная форма
      */
+    @PreAuthorize("hasAuthority('Администратор')")
     @GetMapping("/rule")
-    public String getPageForAddRule(Model model, @AuthenticationPrincipal User user) {
-        //Чекнем если пользователь то в правило запишем его
-        if(user.getFirstRoleName().equals("Пользователь")) {
-            model.addAttribute("isUser", "true");
-            model.addAttribute("users", user);
-            Rule rule = new Rule();
-            rule.setManager(user);
-            model.addAttribute(rule);
-        }
-        else {
-            model.addAttribute("users", userService.findAll());
-            model.addAttribute("rule", new Rule());
-        }
+    public String getPageForAddRule(Model model) {
+        model.addAttribute("users", userService.findAll());
+        model.addAttribute("rule", new Rule());
         model.addAttribute("allDays", Days.values());
         return "rule";
     }
@@ -88,11 +77,9 @@ public class RulesController {
      *
      * @return заполненная форма
      */
-
+    @PreAuthorize("hasAuthority('Администратор')")
     @GetMapping("/rule/{id}")
-    public String getPageForEditRule(@PathVariable("id") Rule rule, Model model, @AuthenticationPrincipal User user) {
-        if(user.getFirstRoleName().equals("Пользователь"))
-            model.addAttribute("isUser", "true");
+    public String getPageForEditRule(@PathVariable("id") Rule rule, Model model) {
         model.addAttribute("rule", rule);
         model.addAttribute("users", userService.findAll());
         model.addAttribute("allDays", Days.values());
@@ -106,13 +93,11 @@ public class RulesController {
      * @return страница
      */
     @GetMapping("/rule/{id}/view")
-    public String getViewPage(@PathVariable("id") Rule rule, Model model, @AuthenticationPrincipal User user) {
+    public String getViewPage(@PathVariable("id") Rule rule, Model model) {
         model.addAttribute("rule", rule);
         model.addAttribute("users", userService.findAll());
         model.addAttribute("allDays", Days.values());
         model.addAttribute("isView", "true");
-        if(user.getFirstRoleName().equals("Пользователь"))
-            model.addAttribute("isUser", "true");
         return "rule";
     }
 
@@ -122,7 +107,7 @@ public class RulesController {
      * @return страница с заполенной формой и сообщение об ошибке/успехе
      */
     @PostMapping(value = "/rule")
-    public String saveRule(Model model, @Valid Rule rule, @AuthenticationPrincipal User user) {
+    public String saveRule(Model model, Rule rule) {
         try {
             rule = ruleService.save(rule);
             model.addAttribute("goodMessage", "Сохранено");
@@ -131,7 +116,7 @@ public class RulesController {
         } catch (ManagerIsNull managerIsNull) {
             model.addAttribute("badMessage", "Выберите менеджера или укажите 'Умная маршрутизация'");
         }
-        return getPageForEditRule(rule, model, user);
+        return getPageForEditRule(rule, model);
     }
 
 

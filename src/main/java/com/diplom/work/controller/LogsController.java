@@ -23,11 +23,11 @@ public class LogsController {
         this.logService = logService;
     }
 
-
+    /**
+     * Вывод страницы с таблицей
+     * */
     @GetMapping(path = "/logs")
     public String listLogs(Model model) {
-        List<Log> logs = logService.findAllByOrderByTimestampAsc();
-        model.addAttribute("logs", logs);
         return "logs";
     }
 
@@ -58,16 +58,19 @@ public class LogsController {
      * Удаление логов по массиву IDs
      *
      * @param ids - массив с ID логов
+     * @return блок с сообщениями об успехе/ошибке для его вывода через jquery
      */
     @DeleteMapping("log")
-    public String deleteLog(@RequestBody List<Long> ids) {
+    public String deleteLog(Model model, @RequestBody List<Long> ids) {
         try {
             ids.forEach(logService::deleteOneLog);
+            model.addAttribute("goodMessage", "Удалено");
         } catch (Exception exception) {
             exception.printStackTrace(System.err);
             System.err.println(exception.getMessage());
+            model.addAttribute("badMessage", "Возникла ошибка при удалении");
         }
-        return "redirect:/logs";
+        return "fragments/messages :: messages";
     }
 
 

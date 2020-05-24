@@ -163,6 +163,7 @@ public class NumberInfoController {
      * @return ответ серверу ВАТС, куда направить
      * @see NumberInfoAnswer
      */
+    //todo set client nonnull
     public NumberInfoAnswer getAnswer(Client client, Rule rule) throws NumberParseException {
         if (rule.getIsSmart() && client != null) {
             // Если есть инфа о последнем разговоре

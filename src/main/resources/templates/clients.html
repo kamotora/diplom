@@ -15,14 +15,9 @@
 <main role="main" class="flex-shrink-0">
     <div class="container">
         <h3 class="mt-2">Список клиентов</h3>
-        <div id="messages" th:fragment="messages">
-            <div th:if="${badMessage}" id="badMessage" th:name="badMessage" class="alert alert-danger mt-lg-5"
-                 role="alert"
-                 th:text="${badMessage}"></div>
-            <div th:if="${goodMessage}" id="goodMessage" th:name="goodMessage" class="alert alert-success mt-lg-5"
-                 role="alert"
-                 th:text="${goodMessage}"></div>
-        </div>
+
+        <div id="messages" th:replace="fragments/messages :: messages"></div>
+
         <div id="toolbar">
             <button id="remove" class="btn btn-danger" disabled>
                 <i class="glyphicon glyphicon-remove"></i> Удалить выбранные

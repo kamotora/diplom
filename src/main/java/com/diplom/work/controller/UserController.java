@@ -17,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -36,8 +35,6 @@ public class UserController {
      */
     @GetMapping(path = "users")
     public String usersPage(Model model) {
-        model.addAttribute("adminRole", Role.ADMIN);
-        model.addAttribute("userRole", Role.USER);
         return "users";
     }
 
@@ -96,13 +93,17 @@ public class UserController {
      * @param ids - массив с ID пользователей
      */
     @DeleteMapping("user")
-    public String deleteUser(@RequestBody List<Long> ids) {
+    public String deleteUser(Model model, @RequestBody List<Long> ids) {
         try {
             ids.forEach(userService::deleteUserById);
+            model.addAttribute("goodMessage", "Удалено!");
         } catch (UsernameNotFoundException exception) {
-            //Хз что ответить)
+            model.addAttribute("badMessage", "Такого пользователя не найдено");
         }
-        return "redirect:/users";
+        catch (Exception e){
+            model.addAttribute("badMessage", "Возникла ошибка при удалении");
+        }
+        return "fragments/messages :: messages";
     }
 
     /**
@@ -111,7 +112,7 @@ public class UserController {
      * @param user - данные с формы
      */
     @PostMapping("user")
-    public String saveUser(@Valid UserEditDto user, Model model) {
+    public String saveUser(UserEditDto user, Model model) {
         try {
             userService.save(user);
         } catch (UsernameAlreadyExist | NewPasswordsNotEquals exception) {

@@ -38,8 +38,7 @@ $(document).ready(function () {
                 "values": ids
             });
             // Удаление с сервера
-            //Смена пароля
-            //Тратата
+
             $.ajax({
                 type: "DELETE",
                 headers: {
@@ -49,7 +48,6 @@ $(document).ready(function () {
                 data : JSON.stringify(ids),
                 url: "/rule",
                 beforeSend: function(xhr) {
-                    // here it is
                     xhr.setRequestHeader(header, token);
                 },
                 success: function( data ) {

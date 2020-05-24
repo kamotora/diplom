@@ -15,6 +15,9 @@
 <main role="main" class="flex-shrink-0">
     <div class="container">
         <h3 class="mt-2">Список пользователей</h3>
+
+        <div id="messages" th:replace="fragments/messages :: messages"></div>
+
         <div id="toolbar">
             <button id="remove" class="btn btn-danger" disabled>
                 <i class="glyphicon glyphicon-remove"></i> Удалить выбранные
