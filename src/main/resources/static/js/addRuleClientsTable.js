@@ -19,7 +19,7 @@ let badMessageModal = $('#badMessageModal');
 const token = $("meta[name='_csrf']").attr("content");
 const header = $("meta[name='_csrf_header']").attr("content");
 const clientModal = $('#addClientDialog');
-
+let $addClientForm = $('#addNewClientForm');
 /**
  * Добавляем инфу о клиентах перед отправкой формы
  * */
@@ -97,11 +97,13 @@ $(document).ready(function () {
     /**
      * Сохранение нового клиента в таблицу и в бд
      * */
-    $('#saveClient').click(function () {
+    $addClientForm.submit(function (e) {
+            // Отменяем перезагрузку страницы при сабмите
+            e.preventDefault()
             // Обрабатываем значения для клиента с формы
-            let number = clientModal.find('#number_client');
-            let name = clientModal.find('#name_client');
-            let id = clientModal.find('#id_client');
+            let number = $addClientForm.find('#number_client');
+            let name = $addClientForm.find('#name_client');
+            let idValue = $addClientForm.find('#id_client').val();
             let fail = false;
             if (number.val() === '') {
                 number.addClass('is-invalid');
@@ -116,8 +118,8 @@ $(document).ready(function () {
                 name.removeClass('is-invalid');
             }
             console.log(number.val());
-            if (id === undefined || id === '' || id === '0')
-                id = null;
+            if (idValue === undefined || idValue === '' || idValue === '0')
+                idValue = null;
             // Добавляем клиента в базу, а затем и в таблицу
             if (!fail) {
                 $.ajax({
@@ -129,7 +131,7 @@ $(document).ready(function () {
                     data: JSON.stringify({
                         number: number.val(),
                         name: name.val(),
-                        id: id
+                        id: idValue
                     }),
                     url: "/api/client",
                     // обязательно нужно добавить эти заголовки, так как csrf enabled

@@ -4,7 +4,6 @@ import com.diplom.work.controller.ControllerUtils;
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Log;
 import com.diplom.work.core.Settings;
-import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.exceptions.SignsNotEquals;
 import com.diplom.work.repo.LogRepository;
 import com.diplom.work.svc.ClientService;
@@ -64,7 +63,7 @@ public class CallEventController {
                     managerNumber = callEvent.getFrom_pin();
                 }
                 if (managerNumber != null) {
-                    Client client = clientService.getFirstByNumber(clientNumber);
+                    Client client = clientService.getFirstByNumberSubstr(clientNumber);
                     if (client == null) {
                         client = new Client();
                         client.setNumber(clientNumber);

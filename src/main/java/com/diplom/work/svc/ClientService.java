@@ -33,14 +33,26 @@ public class ClientService {
     }
 
     /**
+     * Поиск клиента по точному совпадению номера
+     *
+     * @return найденный клиент или null, если не найдено
+     */
+    public Client getFirstByNumberEquals(@NonNull String number) {
+        return clientRepository.findFirstByNumber(number);
+    }
+
+    /**
      * Пытаемся найти по поступающему номеру
      * Если не нашли, пробуем оставить только цифры,
-     * убрать код страны (т.к. 7 или 8 может быть) и пробуем ещё раз
+     * убрать код страны (т.к. 7 или 8 может быть, надеюсь с украины никто не позвонит) и пробуем ещё раз
      * <p>
      * Клиентов с одинаковым номером быть не должно (надеюсь)
+     * </p>
+     *
+     * @return найденный клиент или null, если не найдено
      */
-    public Client getFirstByNumber(@NonNull String number) {
-        Client client = clientRepository.findFirstByNumber(number);
+    public Client getFirstByNumberSubstr(@NonNull String number) {
+        Client client = getFirstByNumberEquals(number);
         if (client == null) {
             client = clientRepository.findFirstByNumberContaining(getOnlyNumbers(number).substring(1));
         }
@@ -67,12 +79,13 @@ public class ClientService {
         Client clientFromBd = null;
         if (client.getId() == null || client.getId() == 0) {
             // Вдруг клиент с таким номером уже есть
-            clientFromBd = getFirstByNumber(client.getNumber());
+            clientFromBd = getFirstByNumberEquals(client.getNumber());
         } else
             clientFromBd = getById(client.getId());
         if (clientFromBd != null) {
+            // Меняем список правил, в которых участвует клиент
             // Т.к. rule является "главным", меняем через него
-            // todo сделать попроще
+            // todo сделать попроще если можно
             for (Rule rule : clientFromBd.getRules()) {
                 rule.getClients().remove(clientFromBd);
                 ruleRepository.save(rule);

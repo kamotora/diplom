@@ -62,7 +62,7 @@ public class LogService {
                 if (clientNumber.equals(parseNumberFromSip(log.getFrom_number())) && !log.getRequest_pin().isEmpty()) {
                     return log.getRequest_pin();
                 }
-            }else if(clientNumber.equals(parseNumberFromSip(log.getRequest_number())) && !log.getFrom_number().isEmpty()){
+            }else if(clientNumber.equals(parseNumberFromSip(log.getRequest_number())) && !log.getFrom_pin().isEmpty()){
                 return log.getFrom_pin();
             }
 

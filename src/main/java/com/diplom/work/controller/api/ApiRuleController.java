@@ -56,11 +56,8 @@ public class ApiRuleController {
     /**
      * Обновление информации о правиле
      *
-     * @param rule изменённый клиент в виде json
-     *             id - id клиента (not null)
-     *             number - номер клиента (not null)
-     *             name - ФИО клиента (может быть null)
-     * @return Изменённый клиент
+     * @param rule правило в виде json
+     * @return Изменённое правило
      * @see Rule
      */
     @PutMapping(path = "", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})

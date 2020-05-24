@@ -92,7 +92,7 @@ public class NumberInfoController {
             if (settings.getIsNeedCheckSign())
                 ControllerUtils.checkSigns(body, settings.getClientID(), settings.getClientKey(), clientSign, "get_number_info");
             // Находим клиента
-            Client client = clientService.getFirstByNumber(numberInfo.getFrom_number());
+            Client client = clientService.getFirstByNumberSubstr(numberInfo.getFrom_number());
             // Находим правило
             // Если клиента нет ни в одном правиле,
             // ищем правила для всех
@@ -160,8 +160,9 @@ public class NumberInfoController {
                 return new NumberInfoAnswer(client.getLastManagerNumber(), client);
             // Если информации нет, не теряем надежды и пробуем найти в логах
             String pin = logService.findLastPinByClientNumber(client.getNumber());
-            if (pin != null)
+            if (pin != null){
                 return new NumberInfoAnswer(pin);
+            }
         }
         //Маршрутизируем стандартно - на указанный номер
         else {
