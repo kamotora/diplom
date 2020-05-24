@@ -10,7 +10,7 @@
 </head>
 <body class="d-flex flex-column h-100">
 <header>
-    <div th:replace="fragments/navbars :: selectNavbar"></div>
+    <th:block th:replace="fragments/navbars :: selectNavbar"></th:block>
 </header>
 <main role="main" class="flex-shrink-0">
     <div class="container">
@@ -44,7 +44,7 @@
                 data-show-pagination-switch="true"
                 data-pagination="true"
                 data-page-list="[10, 25, 50, 100, all]"
-                data-url="api/rule/all"
+                data-url="rule/all"
                 class="table table-bordered table-hover table-striped"
         >
         </table>

@@ -3,25 +3,24 @@ package com.diplom.work.controller;
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Days;
 import com.diplom.work.core.Rule;
+import com.diplom.work.core.Settings;
 import com.diplom.work.core.json.view.Views;
+import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.ManagerIsNull;
 import com.diplom.work.exceptions.TimeIncorrect;
 import com.diplom.work.svc.RuleService;
+import com.diplom.work.svc.SettingsService;
 import com.diplom.work.svc.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,11 +29,13 @@ public class RulesController {
 
     private final RuleService ruleService;
     private final UserService userService;
+    private final SettingsService settingsService;
 
     @Autowired
-    public RulesController(RuleService ruleService, UserService userService) {
+    public RulesController(RuleService ruleService, UserService userService, SettingsService settingsService) {
         this.ruleService = ruleService;
         this.userService = userService;
+        this.settingsService = settingsService;
     }
 
     /**
@@ -45,18 +46,23 @@ public class RulesController {
         return "rules";
     }
 
-
     /**
      * Возврат всех правил для таблицы в виде JSON (таблица на JS)
      *
      * @return всех правил в виде JSON
      */
-    @GetMapping(path = "api/rulesForTable", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/rule/all", produces = {MediaType.APPLICATION_JSON_VALUE})
     @JsonView(Views.forTable.class)
-    public ResponseEntity<List<Rule>> getRulesForTable() {
-        return ResponseEntity.ok(ruleService.findAllByOrderByIdAsc());
+    public ResponseEntity<List<Rule>> getAllRules(@AuthenticationPrincipal User user) {
+        // Смотрим настройки
+        boolean isUserCanViewOnlyTheirRules = settingsService.getSettingsOptional()
+                .map(Settings::getIsUsersCanViewOnlyTheirRules).orElse(false);
+        // Если нужно, то показываем только правила с участием менеджера
+        if (isUserCanViewOnlyTheirRules && user.getRoles().contains(Role.USER)) {
+            return ResponseEntity.ok(ruleService.getRulesForUser(user));
+        }
+        return ResponseEntity.ok(ruleService.getAll());
     }
-
 
     /**
      * Вывод формы для добавления правила
@@ -64,15 +70,19 @@ public class RulesController {
      * @return заполненная форма
      */
     @GetMapping("/rule")
-    public String getPageForAddRule(Model model,  @AuthenticationPrincipal User user) {
-        if(user.getFirstRoleName().equals("Пользователь")) {
+    public String getPageForAddRule(Model model, @AuthenticationPrincipal User user) {
+        // Смотрим настройки
+        boolean isUserCanAddInRuleOnlyMyself = settingsService.getSettingsOptional()
+                .map(Settings::getIsUsersCanAddRulesOnlyMyself).orElse(false);
+        // Если нужно, автоматом добавляем менеджера
+        if (isUserCanAddInRuleOnlyMyself && user.getRoles().contains(Role.USER)) {
+            model.addAttribute("isUser", "true");
             model.addAttribute("isUser", "true");
             model.addAttribute("users", user);
             Rule rule = new Rule();
             rule.setManager(user);
             model.addAttribute(rule);
-        }
-        else {
+        } else {
             model.addAttribute("users", userService.findAll());
             model.addAttribute("rule", new Rule());
         }
@@ -89,8 +99,12 @@ public class RulesController {
 
     @GetMapping("/rule/{id}")
     public String getPageForEditRule(@PathVariable("id") Rule rule, Model model, @AuthenticationPrincipal User user) {
-        if(user.getFirstRoleName().equals("Пользователь"))
+        // Смотрим настройки
+        boolean isUserCanAddInRuleOnlyMyself = settingsService.getSettingsOptional()
+                .map(Settings::getIsUsersCanAddRulesOnlyMyself).orElse(false);
+        if (isUserCanAddInRuleOnlyMyself && user.getRoles().contains(Role.USER)) {
             model.addAttribute("isUser", "true");
+        }
         model.addAttribute("rule", rule);
         model.addAttribute("users", userService.findAll());
         model.addAttribute("allDays", Days.values());
@@ -109,8 +123,12 @@ public class RulesController {
         model.addAttribute("users", userService.findAll());
         model.addAttribute("allDays", Days.values());
         model.addAttribute("isView", "true");
-        if(user.getFirstRoleName().equals("Пользователь"))
+        // Смотрим настройки
+        boolean isUserCanAddInRuleOnlyMyself = settingsService.getSettingsOptional()
+                .map(Settings::getIsUsersCanAddRulesOnlyMyself).orElse(false);
+        if (isUserCanAddInRuleOnlyMyself && user.getRoles().contains(Role.USER)) {
             model.addAttribute("isUser", "true");
+        }
         return "rule";
     }
 
@@ -132,6 +150,16 @@ public class RulesController {
         return getPageForEditRule(rule, model, user);
     }
 
+    /**
+     * Возврат всех клиентов для правила
+     *
+     * @return всех клиентов в виде JSON
+     */
+    @GetMapping(path = "/rule/{id}/clients", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @JsonView(Views.forTable.class)
+    public ResponseEntity<Set<Client>> getUsersForTable(@PathVariable("id") Rule rule) {
+        return ResponseEntity.ok(rule.getClients());
+    }
 
     /**
      * Удаление правил по массиву IDs

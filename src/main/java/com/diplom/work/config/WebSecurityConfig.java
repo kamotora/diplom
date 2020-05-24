@@ -37,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().ignoringAntMatchers("/api/**")
                 .and() //csrf для api отключить
                     .authorizeRequests()
-                    .antMatchers("/css/**", "/js/**", "/images/**","/login", "/registration").permitAll() // Доступны всем
+                    .antMatchers("/css/**", "/js/**", "/assets/**","/login", "/registration").permitAll() // Доступны всем
                     .antMatchers( "/api/**").permitAll() // ограничения по ip прописаны в nginx, было бы неплохо заменить на токены
                     .anyRequest().authenticated()
                 .and()

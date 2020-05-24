@@ -14,6 +14,7 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -80,7 +81,7 @@ public class Rule {
             inverseJoinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id")
     )
     @JsonView(Views.allRule.class)
-    private Set<Client> clients;
+    private Set<Client> clients = new HashSet<>();
 
     /**
      * Дни действия правила

@@ -56,6 +56,9 @@ $(document).ready(function () {
 
     //Скрываем поле для ввода клиентов, если в правиле активно "для всех клиентов", и наоборот
     const clientsBlock = $('#clients');
+    if ($forAll.is(':checked')) {
+        clientsBlock.hide(100);
+    }
     $forAll.click(function () {
         if ($forAll.is(':checked')) {
             clientsBlock.hide(100);
@@ -162,8 +165,54 @@ $(document).ready(function () {
     )
 
 
+    /**
+     * Таблица с клиентами для правила (на самой странице редактирования правила)
+     * */
+    $clientsInRulesTable.bootstrapTable({
+        columns: [{
+            field: 'id',
+            title: 'ID',
+            sortable: true,
+            align: 'center',
+            valign: 'middle',
+        }, {
+            field: 'number',
+            title: 'Номер телефона',
+            sortable: true,
+            align: 'center',
+        }, {
+            field: 'name',
+            title: 'ФИО Клиента',
+            sortable: true,
+            align: 'center',
+        }, {
+            field: 'operate',
+            title: "Действия",
+            align: 'center',
+            valign: 'middle',
+            visible: !isView,
+            clickToSelect: false,
+            events: {
+                'click .edit': onEditClick,
+                'click .remove': function (e, value, row, index) {
+                    deleteClientsByIds(row.id)
+                }
+            },
+            formatter: [
+                '<a class="edit" href="javascript:void(0)" title="Изменить">',
+                '<i class="fas fa-edit"></i>',
+                '</a>  ',
+                '<a class="remove" href="javascript:void(0)" title="Удалить">',
+                '<i class="fa fa-trash"></i>',
+                '</a>'
+            ].join('')
+        }
+        ]
+    })
+
+    // Вывод всех клиентов в правиле (если id правила есть)
+
     $(function () {
-        // Вывод всех клиентов в правиле (если id правила есть)
         const id = $('#id').val();
         if (id !== undefined && id !== '' && id !== '0')
             $.ajax({
@@ -185,52 +234,8 @@ $(document).ready(function () {
                     console.log(data);
                 }
             });
-
-        /**
-         * Таблица с клиентами для правила (на самой странице редактирования правила)
-         * */
-        $clientsInRulesTable.bootstrapTable({
-            columns: [{
-                field: 'id',
-                title: 'ID',
-                sortable: true,
-                align: 'center',
-                valign: 'middle',
-            }, {
-                field: 'number',
-                title: 'Номер телефона',
-                sortable: true,
-                align: 'center',
-            }, {
-                field: 'name',
-                title: 'ФИО Клиента',
-                sortable: true,
-                align: 'center',
-            }, {
-                field: 'operate',
-                title: "Действия",
-                align: 'center',
-                valign: 'middle',
-                visible: !isView,
-                clickToSelect: false,
-                events: {
-                    'click .edit': onEditClick,
-                    'click .remove': function (e, value, row, index) {
-                        deleteClientsByIds(row.id)
-                    }
-                },
-                formatter: [
-                    '<a class="edit" href="javascript:void(0)" title="Изменить">',
-                    '<i class="fas fa-edit"></i>',
-                    '</a>  ',
-                    '<a class="remove" href="javascript:void(0)" title="Удалить">',
-                    '<i class="fa fa-trash"></i>',
-                    '</a>'
-                ].join('')
-            }
-            ]
-        })
     })
+
 
     /**
      * Таблица с Существующими клиентами (модальное окно "Добавление клиента")

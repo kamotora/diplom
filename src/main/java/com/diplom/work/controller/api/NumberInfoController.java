@@ -28,7 +28,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import static org.thymeleaf.util.StringUtils.isEmptyOrWhitespace;
 
@@ -97,28 +100,23 @@ public class NumberInfoController {
                 ControllerUtils.checkSigns(body, settings.getClientID(), settings.getClientKey(), clientSign, "get_number_info");
             // Находим клиента
             Client client = clientService.getFirstByNumberSubstr(numberInfo.getFrom_number());
-            // Находим правило
-            // Если клиента нет ни в одном правиле,
-            // ищем правила для всех
-            Rule rule = null;
+
+            // Правила для всех используются всегда)
+            Set<Rule> allRules = ruleService.getRulesForAll();
+            //Если такого клиента нет, создадим
             if (client == null) {
-                rule = ruleService.getFirstRuleForAllCanUseNow();
                 client = new Client(numberInfo.getFrom_number());
+                clientService.save(client);
             } else {
-
-                //Ща как отсортирую
-                Comparator<Rule> ruleComparator = new RulePriorityComparator();
-                TreeSet<Rule> sortedRules = new TreeSet<Rule>(ruleComparator);
-
-                sortedRules.addAll(client.getRules());
-
-                for (Rule clientsRule : sortedRules) {
-                    if (ruleService.isRuleCanUseNow(clientsRule)) {
-                        rule = clientsRule;
-                        break;
-                    }
-                }
+                //Если клиент есть, добавляем в общую кучу правила с его участием
+                allRules.addAll(client.getRules());
             }
+
+            // Фильтруем по времени, ищем первое правило с наибольшим приоритетом (число наименьшее), если правил нет, то null
+            Rule rule = allRules.stream()
+                    .filter(ruleService::isRuleCanUseNow)
+                    .min(new RulePriorityComparator()).orElse(null);
+
             if (rule == null)
                 throw new NotFoundRequestNumberException(numberInfo.getFrom_number());
             // Формируем ответ

@@ -62,8 +62,7 @@ public class RuleService {
      * @return список правил или null, если таких нету
      */
     public Set<Rule> getRulesForAll() {
-        Set<Rule> all = ruleRepository.findAllByIsForAllClientsIsTrue();
-        return all;
+        return ruleRepository.findAllByIsForAllClientsIsTrue();
     }
 
     public Rule saveWithClients(Rule rule, Set<Client> clientsForEditableRule) throws ManagerIsNull, TimeIncorrect {

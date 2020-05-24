@@ -34,14 +34,10 @@ public class ApiRuleController {
      * Возврат всех правил для в виде JSON
      *
      * @return все клиенты в виде JSON
-     * todo возвращаются только для таблицы, а не всё
      */
     @RequestMapping(path = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.forTable.class)
-    public List<Rule> getAllRules(@AuthenticationPrincipal User user) {
-        //Проверяем если пользователь то только его правила
-        if(user.getFirstRoleName().equals("Пользователь"))
-            return ruleService.getRulesForUser(user);
+    @JsonView(Views.allRule.class)
+    public List<Rule> getAllRules() {
         return ruleService.getAll();
     }
 
