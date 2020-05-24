@@ -73,6 +73,11 @@ public class Rule {
     @Enumerated(EnumType.STRING)
     private Set<Days> days;
 
+    //Приоритет
+    @Column(name = "priority", nullable = true)
+    @JsonView(Views.forTable.class)
+    private Integer priority;
+
     @Transient
     private Time timeStart;
     @Transient

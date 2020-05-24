@@ -4,6 +4,7 @@
       lang="auto" class="h-100">
 <head>
     <th:block th:replace="fragments/head :: headForTable('Логи')"/>
+
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <!-- default header name is X-CSRF-TOKEN -->
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
@@ -34,6 +35,30 @@
                 <button class="btn btn-primary mx-sm-1" id="resetFilter" type="reset">Сбросить</button>
             </form>
         </div>
+
+        <div sec:authorize="hasAuthority('Статист')">
+            <div class = "container" id = "graphics">
+                <div class = "row wow fadeIn">
+                    <div class = "col-lg-8">
+                        <div class = "card">
+                            <div class = "card-body">
+                                <canvas id = "myChart">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class = "col-lg-4">
+                        <div class = "card">
+                            <div class = "card-body">
+                                <canvas id = "pieChart">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <table
                 id="LogsTable"
                 data-toggle="table"
@@ -62,6 +87,8 @@
 </main>
 <div th:replace="fragments/dialogs ::askDeleteDialog"></div>
 <footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
+
 <script type="text/javascript" th:src="@{/static/js/tables/logsTable.js}"></script>
+
 </body>
 </html>

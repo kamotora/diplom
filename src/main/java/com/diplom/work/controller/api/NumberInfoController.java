@@ -1,6 +1,7 @@
 package com.diplom.work.controller.api;
 
 
+import com.diplom.work.comparators.RulePriorityComparator;
 import com.diplom.work.controller.ControllerUtils;
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Rule;
@@ -25,6 +26,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Comparator;
+import java.util.TreeSet;
 
 import static org.thymeleaf.util.StringUtils.isEmptyOrWhitespace;
 
@@ -101,7 +105,14 @@ public class NumberInfoController {
                 rule = ruleService.getFirstRuleForAllCanUseNow();
                 client = new Client(numberInfo.getFrom_number());
             } else {
-                for (Rule clientsRule : client.getRules()) {
+
+                //Ща как отсортирую
+                Comparator<Rule> ruleComparator = new RulePriorityComparator();
+                TreeSet<Rule> sortedRules = new TreeSet<Rule>(ruleComparator);
+
+                sortedRules.addAll(client.getRules());
+
+                for (Rule clientsRule : sortedRules) {
                     if (ruleService.isRuleCanUseNow(clientsRule)) {
                         rule = clientsRule;
                         break;
