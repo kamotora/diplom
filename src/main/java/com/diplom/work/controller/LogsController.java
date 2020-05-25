@@ -3,6 +3,7 @@ package com.diplom.work.controller;
 import com.diplom.work.core.Log;
 import com.diplom.work.core.dto.LogFilterDto;
 import com.diplom.work.core.json.view.Views;
+import com.diplom.work.svc.CallService;
 import com.diplom.work.svc.LogService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +18,17 @@ import java.util.List;
 @Controller
 public class LogsController {
     private final LogService logService;
+    private final CallService callService;
 
     @Autowired
-    public LogsController(LogService logService) {
+    public LogsController(LogService logService, CallService callService) {
         this.logService = logService;
+        this.callService = callService;
     }
 
     /**
      * Вывод страницы с таблицей
-     * */
+     */
     @GetMapping(path = "/logs")
     public String listLogs(Model model) {
         return "logs";
@@ -39,7 +42,8 @@ public class LogsController {
     @GetMapping(path = "/logs", produces = {MediaType.APPLICATION_JSON_VALUE})
     @JsonView(Views.forTable.class)
     public ResponseEntity<List<Log>> getLogsForTable() {
-        return ResponseEntity.ok(logService.findAllByOrderByTimestampAsc());
+        List<Log> ok = logService.findAllByOrderByTimestampAsc();
+        return ResponseEntity.ok(ok);
     }
 
     /**
@@ -73,11 +77,20 @@ public class LogsController {
         return "fragments/messages :: messages";
     }
 
+    //TECT
 
-    @GetMapping("log/{id}")
-    public String deleteLog(@PathVariable Long id) {
-        logService.deleteOneLog(id);
-        return "redirect:/logs";
+    /**
+     * Получаем от ВАТС инфу о вызове
+     * и выводим её
+     * но пока нихуя не работает ибо метод отлключен и хз как отлаживать
+     */
+    @GetMapping("log/{id}/view")
+    public ResponseEntity<String> showCallInfo(@PathVariable("id") Log log) {
+        try {
+            return ResponseEntity.ok(callService.getCallInfoBySessionID(log.getSession_id()).toString());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.toString());
+        }
     }
 
 }

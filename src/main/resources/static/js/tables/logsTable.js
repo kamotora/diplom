@@ -26,20 +26,24 @@ $(document).ready(function () {
     var selections = []
     var myChart;
 
-    var ctx = document.getElementById('myChart').getContext('2d');
-
     // Получить строки с галочкой
     function getIdSelections() {
         return $.map($table.bootstrapTable('getSelections'), function (row) {
             return row.id
         })
     }
-//Получить графики
+
+    let ctx = null;
+    if( document.getElementById('myChart'))
+        ctx = document.getElementById('myChart').getContext('2d');
+
+    //Получить графики
     function getGraphics(values){
         //Очистим данные
+        if(ctx == null)
+            return;
         if(myChart !== undefined)
             myChart.destroy();
-        var ctx = document.getElementById('myChart').getContext('2d');
          myChart = new Chart(ctx,{
             type: 'bar',
             data: {

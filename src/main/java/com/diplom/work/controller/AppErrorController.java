@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Контроллер для обработки ошибок (/error)
  */
-@Controller
+//x@Controller
 public class AppErrorController implements ErrorController {
 
     /**

@@ -2,6 +2,7 @@ package com.diplom.work.core.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * Для парсинга JSON ответа с сервера, метод call_info
@@ -11,6 +12,7 @@ import lombok.Data;
  * *
  */
 @Data
+@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CallInfo {
     /**

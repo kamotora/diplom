@@ -1,17 +1,14 @@
 package com.diplom.work.svc;
 
-import com.diplom.work.controller.ControllerUtils;
 import com.diplom.work.core.Log;
 import com.diplom.work.core.dto.LogFilterDto;
 import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.repo.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.util.StringUtils;
 
-import java.sql.Array;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.diplom.work.controller.ControllerUtils.parseNumberFromSip;
@@ -35,19 +32,24 @@ public class LogService {
         all.sort(Comparator.comparing(Log::getTimestampInDateTimeFormat).reversed());
         return all;
     }
-
+    /**
+     * Поиск всех логов по фильтру
+     * если logFilterDto.getStartDate() или logFilterDto.getFinishDate() null, то они не учитываются
+     * */
     public List<Log> findAllByFilter(LogFilterDto logFilterDto) {
         return logRepository.findAll().stream().filter(log ->
-                log.getTimestampInDateTimeFormat().isAfter(logFilterDto.getStartDate())
-                        && log.getTimestampInDateTimeFormat().isBefore(logFilterDto.getFinishDate().plusDays(1)))
+                (logFilterDto.getStartDate() == null || log.getTimestampInDateTimeFormat().isAfter(logFilterDto.getStartDate()))
+                        && (logFilterDto.getFinishDate() == null ||
+                        log.getTimestampInDateTimeFormat().isBefore(logFilterDto.getFinishDate().plusDays(1))))
                 .collect(Collectors.toList());
     }
 
     /**
-     * @param clientNumber номер клиента
      * Ищем последний pin, с которого был разговор с клиентом clientNumber
+     *
+     * @param clientNumber номер клиента
      * @return pin или null, если ничего не нашли
-     * */
+     */
     public String findLastPinByClientNumber(String clientNumber) throws NumberParseException {
         if (isEmptyOrWhitespace(clientNumber))
             return null;
@@ -62,7 +64,7 @@ public class LogService {
                 if (clientNumber.equals(parseNumberFromSip(log.getFrom_number())) && !log.getRequest_pin().isEmpty()) {
                     return log.getRequest_pin();
                 }
-            }else if(clientNumber.equals(parseNumberFromSip(log.getRequest_number())) && !log.getFrom_pin().isEmpty()){
+            } else if (clientNumber.equals(parseNumberFromSip(log.getRequest_number())) && !log.getFrom_pin().isEmpty()) {
                 return log.getFrom_pin();
             }
 
