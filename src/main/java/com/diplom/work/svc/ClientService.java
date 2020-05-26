@@ -76,7 +76,7 @@ public class ClientService {
 
         // Если id есть, сохраняем так
         // Иначе пробуем поискать по номеру и обновить данные
-        Client clientFromBd = null;
+        Client clientFromBd;
         if (client.getId() == null || client.getId() == 0) {
             // Вдруг клиент с таким номером уже есть
             clientFromBd = getFirstByNumberEquals(client.getNumber());

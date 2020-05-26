@@ -6,9 +6,9 @@ $(document).ready(function () {
     const token = $("meta[name='_csrf']").attr("content");
     const header = $("meta[name='_csrf_header']").attr("content");
 
-    var $remove = $('#remove')
+    const $remove = $('#remove');
     let $deleteDialog = $('#askDeleteDialog')
-    var selections = []
+    let selections = [];
 
     // Получить строки с галочкой
     function getIdSelections() {
@@ -127,7 +127,7 @@ $(document).ready(function () {
             console.log(name, args)
         })
         $remove.click(function () {
-            var ids = getIdSelections()
+            const ids = getIdSelections();
             deleteRuleByIds(ids)
             $remove.prop('disabled', true)
         })

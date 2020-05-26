@@ -4,6 +4,7 @@ import com.diplom.work.controller.ControllerUtils;
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Log;
 import com.diplom.work.core.Settings;
+import com.diplom.work.core.json.NumberInfo;
 import com.diplom.work.exceptions.SignsNotEquals;
 import com.diplom.work.repo.LogRepository;
 import com.diplom.work.svc.ClientService;
@@ -17,6 +18,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Обработка запроса по call_events от ВАТС
+ * */
 @RestController
 @RequestMapping("api/")
 public class CallEventController {
@@ -34,6 +38,17 @@ public class CallEventController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CallEventController.class);
 
 
+
+    /**
+     * Обработка запроса по call_events от ВАТС
+     * Вся информация записывается в лог (Журнал звонков)
+     *
+     * @param clientID   - идентификатор клиента, должен совпадать с нашим ClientID в настройках @see Settings
+     * @param clientSign - подпись запроса = sha256hex(clientid+body+clientkey). Можно проверить, и если не совпадает, игнорить. А можно ничего не делать)
+     * @param body       - тело запроса
+     * @return ответ 200 серверу
+     * @see Log тело запроса в виде класса
+     */
     @PostMapping(path = "call_events",
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Void> getNewCall(@RequestHeader(name = "X-Client-ID", required = false) String clientID,
@@ -70,20 +85,19 @@ public class CallEventController {
                     }
                     client.setLastManagerNumber(managerNumber);
                     clientService.save(client);
-                }
-                else
+                } else
                     throw new Exception("Не найден номер менеджера");
             }
+        } catch (SignsNotEquals signsNotEquals) {
+            LOGGER.error("############################ ОШИБОЧКА! ############################");
+            LOGGER.error(signsNotEquals.getMessage());
+            return ResponseEntity.status(403).build();
         } catch (Exception e) {
             // Настроек нет
             LOGGER.error("############################ ОШИБОЧКА! ############################");
             LOGGER.error(String.format("ТЕКСТ ОШИБКИ: %s Получили запрос на call_events, header.X-Client-ID = %s \n" +
                     "header.X-Client-Sign = %s \n, body = %s", e.getMessage(), clientID, clientSign, callEvent.toString()));
             return ResponseEntity.status(500).build();
-        } catch (SignsNotEquals signsNotEquals) {
-            LOGGER.error("############################ ОШИБОЧКА! ############################");
-            LOGGER.error(signsNotEquals.getMessage());
-            return ResponseEntity.status(403).build();
         }
 
         // Сохраняем лог

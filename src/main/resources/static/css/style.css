@@ -19,7 +19,7 @@ tbody td {
 
 .badge {
     padding: 1px 9px 2px;
-    font-size: 12.025px;
+    font-size: 12px;
     font-weight: bold;
     white-space: nowrap;
     color: #F8F8FF;
@@ -122,7 +122,7 @@ tbody td {
 
 
 input[id = "output"]{
-    font-size: 12.025px;
+    font-size: 12px;
     font-weight: bold;
     white-space: nowrap;
     color: #F8F8FF;

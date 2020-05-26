@@ -52,13 +52,20 @@ public class ApiLogController {
         int numerusOutbound = 0;
         int numerusInternal = 0;
 
-        for(int i = 0; i < logs.size(); i++){
-            if(logs.get(i).getType().equals("incoming"))
-                numerusIncoming++;
-            else if (logs.get(i).getType().equals("outbound"))
-                numerusOutbound++;
-            else if (logs.get(i).getType().equals("internal"))
-                numerusInternal++;
+        for (Log log : logs) {
+            switch (log.getType()) {
+                case "incoming":
+                    numerusIncoming++;
+                    break;
+                case "outbound":
+                    numerusOutbound++;
+                    break;
+                case "internal":
+                    numerusInternal++;
+                    break;
+                default:
+                    System.err.println("Неизвестный тип лога");
+            }
         }
         listDataForGraphic.add(numerusIncoming);
         listDataForGraphic.add(numerusOutbound);

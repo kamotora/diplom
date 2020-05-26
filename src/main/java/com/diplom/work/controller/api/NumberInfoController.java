@@ -19,6 +19,7 @@ import com.diplom.work.svc.SettingsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import static org.thymeleaf.util.StringUtils.isEmptyOrWhitespace;
 
+/**
+ * Обработка запроса по get_number_info от ВАТС
+ * */
 @RestController
 @RequestMapping("api/")
 public class NumberInfoController {
@@ -161,15 +161,14 @@ public class NumberInfoController {
      * @return ответ серверу ВАТС, куда направить
      * @see NumberInfoAnswer
      */
-    //todo set client nonnull
-    public NumberInfoAnswer getAnswer(Client client, Rule rule) throws NumberParseException {
-        if (rule.getIsSmart() && client != null) {
+    public NumberInfoAnswer getAnswer(@NonNull Client client, @NonNull Rule rule) throws NumberParseException {
+        if (rule.getIsSmart()) {
             // Если есть инфа о последнем разговоре
             if (!isEmptyOrWhitespace(client.getLastManagerNumber()))
                 return new NumberInfoAnswer(client.getLastManagerNumber(), client);
             // Если информации нет, не теряем надежды и пробуем найти в логах
             String pin = logService.findLastPinByClientNumber(client.getNumber());
-            if (pin != null){
+            if (pin != null) {
                 return new NumberInfoAnswer(pin);
             }
         }

@@ -1,30 +1,16 @@
 // Используются таблицы bootstrap-table.com
-
-// Показать подробнее (плюсик)
-function detailFormatter(index, row) {
-    let html = [];
-    $.each(row, function (key, value) {
-        html.push('<p><b>' + key + ':</b> ' + value + '</p>')
-    })
-    return html.join('');
-};
-
-
-
-
-
 let $table = $('#LogsTable')
 
 $(document).ready(function () {
     const token = $("meta[name='_csrf']").attr("content");
     const header = $("meta[name='_csrf_header']").attr("content");
 
-    var $remove = $('#remove');
+    const $remove = $('#remove');
     let $deleteDialog = $('#askDeleteDialog');
     let $startFilter = $('#startFilter');
     let $resetFilter = $('#resetFilter');
-    var selections = []
-    var myChart;
+    let selections = [];
+    let myChart;
 
     // Получить строки с галочкой
     function getIdSelections() {
@@ -76,14 +62,14 @@ $(document).ready(function () {
         });
 
 
-        var ctxP = document.getElementById('pieChart').getContext('2d');
-        var pieChart = new Chart(ctxP,{
+        const ctxP = document.getElementById('pieChart').getContext('2d');
+        const pieChart = new Chart(ctxP, {
             type: 'pie',
             data: {
                 labels: ["Принятые", "Пропущенные"],
                 datasets: [{
-                    data: [340,20],
-                    backgroundColor:[
+                    data: [340, 20],
+                    backgroundColor: [
                         'blue',
                         'red'
                     ],
@@ -300,7 +286,7 @@ $(document).ready(function () {
                 // push or splice the selections if you want to save all data selections
             })
         $remove.click(function () {
-            var ids = getIdSelections()
+            const ids = getIdSelections();
             deleteLogByIds(ids)
             $remove.prop('disabled', true)
         })

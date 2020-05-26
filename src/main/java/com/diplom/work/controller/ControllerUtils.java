@@ -41,11 +41,10 @@ public class ControllerUtils {
         return headers;
     }
 
-    public static boolean checkSigns(String body, String clientID, String clientKey, String requestClientSign, String name_method) throws SignsNotEquals {
+    public static void checkSigns(String body, String clientID, String clientKey, String requestClientSign, String name_method) throws SignsNotEquals {
         String myClientSing = Hashing.sha256().hashString(clientID + body + clientKey, StandardCharsets.UTF_8).toString();
         if (requestClientSign.equals(myClientSing)) {
             System.out.println("Подписи " + name_method + " равны");
-            return true;
         } else {
             throw new SignsNotEquals(name_method, requestClientSign, myClientSing);
         }

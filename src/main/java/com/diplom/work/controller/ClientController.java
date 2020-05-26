@@ -93,12 +93,12 @@ public class ClientController {
     public String saveClient(Model model, Client client) {
         try {
             client = clientService.save(client);
+            model.addAttribute("goodMessage", "Сохранено");
         } catch (NumberParseException e) {
             model.addAttribute("badMessage", e.getMessage());
         } catch (Exception e) {
             model.addAttribute("badMessage", "Возникла неизвестная ошибка при сохранении :(");
         }
-        model.addAttribute("goodMessage", "Сохранено");
         return getPageForEditClient(model, client);
     }
 

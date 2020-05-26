@@ -3,9 +3,10 @@
 $(document).ready(function () {
     let $table = $('#table')
 
-    var $remove = $('#remove')
+    const $remove = $('#remove');
     let $deleteDialog = $('#askDeleteDialog')
-    var selections = []
+    let $messages = $('#messages')
+    let selections = [];
 
     // Получить строки с галочкой
     function getIdSelections() {
@@ -13,23 +14,13 @@ $(document).ready(function () {
             return row.id
         })
     }
-
-    // Показать подробнее (плюсик)
-    function detailFormatter(index, row) {
-        let html = [];
-        $.each(row, function (key, value) {
-            html.push('<p><b>' + key + ':</b> ' + value + '</p>')
-        })
-        return html.join('');
-    }
-
     // Действия по клику на иконку "изменить"
     function onEditClick(value, row, index) {
         window.location = '/user/' + row.id;
     }
 
     // Удаление по массиву айдишников
-    function deleteLogByIds(ids) {
+    function deleteUsersByIds(ids) {
         //Показали окно
         $deleteDialog.modal('show');
         $('#yesDelete').click(function () {
@@ -57,11 +48,11 @@ $(document).ready(function () {
                     xhr.setRequestHeader(header, token);
                 },
                 success: function( data ) {
-                    console.log(data);
+                    $messages.replaceWith(data);
                 }
                 ,
                 error: function (data) {
-                    console.log(data);
+                    $messages.replaceWith(data);
                 }
             });
             // Закрытие окна
@@ -120,7 +111,7 @@ $(document).ready(function () {
                         onEditClick(value, row, index)
                     },
                     'click .remove': function (e, value, row, index) {
-                        deleteLogByIds([row.id])
+                        deleteUsersByIds([row.id])
                     }
                 },
                 formatter: [
@@ -128,7 +119,7 @@ $(document).ready(function () {
                     '<i class="fas fa-edit"></i>',
                     '</a>  ',
                     '<a class="remove" href="javascript:void(0)" title="Удалить">',
-                    '<i class="fa fa-trash"></i>',
+                    '<i class="fa fa-trash" style = "color:red"></i>',
                     '</a>'
                 ].join('')
             }
@@ -143,12 +134,9 @@ $(document).ready(function () {
                 selections = getIdSelections()
                 // push or splice the selections if you want to save all data selections
             })
-        $table.on('all.bs.table', function (e, name, args) {
-            console.log(name, args)
-        })
         $remove.click(function () {
-            var ids = getIdSelections()
-            deleteLogByIds(ids)
+            const ids = getIdSelections();
+            deleteUsersByIds(ids)
             $remove.prop('disabled', true)
         })
     })

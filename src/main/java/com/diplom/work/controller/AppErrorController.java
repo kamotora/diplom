@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Контроллер для обработки ошибок (/error)
  */
-//x@Controller
+@Controller
 public class AppErrorController implements ErrorController {
 
     /**
@@ -35,6 +35,7 @@ public class AppErrorController implements ErrorController {
     /**
      * Смотрим код ошибки и возвращаем страницу для неё, если есть
      * Если особой страницы нет, возвращаем как обычно
+     *
      * @param request запрос с инфой об ошибке
      * @return название шаблона для вывода инфы об ошибке
      */
@@ -43,7 +44,7 @@ public class AppErrorController implements ErrorController {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
         if (status != null) {
-            switch (Integer.parseInt(status.toString())){
+            switch (Integer.parseInt(status.toString())) {
                 case 403:
                     return "errors/403";
                 case 404:
@@ -56,19 +57,17 @@ public class AppErrorController implements ErrorController {
         }
         return "error";
     }
+    //Ниже ворованный код, который неизвестно как работает
 
     /**
      * Supports other formats like JSON, XML
-     *
-     * @param request
-     * @return
      */
     @RequestMapping(value = ERROR_PATH)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
         Map<String, Object> body = getErrorAttributes(request, getTraceParameter(request));
         HttpStatus status = getStatus(request);
-        return new ResponseEntity<Map<String, Object>>(body, status);
+        return new ResponseEntity<>(body, status);
     }
 
     /**
@@ -104,6 +103,7 @@ public class AppErrorController implements ErrorController {
             try {
                 return HttpStatus.valueOf(statusCode);
             } catch (Exception ex) {
+                System.err.println(ex.getMessage());
             }
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;

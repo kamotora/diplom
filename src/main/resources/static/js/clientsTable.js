@@ -38,9 +38,9 @@ $(document).ready(function () {
     const token = $("meta[name='_csrf']").attr("content");
     const header = $("meta[name='_csrf_header']").attr("content");
 
-    var $remove = $('#remove')
+    const $remove = $('#remove');
     let $deleteDialog = $('#askDeleteDialog')
-    var selections = []
+    let selections = [];
 
     // Получить строки с галочкой
     function getIdSelections() {
@@ -156,7 +156,7 @@ $(document).ready(function () {
                 // push or splice the selections if you want to save all data selections
             })
         $remove.click(function () {
-            var ids = getIdSelections()
+            const ids = getIdSelections();
             deleteClientsByIds(ids)
             $remove.prop('disabled', true)
         })
