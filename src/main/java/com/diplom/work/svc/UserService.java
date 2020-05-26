@@ -29,6 +29,17 @@ public class UserService implements UserDetailsService {
     public UserService(UserRepository userRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+
+        //Если пользователей вообще нет, создадим админа по-умолчанию
+        if(userRepo.count() == 0){
+            final User defaultAdmin = new User();
+            defaultAdmin.setName("admin");
+            defaultAdmin.setPassword(passwordEncoder.encode("admin"));
+            defaultAdmin.getRoles().add(Role.ADMIN);
+            defaultAdmin.setActive(true);
+            userRepo.save(defaultAdmin);
+            System.out.println("Был создан администратор по умолчанию:\n Логин:admin\nПароль:admin");
+        }
     }
 
     public boolean deleteUserById(Long id) throws UsernameNotFoundException {
@@ -58,6 +69,10 @@ public class UserService implements UserDetailsService {
 
     public List<User> findAll() {
         return userRepo.findAll();
+    }
+
+    public List<User> findAllByRole(Role role){
+        return userRepo.findAllByRolesContaining(role);
     }
 
     public User save(UserEditDto user) throws NewPasswordsNotEquals, UsernameAlreadyExist {

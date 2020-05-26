@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
-
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="auto"
+>
 <th:block th:fragment="head(title)">
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#563d7c">
-    <!--
-    <meta name="description"
-          content="Портал автомастерских. Автомастерские регистрируются на сайте и подписываются на заявки по разным типам услуг (шиномонтаж, замена масла и проч.). Пользователи могут оставить заявку и выбрать из предложений наиболее подходящий по различным условиям (цена, время, место расположения, отзывы).">
-    <meta name="keywords" content="портал автомастерских, ремонт авто">
-    <link rel="icon" type="image/png" href="assets/logo.png" sizes="16x16">
-     -->
+<!--    <meta name="description"-->
+<!--          content="">-->
+    <meta name="keywords" content="ip телефония, ВАТС, Ростелеком, API">
+<!--    <link rel="icon" type="image/png" th:href="@{/assets/logo.png}" sizes="16x16">-->
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <title th:text="${title}"></title>
 </th:block>

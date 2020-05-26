@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class WorkApplicationController {
 
     @PostMapping("/home")
-    public String homePageAfterLogin(Model model){
+    public String homePageAfterLogin(Model model) {
         return "redirect:/";
     }
 
-    //TODO удалить потом
-    @GetMapping("/rules")
-    public String temp(Model model){
-        return "redirect:/";
+    @GetMapping("/")
+    public String temp(Model model) {
+        return "redirect:/rules";
     }
 }

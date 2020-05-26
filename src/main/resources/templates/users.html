@@ -15,6 +15,9 @@
 <main role="main" class="flex-shrink-0">
     <div class="container">
         <h3 class="mt-2">Список пользователей</h3>
+
+        <div id="messages" th:replace="fragments/messages :: messages"></div>
+
         <div id="toolbar">
             <button id="remove" class="btn btn-danger" disabled>
                 <i class="glyphicon glyphicon-remove"></i> Удалить выбранные
@@ -27,8 +30,6 @@
         <table
                 id="table"
                 data-toggle="table"
-                data-detail-view="true"
-                data-detail-formatter="detailFormatter"
                 data-locale="ru-RU"
                 data-toolbar="#toolbar"
                 data-search="true"
@@ -43,46 +44,15 @@
                 data-show-pagination-switch="true"
                 data-pagination="true"
                 data-page-list="[10, 25, 50, 100, all]"
-                data-url="api/users"
+                data-url="users/table"
                 class="table table-bordered table-hover table-striped"
         >
         </table>
     </div>
 </main>
-
-<!-- Модальное окно "Вы уверены?" -->
-<div id="askDeleteDialog" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Удаление</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Вы точно хотите удалить?</p>
-            </div>
-            <div class="modal-footer">
-                <button id="yesDelete" type="button" class="btn btn-danger">Да</button>
-                <button type="button" class="btn btn-secondary selected" data-dismiss="modal">Нет</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+<div th:replace="fragments/dialogs ::askDeleteDialog"></div>
 <footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
 <!-- My Script -->
 <script type="text/javascript" th:src="@{/js/usersTable.js}"></script>
-<script>
-    // Подробнее
-    function detailFormatter(index, row) {
-        var html = []
-        $.each(row, function (key, value) {
-            html.push('<p><b>' + key + ':</b> ' + value + '</p>')
-        })
-        return html.join('')
-    }
-</script>
 </body>
 </html>

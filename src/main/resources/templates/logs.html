@@ -4,18 +4,92 @@
       lang="auto" class="h-100">
 <head>
     <th:block th:replace="fragments/head :: headForTable('Логи')"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body class="d-flex flex-column h-100">
 <header>
     <div th:replace="fragments/navbars :: selectNavbar"></div>
 </header>
 <main role="main" class="flex-shrink-0">
-    <div class="container">
-        <div th:if="${not #lists.isEmpty(logs)}">
-            <div th:replace="operations/logs/listLogs :: logs"></div>
+    <div class="container-fluid">
+        <h3 class="mt-2">Журнал вызовов</h3>
+
+        <div id="messages" th:replace="fragments/messages :: messages"></div>
+
+        <div id="toolbar">
+            <form class="form-inline">
+                <button id="remove" class="btn btn-danger" disabled>
+                    <i class="glyphicon glyphicon-remove"></i> Удалить выбранные
+                </button>
+                <div class="form-group mx-sm-3">
+                    <label for="startDate">Фильтр по датам: От: </label>
+                    <input type="date" id="startDate" name="startDate" max="3000-12-31"
+                           min="1000-01-01" placeholder="" class="form-control"/>
+                </div>
+                <div class="form-group mx-sm-3">
+                    <label for="finishDate">До: </label>
+                    <input type="date" id="finishDate" name="finishDate" max="3000-12-31"
+                           min="1000-01-01" placeholder="До какой даты" class="form-control"/>
+                </div>
+                <button class="btn btn-primary mx-sm-3" id="startFilter" type="button">Показать</button>
+                <button class="btn btn-primary mx-sm-1" id="resetFilter" type="reset">Сбросить</button>
+            </form>
         </div>
+
+        <div sec:authorize="hasAuthority('Статист')">
+            <div class = "container" id = "graphics">
+                <div class = "row wow fadeIn">
+                    <div class = "col-lg-8">
+                        <div class = "card">
+                            <div class = "card-body">
+                                <canvas id = "myChart">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class = "col-lg-4">
+                        <div class = "card">
+                            <div class = "card-body">
+                                <canvas id = "pieChart">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table
+                id="LogsTable"
+                data-toggle="table"
+                data-locale="ru-RU"
+                data-toolbar="#toolbar"
+                data-search="true"
+                data-show-refresh="true"
+                data-show-toggle="true"
+                data-show-fullscreen="true"
+                data-show-columns="true"
+                data-filter-control="true"
+                data-show-columns-toggle-all="true"
+                data-show-export="true"
+                data-click-to-select="true"
+                data-minimum-count-columns="2"
+                data-show-pagination-switch="true"
+                data-pagination="true"
+                data-page-list="[10, 25, 50, 100, all]"
+                data-url="/logs"
+                class="table table-bordered table-hover table-striped"
+        >
+        </table>
     </div>
 </main>
+<div th:replace="fragments/dialogs ::askDeleteDialog"></div>
+
 <footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
+
+<script type="text/javascript" th:src="@{/static/js/tables/logsTable.js}"></script>
+
 </body>
 </html>

@@ -1,21 +1,18 @@
 package com.diplom.work.config;
 
-import com.diplom.work.core.user.User;
 import com.diplom.work.svc.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Авторизация
- * */
+ */
 
 @Configuration
 @EnableWebSecurity
@@ -24,21 +21,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
         securedEnabled = true,
         jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public WebSecurityConfig(UserService userService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     /**
      * Какие страницы доступны всем, а какие только после входа
-     * */
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().ignoringAntMatchers("/api/**").and() //csrf для api отключить
+        http.csrf().ignoringAntMatchers("/api/**")
+                .and() //csrf для api отключить
                 .authorizeRequests()
-                .antMatchers("/css/**", "/js/**", "/images/**","/login", "/registration").permitAll() // Доступны всем
-                .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/**").permitAll()
+                .antMatchers("/css/**", "/js/**", "/assets/**", "/login", "/registration").permitAll() // Доступны всем
+                .antMatchers("/api/**").permitAll() // ограничения по ip прописаны в nginx, было бы неплохо заменить на токены
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -46,8 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .permitAll()
                 .and()
-                .logout()
-                .permitAll();
+                .logout().permitAll();
 
     }
 

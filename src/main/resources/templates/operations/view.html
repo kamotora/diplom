@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head :: head('Редактирование правила')"></head>
+<body>
+<header>
+
+    <div th:replace="fragments/navbars :: selectNavbar"></div>
+</header>
+<main role="main" class="flex-shrink-0">
+    <div class="container">
+        <h3 class="mt-2">Просмотр правила маршрутизации</h3>
+        <form class="form-horizontal" th:object="${rule}" name="edit_form" id="edit_form"
+             role="form">
+            <div class="form-group">
+                <input type="hidden" id="id" th:name="id" th:value="*{id}"/>
+            </div>
+            <div class = "row">
+                <div class = "form-group col-md-4">
+                    <label for="inputNameRout">Наименование правила</label>
+                    <input type="text" class="form-control" id="inputNameRout" th:name = "name" th:value="*{name}" disabled>
+                </div>
+            </div>
+            <div class = "row" id = "test">
+                <div class = "form-group col-md-4">
+                    <label for="inputNameManager">Менеджер</label>
+                    <input type="text" class="form-control" id="inputNumManager" th:name="number" value="Имя менеджера" disabled/>
+                </div>
+                <div class = "form-group col-md-4">
+                    <label for="inputNumManager">Номер менеджера</label>
+                    <input type="text" class="form-control" id="inputNumManager" th:name="number" th:value="*{managerNumber}" disabled/>
+                </div>
+            </div>
+            <div class = "row" id = "rowCheck">
+                <div class="form-check" id = "smartCheck">
+                    <input type="checkbox" class="form-check-input" id="checkSmartRout" checked disabled/>
+                    <label class="form-check-label" for="checkSmartRout">Умная маршрутизация</label>
+                </div>
+            </div>
+            <h4>Данные клиента</h4>
+            <div class = "row">
+                <div class="form-group col-lg-6">
+                    <label for="client">Телефон клиента</label>
+                    <input type="text" class="form-control" id="client" th:name="client" th:value="*{clientNumber}" minlength="3" maxlength="100" disabled/>
+                </div>
+            </div>
+            <div class = "row">
+                <div class = "form-group col-lg-6">
+                    <label for="FIOClient">ФИО клиента</label>
+                    <input type="text" class="form-control" id="FIOClient" th:name="FIOClient" th:value="*{clientName}" minlength="2" maxlength="100" disabled/>
+                </div>
+            </div>
+            <h4>Выберите дни недели</h4>
+            <div class = "row">
+                <div class = "col-lg-7">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="monday" value="option1" checked disabled>
+                        <label class="form-check-label" for="monday">Пн</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="tuesday" value="option2" disabled>
+                        <label class="form-check-label" for="tuesday">Вт</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="wensday" value="option3" disabled>
+                        <label class="form-check-label" for="wensday">Ср</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="thusday" value="option4" disabled>
+                        <label class="form-check-label" for="thusday">Чт</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="friday" value="option5" checked disabled>
+                        <label class="form-check-label" for="friday">Пт</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="saturday" value="option6" disabled>
+                        <label class="form-check-label" for="saturday">Сб</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="sunday" value="option7" checked disabled>
+                        <label class="form-check-label" for="sunday">Вс</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+<footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footer"></footer>
+
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="auto" class="h-100">
+<head>
+    <th:block th:replace="fragments/head :: headForTable('Список правил маршрутизации')"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body class="d-flex flex-column h-100">
+<header>
+    <th:block th:replace="fragments/navbars :: selectNavbar"></th:block>
+</header>
+<main role="main" class="flex-shrink-0">
+    <div class="container">
+        <h3 class="mt-2">Список правил маршрутизации</h3>
+
+        <div id="messages" th:replace="fragments/messages :: messages"></div>
+
+        <div id="toolbar">
+            <button id="remove" class="btn btn-danger" disabled>
+                <i class="glyphicon glyphicon-remove"></i> Удалить выбранные
+            </button>
+            <button id="add" name="add" class="btn btn-primary" th:onclick="|window.location.href='/rule'|">
+                Добавить
+            </button>
+        </div>
+        <table
+                id="RulesTable"
+                data-toggle="table"
+                data-locale="ru-RU"
+                data-toolbar="#toolbar"
+                data-search="true"
+                data-show-refresh="true"
+                data-show-toggle="true"
+                data-show-fullscreen="true"
+                data-show-columns="true"
+                data-filter-control="true"
+                data-show-columns-toggle-all="true"
+                data-show-export="true"
+                data-click-to-select="true"
+                data-minimum-count-columns="2"
+                data-show-pagination-switch="true"
+                data-pagination="true"
+                data-page-list="[10, 25, 50, 100, all]"
+                data-url="rule/all"
+                class="table table-bordered table-hover table-striped"
+        >
+        </table>
+    </div>
+</main>
+<div th:replace="fragments/dialogs ::askDeleteDialog"></div>
+<footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
+<script type="text/javascript" th:src="@{/static/js/tables/routsTable.js}"></script>
+</body>
+</html>

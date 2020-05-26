@@ -1,10 +1,10 @@
 package com.diplom.work.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.AllArgsConstructor;
+import com.diplom.work.core.json.view.Views;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -19,36 +19,53 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "logs")
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-////Для проверки подписи
-//@JsonPropertyOrder(
-//        {"session_id", "timestamp", "type", "state", "from_number", "from_pin", "request_number", "request_pin", "disconnect_reason", "is_record"})
 public class Log {
     @Id
-    @GeneratedValue
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(Views.onlyId.class)
+    private Long id;
+
     @Column(name = "session_id")
+    @JsonView(Views.forTable.class)
     private String session_id;
+
     @Column(name = "timestamp")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
+    @JsonView(Views.forTable.class)
     private String timestamp;
+
     @Transient
+    @JsonView(Views.simpleObject.class)
     private LocalDateTime timestampInDateTimeFormat;
+
     @Column(name = "type")
     private String type;
+
     @Column(name = "state")
     private String state;
+
     @Column(name = "from_number")
+    @JsonView(Views.forTable.class)
     private String from_number;
+
     @Column(name = "from_pin")
+    @JsonView(Views.simpleObject.class)
     private String from_pin;
+
     @Column(name = "request_number")
+    @JsonView(Views.forTable.class)
     private String request_number;
+
     @Column(name = "request_pin")
+    @JsonView(Views.simpleObject.class)
     private String request_pin;
+
+    @JsonView(Views.simpleObject.class)
     private String disconnect_reason;
+
     //true,false
+    @JsonView(Views.simpleObject.class)
     private String is_record;
 
     @Transient
@@ -74,6 +91,8 @@ public class Log {
      * disconnected – о завершении разговора
      * end – о завершении вызова
      */
+    @JsonView(Views.forTable.class)
+    @JsonGetter("state_call")
     public String getStateName() {
         switch (state) {
             case "new":
@@ -93,13 +112,15 @@ public class Log {
 
 
     /**
-     * @return Тип уведомления по-русски согласно документации
+     * @return Тип вызова по-русски согласно документации
      * Из документации:
      * Тип вызова:
      * incoming – входящий
      * outbound – исходящий
      * internal – внутренний
      */
+    @JsonView(Views.forTable.class)
+    @JsonGetter("type")
     public String getTypeName() {
         switch (type) {
             case "incoming":
@@ -111,6 +132,38 @@ public class Log {
             default:
                 return "Неизвестный тип вызова";
         }
+    }
+
+    /**
+     * @return true - если этот лог о начале разговора, иначе - false
+     */
+    @Transient
+    public boolean isCall() {
+        return state.equals("connected");
+    }
+
+    /**
+     * @return true - если этот лог для внутреннего вызова
+     */
+    @Transient
+    public boolean isInternal() {
+        return type.equals("internal");
+    }
+
+    /**
+     * @return true - если этот лог для входящего вызова
+     */
+    @Transient
+    public boolean isOutbound() {
+        return type.equals("outbound");
+    }
+
+    /**
+     * @return true - если этот лог для исходящего вызова
+     */
+    @Transient
+    public boolean isIncoming() {
+        return type.equals("incoming");
     }
 
 }

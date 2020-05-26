@@ -1,48 +1,74 @@
 package com.diplom.work.svc;
 
 import com.diplom.work.core.Log;
+import com.diplom.work.core.dto.LogFilterDto;
+import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.repo.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Array;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.diplom.work.controller.ControllerUtils.parseNumberFromSip;
+import static org.thymeleaf.util.StringUtils.isEmptyOrWhitespace;
 
 @Service
 public class LogService {
-    private LogRepository logRepository;
+    private final LogRepository logRepository;
 
     @Autowired
     public LogService(LogRepository logRepository) {
         this.logRepository = logRepository;
     }
 
-    public Log getOneLogById(Integer id) {
-        return logRepository.getOne(id);
-    }
-
-    public void saveOneLog(Log log) {
-        logRepository.save(log);
-    }
-
-    public void updateOneLog(Integer id, String session_id, String type, String state, String from_number, String request_number) {
-
-        Log update = logRepository.getOne(id);
-        update.setFrom_number(from_number);
-        update.setRequest_number(request_number);
-        update.setSession_id(session_id);
-        update.setState(state);
-        update.setType(type);
-        logRepository.save(update);
-    }
-
-    public void deleteOneLog(Integer id) {
+    public void deleteOneLog(Long id) {
         logRepository.deleteById(id);
     }
 
     public List<Log> findAllByOrderByTimestampAsc() {
         List<Log> all = logRepository.findAll();
-        all.sort(Comparator.comparing(Log::getTimestampInDateTimeFormat));
+        all.sort(Comparator.comparing(Log::getTimestampInDateTimeFormat).reversed());
         return all;
+    }
+    /**
+     * Поиск всех логов по фильтру
+     * если logFilterDto.getStartDate() или logFilterDto.getFinishDate() null, то они не учитываются
+     * */
+    public List<Log> findAllByFilter(LogFilterDto logFilterDto) {
+        return logRepository.findAll().stream().filter(log ->
+                (logFilterDto.getStartDate() == null || log.getTimestampInDateTimeFormat().isAfter(logFilterDto.getStartDate()))
+                        && (logFilterDto.getFinishDate() == null ||
+                        log.getTimestampInDateTimeFormat().isBefore(logFilterDto.getFinishDate().plusDays(1))))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Ищем последний pin, с которого был разговор с клиентом clientNumber
+     *
+     * @param clientNumber номер клиента
+     * @return pin или null, если ничего не нашли
+     */
+    public String findLastPinByClientNumber(String clientNumber) throws NumberParseException {
+        if (isEmptyOrWhitespace(clientNumber))
+            return null;
+        List<Log> connected = logRepository.findAllByState("connected").stream()
+                .sorted(Comparator.comparing(Log::getTimestampInDateTimeFormat).reversed()).collect(Collectors.toList());
+        for (Log log : connected) {
+            if (log.isInternal())
+                continue;
+            // Если исходящий, номер звонящего должен совпадать с clientNumber
+            // Если указан pin, вернём его
+            if (log.isIncoming()) {
+                if (clientNumber.equals(parseNumberFromSip(log.getFrom_number())) && !log.getRequest_pin().isEmpty()) {
+                    return log.getRequest_pin();
+                }
+            } else if (clientNumber.equals(parseNumberFromSip(log.getRequest_number())) && !log.getFrom_pin().isEmpty()) {
+                return log.getFrom_pin();
+            }
+
+        }
+        return null;
     }
 }

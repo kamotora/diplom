@@ -1,9 +1,14 @@
 package com.diplom.work.controller;
 
 import com.diplom.work.core.Log;
+import com.diplom.work.core.dto.LogFilterDto;
+import com.diplom.work.core.json.view.Views;
+import com.diplom.work.svc.CallService;
 import com.diplom.work.svc.LogService;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,67 +16,81 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/logs")
 public class LogsController {
     private final LogService logService;
+    private final CallService callService;
 
     @Autowired
-    public LogsController(LogService logService) {
+    public LogsController(LogService logService, CallService callService) {
         this.logService = logService;
+        this.callService = callService;
     }
 
-    @GetMapping
+    /**
+     * Вывод страницы с таблицей
+     */
+    @GetMapping(path = "/logs")
     public String listLogs(Model model) {
-        List<Log> logs = logService.findAllByOrderByTimestampAsc();
-        model.addAttribute("logs", logs);
-        //model.addAttribute("sort", sortDateMethod);
         return "logs";
     }
 
-
-    @PreAuthorize("hasAuthority('Администратор')")
-    @GetMapping("/edit/{id}")
-    public String editLogs(@PathVariable Integer id, Model model) {
-        Log log = logService.getOneLogById(id);
-        model.addAttribute("log", log);
-        return "operations/logs/editLogs";
-    }
-
-    @PreAuthorize("hasAuthority('Администратор')")
-    @PostMapping("/update")
-    public String saveLog(@RequestParam Integer id, @RequestParam String session_id,
-                          @RequestParam String type, @RequestParam String state,
-                          @RequestParam String from_number, @RequestParam String request_number
-    ) {
-        logService.updateOneLog(id, session_id, type, state, from_number, request_number);
-        return "redirect:/logs";
-    }
-
-
-    @PreAuthorize("hasAuthority('Администратор')")
-    @GetMapping("/new")
-    public String newLog(Model model) {
-        return "operations/logs/newLogs";
-    }
-
-
-    /*
-    @Secured("Администратор")
-    @PostMapping("/saveLogs")
-    public String updateLog(@RequestParam String session_id,
-                            @RequestParam String type, @RequestParam String state,
-                            @RequestParam String from_number, @RequestParam String request_number) {
-        workApplicationService.saveOneLog(new Log(session_id,type,state, from_number, request_number));
-        return "redirect:/";
-    }
-
+    /**
+     * Возврат всех логов для таблицы в виде JSON (таблица на JS)
+     *
+     * @return всех логов в виде JSON
      */
+    @GetMapping(path = "/logs", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @JsonView(Views.forTable.class)
+    public ResponseEntity<List<Log>> getLogsForTable() {
+        List<Log> ok = logService.findAllByOrderByTimestampAsc();
+        return ResponseEntity.ok(ok);
+    }
 
-    @PreAuthorize("hasAuthority('Администратор')")
-    @GetMapping("/delete/{id}")
-    public String deleteLog(@PathVariable Integer id) {
-        logService.deleteOneLog(id);
-        return "redirect:/logs";
+    /**
+     * Возврат логов для таблицы в виде JSON (таблица на JS) ПО ФИЛЬТРУ
+     *
+     * @return всех логов в виде JSON
+     */
+    @PostMapping(path = "/logs", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @JsonView(Views.forTable.class)
+    public ResponseEntity<List<Log>> getLogsForTableByFilter(@RequestBody LogFilterDto logFilterDto) {
+        List<Log> logs = logService.findAllByFilter(logFilterDto);
+        return ResponseEntity.ok(logs);
+    }
+
+    /**
+     * Удаление логов по массиву IDs
+     *
+     * @param ids - массив с ID логов
+     * @return блок с сообщениями об успехе/ошибке для его вывода через jquery
+     */
+    @DeleteMapping("log")
+    public String deleteLog(Model model, @RequestBody List<Long> ids) {
+        try {
+            ids.forEach(logService::deleteOneLog);
+            model.addAttribute("goodMessage", "Удалено");
+        } catch (Exception exception) {
+            exception.printStackTrace(System.err);
+            System.err.println(exception.getMessage());
+            model.addAttribute("badMessage", "Возникла ошибка при удалении");
+        }
+        return "fragments/messages :: messages";
+    }
+
+    //TECT
+
+    /**
+     * Получаем от ВАТС инфу о вызове
+     * и выводим её
+     * но пока нихуя не работает ибо метод отлключен и хз как отлаживать
+     */
+    @GetMapping("log/{id}/view")
+    public ResponseEntity<String> showCallInfo(@PathVariable("id") Log log) {
+        try {
+            return ResponseEntity.ok(callService.getCallInfoBySessionID(log.getSession_id()).toString());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.toString());
+        }
     }
 
 }

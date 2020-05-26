@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SettingsService {
@@ -22,7 +23,7 @@ public class SettingsService {
         List<Settings> all = settingsRepository.findAll();
         if (all.size() > 1) {
             LoggerFactory.getLogger(this.getClass()).error("Для настроек больше 1 записи в таблице! Нельзя так");
-            // ибо нехуй
+            // ибо зачем
             for(int i = 1; i < all.size(); i++)
                 settingsRepository.delete(all.get(i));
         }
@@ -30,8 +31,18 @@ public class SettingsService {
             throw new SettingsNotFound();
         return all.get(0);
     }
-
+    public Optional<Settings> getSettingsOptional(){
+        try {
+            return Optional.of(getSettings());
+        } catch (SettingsNotFound settingsNotFound) {
+            return Optional.empty();
+        }
+    }
     public Settings save(Settings settings) {
+        if(settings.getIsNeedCheckSign() == null) settings.setIsNeedCheckSign(false);
+        if(settings.getIsUsersCanViewOnlyTheirRules() == null) settings.setIsUsersCanViewOnlyTheirRules(false);
+        if(settings.getIsUsersCanAddRulesOnlyMyself() == null) settings.setIsUsersCanAddRulesOnlyMyself(false);
+
         return settingsRepository.save(settings);
     }
 }
