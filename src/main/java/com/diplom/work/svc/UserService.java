@@ -33,7 +33,9 @@ public class UserService implements UserDetailsService {
         //Если пользователей вообще нет, создадим админа по-умолчанию
         if(userRepo.count() == 0){
             final User defaultAdmin = new User();
-            defaultAdmin.setName("admin");
+            defaultAdmin.setUsername("admin");
+            defaultAdmin.setEmail("admin@admin.com");
+            defaultAdmin.setName("Default Admin");
             defaultAdmin.setPassword(passwordEncoder.encode("admin"));
             defaultAdmin.getRoles().add(Role.ADMIN);
             defaultAdmin.setActive(true);

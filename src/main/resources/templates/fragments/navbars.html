@@ -70,63 +70,6 @@
             </form>
         </div>
     </nav>
-
-    <!-- МЕНЮ ДЛЯ ПОЛЬЗОВАТЕЛЯ -->
-    <!--
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" sec:authorize="hasAuthority('Пользователь')">
-        <a class="navbar-brand" href="/">Название</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav mr-auto">-->
-                <!-- Пункты меню -->
-                <!-- Маршрутизация -->
-    <!--
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle"  id="navbarRules" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                        Маршрутизация
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarRules">
-                        <a class="dropdown-item" th:href="@{/rules}">Список правил</a>
-
-                        <a class="dropdown-item" th:href="@{/rule}">Добавить правило</a>
-                    </div>
-                </li> -->
-                <!-- Клиенты -->
-    <!--
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle"  id="navbarClients" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                        Клиенты
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarClients">
-                        <a class="dropdown-item" th:href="@{/clients}">Список клиентов</a>
-
-                        <a class="dropdown-item" th:href="@{/client}">Добавить клиента</a>
-                    </div>
-                </li>
--->
-                <!-- Логи -->
-    <!--
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/logs}">История вызовов</a>
-                </li>
-            </ul>
-            <span class="nav-item">
-                <a class="nav-link text-light" th:href="@{/profile}" th:text="${#authentication.name}">Username</a>
-            </span> -->
-            <!-- Выход -->
-    <!--
-            <form class="form-inline mt-2 mt-md-0" th:action="@{/logout}" th:method="post">
-                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
-                <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Выйти</button>
-            </form>
-        </div>
-    </nav>-->
-    <!-- END МЕНЮ ДЛЯ ПОЛЬЗОВАТЕЛЯ -->
 </th:block>
 
 

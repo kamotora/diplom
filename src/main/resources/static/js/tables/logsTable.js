@@ -266,9 +266,9 @@ $(document).ready(function () {
                     }
                 },
                 formatter: [
-                    '<a class="view" href="javascript:void(0)" title="Посмотреть">',
-                    '<i class="fa fa-eye"></i>',
-                    '</a>  ',
+                    // '<a class="view" href="javascript:void(0)" title="Посмотреть">',
+                    // '<i class="fa fa-eye"></i>',
+                    // '</a>  ',
                     '<a class="remove" href="javascript:void(0)" title="Удалить">',
                     '<i class="fa fa-trash" style = "color:red"></i>',
                     '</a>'
