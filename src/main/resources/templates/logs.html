@@ -35,13 +35,19 @@
                 </div>
                 <button class="btn btn-primary mx-sm-3" id="startFilter" type="button">Показать</button>
                 <button class="btn btn-primary mx-sm-1" id="resetFilter" type="reset">Сбросить</button>
+                <div class="input-group-prepend" sec:authorize="hasAuthority('Статист')">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Экспорт графика</button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" id = "JPEGDownload">JPEG</a>
+                    </div>
+                </div>
             </form>
         </div>
 
         <div sec:authorize="hasAuthority('Статист')">
             <div class = "container" id = "graphics">
                 <div class = "row wow fadeIn">
-                    <div class = "col-lg-8">
+                    <div class = "col-lg-12">
                         <div class = "card">
                             <div class = "card-body">
                                 <canvas id = "myChart">
@@ -49,6 +55,7 @@
                             </div>
                         </div>
                     </div>
+                    <!--
                     <div class = "col-lg-4">
                         <div class = "card">
                             <div class = "card-body">
@@ -56,7 +63,7 @@
                                 </canvas>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>
@@ -88,7 +95,10 @@
 <div th:replace="fragments/dialogs ::askDeleteDialog"></div>
 
 <footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
-
+<script src="https://unpkg.com/tableexport.jquery.plugin/tableExport.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/export/bootstrap-table-export.min.js"></script>
+<script th:src="@{/static/js/FileSaver.js}"></script>
+<script th:src="@{/static/js/canvas-toBlob.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/tables/logsTable.js}"></script>
 
 </body>

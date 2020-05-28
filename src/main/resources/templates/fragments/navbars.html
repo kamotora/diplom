@@ -17,7 +17,7 @@
             <ul class="navbar-nav mr-auto">
                 <!-- Пункты меню -->
                 <!-- Маршрутизация -->
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" sec:authorize="hasAuthority('Администратор') || hasAuthority('Пользователь')">
                     <a class="nav-link dropdown-toggle" id="navbarRules" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
                         Маршрутизация

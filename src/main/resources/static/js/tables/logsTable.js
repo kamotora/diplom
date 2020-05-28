@@ -9,6 +9,7 @@ $(document).ready(function () {
     let $deleteDialog = $('#askDeleteDialog');
     let $startFilter = $('#startFilter');
     let $resetFilter = $('#resetFilter');
+    let $PNGloadGraphic = $('#JPEGDownload');
     let selections = [];
     let myChart;
 
@@ -61,7 +62,7 @@ $(document).ready(function () {
             }
         });
 
-
+/*
         const ctxP = document.getElementById('pieChart').getContext('2d');
         const pieChart = new Chart(ctxP, {
             type: 'pie',
@@ -82,7 +83,7 @@ $(document).ready(function () {
             options: {
                 responsive: true
             }
-        });
+        });*/
     }
 
     // Удаление по массиву айдишников
@@ -195,6 +196,14 @@ $(document).ready(function () {
             error:function(data){
             }
         })
+    });
+
+    $PNGloadGraphic.click(function(){
+
+        var canvas = document.getElementById("myChart");
+        canvas.toBlob(function(blob){
+            saveAs(blob, 'image.jpg');
+        });
     });
 
     // Действия по клику на иконку "посмотреть"
