@@ -1,0 +1,15 @@
+language: java
+sudo: true
+dist: trusty
+jdk: openjdk11
+services:
+  - mysql
+cache:
+  directories:
+    - "$HOME/.m2"
+script:
+  - export JAVA_HOME=$HOME/openjdk11
+  - $TRAVIS_BUILD_DIR/install-jdk.sh --install openjdk11 --target $JAVA_HOME
+before_install:
+  - chmod +x mvnw
+  - ./mvnw install -Dmaven.javadoc.skip=true -B -V --spring.profiles.active=dev
