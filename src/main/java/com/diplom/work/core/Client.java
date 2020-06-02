@@ -29,6 +29,7 @@ public class Client {
      * ФИО клиента
      */
     @JsonView(Views.forTable.class)
+    @Column(length = 1024)
     private String name;
 
     /**

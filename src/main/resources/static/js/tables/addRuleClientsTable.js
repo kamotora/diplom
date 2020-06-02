@@ -136,7 +136,7 @@ $(document).ready(function () {
                         name: name.val(),
                         id: idValue
                     }),
-                    url: "/api/client",
+                    url: "/rest/client",
                     // обязательно нужно добавить эти заголовки, так как csrf enabled
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
@@ -293,7 +293,7 @@ $(document).ready(function () {
         headers: {
             'Accept': 'application/json'
         },
-        url: "/api/client/all",
+        url: "/rest/client/all",
         // обязательно нужно добавить эти заголовки, так как csrf enabled
         beforeSend: function (xhr) {
             xhr.setRequestHeader(header, token);

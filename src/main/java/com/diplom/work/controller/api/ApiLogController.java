@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/logs")
+@RequestMapping("rest/logs")
 public class ApiLogController {
 
     private final LogService logService;

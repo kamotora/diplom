@@ -3,6 +3,8 @@ package com.diplom.work.core.user;
 import com.diplom.work.core.json.view.Views;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,21 +16,27 @@ import java.util.Set;
 
 @Entity
 @Table(name = "usr")
+@EqualsAndHashCode(of = {"id","username","password"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView(Views.onlyId.class)
     private Long id;
     @JsonView(Views.forTable.class)
+    @Column(length = 1024, nullable = false)
     private String username;
     @JsonView(Views.simpleObject.class)
+    @Column(length = 1024, nullable = false)
     private String password;
     @JsonView(Views.forTable.class)
+    @Column(length = 2048)
     private String name;
     @JsonView(Views.forTable.class)
     private String number;
     @JsonView(Views.simpleObject.class)
     private String email;
+    @JsonView(Views.simpleObject.class)
+    private String token;
     @JsonView(Views.simpleObject.class)
     private boolean active;
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
@@ -36,7 +44,6 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @JsonView(Views.allUser.class)
     private Set<Role> roles = new HashSet<>();
-
 
     public User() {
     }
@@ -103,12 +110,15 @@ public class User implements UserDetails {
         return isActive();
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    //TODO временно
+    @JsonView(Views.forTable.class)
+    @JsonGetter("role")
+    public String getFirstRoleName() {
+        return getFirstRole().getAuthority();
     }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    @Transient
+    public Role getFirstRole() {
+        return roles.iterator().next();
     }
 
     public Long getId() {
@@ -125,26 +135,6 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    //TODO временно
-    @JsonView(Views.forTable.class)
-    @JsonGetter("role")
-    public String getFirstRoleName() {
-        return getFirstRole().getAuthority();
-    }
-
-    @Transient
-    public Role getFirstRole() {
-        return roles.iterator().next();
     }
 
     public String getName() {
@@ -171,13 +161,27 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public String getToken() {
+        return token;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

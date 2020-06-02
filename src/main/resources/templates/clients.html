@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      lang="auto" class="h-100">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="auto" class="h-100">
 <head>
     <th:block th:replace="fragments/head :: headForTable('Список клиентов')"/>
     <meta name="_csrf" th:content="${_csrf.token}"/>
@@ -44,7 +44,7 @@
                 data-show-pagination-switch="true"
                 data-pagination="true"
                 data-page-list="[10, 25, 50, 100, all]"
-                data-url="/api/client/all"
+                data-url="/client/all"
                 class="table table-bordered table-hover table-striped"
         >
         </table>
@@ -52,6 +52,6 @@
 </main>
 <div th:replace="fragments/dialogs ::askDeleteDialog"></div>
 <footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
-<script type="text/javascript" th:src="@{/static/js/clientsTable.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/tables/clientsTable.js}"></script>
 </body>
 </html>

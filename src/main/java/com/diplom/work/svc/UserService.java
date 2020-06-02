@@ -1,12 +1,17 @@
 package com.diplom.work.svc;
 
-import com.diplom.work.exceptions.NewPasswordsNotEquals;
-import com.diplom.work.exceptions.OldPasswordsNotEquals;
-import com.diplom.work.exceptions.UsernameAlreadyExist;
+import com.diplom.work.controller.api.NumberInfoController;
 import com.diplom.work.core.dto.UserEditDto;
 import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
+import com.diplom.work.exceptions.NewPasswordsNotEquals;
+import com.diplom.work.exceptions.OldPasswordsNotEquals;
+import com.diplom.work.exceptions.UsernameAlreadyExist;
 import com.diplom.work.repo.UserRepository;
+import lombok.NonNull;
+import lombok.extern.log4j.Log4j2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,20 +23,27 @@ import org.thymeleaf.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Log4j2
 public class UserService implements UserDetailsService {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(NumberInfoController.class);
+    private final TokenService tokenService;
+
+
     @Autowired
-    public UserService(UserRepository userRepo, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepo, PasswordEncoder passwordEncoder, TokenService tokenService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
 
         //Если пользователей вообще нет, создадим админа по-умолчанию
-        if(userRepo.count() == 0){
+        if (userRepo.count() == 0) {
             final User defaultAdmin = new User();
             defaultAdmin.setUsername("admin");
             defaultAdmin.setEmail("admin@admin.com");
@@ -40,7 +52,7 @@ public class UserService implements UserDetailsService {
             defaultAdmin.getRoles().add(Role.ADMIN);
             defaultAdmin.setActive(true);
             userRepo.save(defaultAdmin);
-            System.out.println("Был создан администратор по умолчанию:\n Логин:admin\nПароль:admin");
+            LOGGER.info("Был создан администратор по умолчанию:\n Логин:admin\nПароль:admin");
         }
     }
 
@@ -73,7 +85,7 @@ public class UserService implements UserDetailsService {
         return userRepo.findAll();
     }
 
-    public List<User> findAllByRole(Role role){
+    public List<User> findAllByRole(Role role) {
         return userRepo.findAllByRolesContaining(role);
     }
 
@@ -103,7 +115,7 @@ public class UserService implements UserDetailsService {
         BeanUtils.copyProperties(user, result, "id");
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(user.getRole());
-        if(needSetPassword)
+        if (needSetPassword)
             result.setPassword(passwordEncoder.encode(user.getPassword1()));
         result.setRoles(roleSet);
         save(result);
@@ -129,4 +141,26 @@ public class UserService implements UserDetailsService {
         save(oldUser);
         return true;
     }
+
+    public Optional<User> findByToken(String token) {
+        return userRepo.findByToken(token);
+    }
+
+    public String changeToken(@NonNull User user) {
+        user.setToken(tokenService.generateToken());
+        return userRepo.save(user).getToken();
+    }
+
+    /**
+     * Создать токены для тех, у которых его ещё нет
+     */
+    public void createTokensIfNotExists() {
+        for (User user : userRepo.findAll()) {
+            if (StringUtils.isEmptyOrWhitespace(user.getToken())) {
+                user.setToken(tokenService.generateToken());
+                userRepo.save(user);
+            }
+        }
+    }
+
 }

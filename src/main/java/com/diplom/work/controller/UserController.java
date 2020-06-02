@@ -6,6 +6,7 @@ import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.NewPasswordsNotEquals;
 import com.diplom.work.exceptions.UsernameAlreadyExist;
+import com.diplom.work.svc.TokenService;
 import com.diplom.work.svc.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -123,6 +123,20 @@ public class UserController {
         model.addAttribute("goodMessage", "Сохранено!");
         initPage(model, user);
         return "user";
+    }
+
+    /**
+     * Перегенерация токена по ID пользователя
+     *
+     * @param user - пользователь
+     */
+    @GetMapping("user/{id}/change_token")
+    public ResponseEntity<String> changeToken(@PathVariable("id") User user) {
+        try {
+            return ResponseEntity.ok().body(userService.changeToken(user));
+        } catch (Exception exception) {
+            return ResponseEntity.badRequest().body(user != null ? user.getToken() : "");
+        }
     }
 
     /**

@@ -6,7 +6,6 @@
 >
 <th:block th:fragment="selectNavbar">
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-         <!--sec:authorize="hasAuthority('Администратор')">-->
         <!-- МЕНЮ ДЛЯ АДМИНА -->
         <a class="navbar-brand" href="/">Название</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
@@ -39,13 +38,13 @@
                         <a class="dropdown-item" th:href="@{/client}">Добавить клиента</a>
                     </div>
                 </li>
-                <!-- Логи(Го для всех всделаем журнал вызовов и оставим одно меню) -->
+                <!-- Логи -->
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/logs}">Журнал вызовов</a>
                 </li>
                 <!-- Пользователи -->
                 <li class="nav-item dropdown" sec:authorize="hasAuthority('Администратор')">
-                    <a class="nav-link dropdown-toggle" th:href="@{/users}" id="navbarUsers" data-toggle="dropdown"
+                    <a class="nav-link dropdown-toggle" id="navbarUsers" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
                         Пользователи
                     </a>

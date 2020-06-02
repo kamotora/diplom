@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * CRUD для клиентов через json запросы (пока меняется только ФИО и номер)
+ * CRUD для клиентов через json запросы
  * (мб использовано для удалённого редактированния)
  */
 @RestController
-@RequestMapping("api/client")
+@RequestMapping("rest/client")
 public class ApiClientController {
 
     private final ClientService clientService;

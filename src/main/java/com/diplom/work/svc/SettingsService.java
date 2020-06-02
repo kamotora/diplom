@@ -13,10 +13,12 @@ import java.util.Optional;
 @Service
 public class SettingsService {
     private final SettingsRepository settingsRepository;
+    private final UserService userService;
 
     @Autowired
-    public SettingsService(SettingsRepository settingsRepository) {
+    public SettingsService(SettingsRepository settingsRepository, UserService userService) {
         this.settingsRepository = settingsRepository;
+        this.userService = userService;
     }
 
     public Settings getSettings() throws SettingsNotFound {
@@ -42,6 +44,10 @@ public class SettingsService {
         if(settings.getIsNeedCheckSign() == null) settings.setIsNeedCheckSign(false);
         if(settings.getIsUsersCanViewOnlyTheirRules() == null) settings.setIsUsersCanViewOnlyTheirRules(false);
         if(settings.getIsUsersCanAddRulesOnlyMyself() == null) settings.setIsUsersCanAddRulesOnlyMyself(false);
+        if(settings.getIsTokensActivate() == null) settings.setIsTokensActivate(false);
+
+        if(settings.getIsTokensActivate())
+            userService.createTokensIfNotExists();
 
         return settingsRepository.save(settings);
     }

@@ -26,6 +26,7 @@ public class UserEditDto {
     private String name;
     private String number;
     private String email;
+    private String token;
     private boolean active;
     private Role role;
 

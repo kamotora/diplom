@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("api/rule")
+@RequestMapping("rest/rule")
 public class ApiRuleController {
 
     private final RuleService ruleService;

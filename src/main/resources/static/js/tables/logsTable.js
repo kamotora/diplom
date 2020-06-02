@@ -166,7 +166,7 @@ $(document).ready(function () {
                 startDate: startDate,
                 finishDate: finishDate
             }),
-            url:"/api/logs/updateDataForGraphics",
+            url:"/rest/logs/updateDataForGraphics",
             beforeSend: function(xhr) {
                 // here it is
                 xhr.setRequestHeader(header, token);
@@ -185,7 +185,7 @@ $(document).ready(function () {
         $.ajax({
             type: "GET",
             async: false,
-            url:"/api/logs/dataGraphic",
+            url:"/rest/logs/dataGraphic",
             beforeSend: function(xhr) {
                 // here it is
                 xhr.setRequestHeader(header, token);
@@ -309,7 +309,7 @@ $(document).ready(function () {
         $.ajax({
             type: "GET",
             async: false,
-            url:"/api/logs/dataGraphic",
+            url:"/rest/logs/dataGraphic",
             success: function(data){
                 getGraphics(data);
             },

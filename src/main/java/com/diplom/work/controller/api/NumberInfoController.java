@@ -169,7 +169,7 @@ public class NumberInfoController {
             // Если информации нет, не теряем надежды и пробуем найти в логах
             String pin = logService.findLastPinByClientNumber(client.getNumber());
             if (pin != null) {
-                return new NumberInfoAnswer(pin);
+                return new NumberInfoAnswer(pin,client);
             }
         }
         //Маршрутизируем стандартно - на указанный номер

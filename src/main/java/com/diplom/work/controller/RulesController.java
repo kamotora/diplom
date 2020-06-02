@@ -176,7 +176,7 @@ public class RulesController {
             System.err.println(exception.getMessage());
             model.addAttribute("badMessage", "Не удалось удалить!");
         }
-        return "rules :: messages";
+        return "fragments/messages :: messages";
     }
 
 }
