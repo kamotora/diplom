@@ -42,4 +42,8 @@ public class Settings {
      * При этом он всё равно может выбрать "Умная маршрутизация".
      * */
     private Boolean isUsersCanAddRulesOnlyMyself;
+    /**
+     * Адрес ВАТС для запросов от нашего приложения
+     * */
+//    private String urlVats;
 }

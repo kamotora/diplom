@@ -32,13 +32,18 @@ public class ControllerUtils {
     }
 
     /**
-     * @param body      тело запроса в виде объекта для перевода в json
+     * @param body      тело запроса в виде объекта для перевода в json или уже в json
      * @param clientID  уникальный код идентификации  с Ростелекома для подписи запроса
      * @param clientKey уникальный ключ для подписи
      * @return требуемые заголовки запроса
      */
     public static HttpHeaders getHeaders(Object body, String clientID, String clientKey) throws JsonProcessingException {
-        String bodyJSON = new ObjectMapper().writeValueAsString(body);
+        String bodyJSON;
+        // Если передали строку - считаем, что уже в JSON'e
+        if(body instanceof String)
+            bodyJSON = (String)body;
+        else
+            bodyJSON = new ObjectMapper().writeValueAsString(body);
         log.info(bodyJSON);
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Client-ID", clientID);

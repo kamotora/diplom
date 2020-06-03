@@ -1,6 +1,7 @@
 package com.diplom.work.controller;
 
 import com.diplom.work.core.Log;
+import com.diplom.work.core.dto.GetRecord;
 import com.diplom.work.core.dto.LogFilterDto;
 import com.diplom.work.core.json.view.Views;
 import com.diplom.work.svc.CallService;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -78,12 +80,9 @@ public class LogsController {
         return "fragments/messages :: messages";
     }
 
-    //TECT
-
     /**
      * Получаем от ВАТС инфу о вызове
      * и выводим её
-     * но пока нихуя не работает ибо метод отлключен и хз как отлаживать
      */
     @GetMapping("log/{id}/view")
     public ResponseEntity<String> showCallInfo(@PathVariable("id") Log log) {
@@ -91,6 +90,23 @@ public class LogsController {
             return ResponseEntity.ok(callService.getCallInfoBySessionID(log.getSession_id()).toString());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.toString());
+        }
+    }
+
+    //TECT
+
+    /**
+     * Получаем от ВАТС запись звонка
+     * но пока нихуя не работает ибо метод отлключен и хз как отлаживать
+     */
+    @GetMapping("log/{id}/record")
+    public ResponseEntity<GetRecord> showCallRecord(@PathVariable("id") Log log, Model model, HttpServletRequest request) {
+        String ipClient = request.getHeader("X-Forwarded-For");
+        try {
+            GetRecord record = callService.getRecordBySessionID(log.getSession_id(), ipClient);
+            return ResponseEntity.ok(record);
+        } catch (Exception e) {
+            return null;
         }
     }
 

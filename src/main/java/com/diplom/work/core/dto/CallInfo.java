@@ -1,4 +1,4 @@
-package com.diplom.work.core.json;
+package com.diplom.work.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
@@ -23,12 +23,14 @@ public class CallInfo {
     private Integer result;
 
     /**
-     * null -
+     * Описание результата выполнения запроса
+     * null - Допускается, если result = 0
      */
     private String resultMessage;
 
     /**
-     * null -
+     * Детальная информация о вызове
+     * null - Допускается, если result != 0
      */
     private Info info;
 
