@@ -1,10 +1,12 @@
 package com.diplom.work.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -18,6 +20,7 @@ import java.util.Map;
  * Контроллер для обработки ошибок (/error)
  */
 @Controller
+@Slf4j
 public class AppErrorController implements ErrorController {
 
     /**
@@ -39,7 +42,7 @@ public class AppErrorController implements ErrorController {
      * @param request запрос с инфой об ошибке
      * @return название шаблона для вывода инфы об ошибке
      */
-    @RequestMapping(value = ERROR_PATH, produces = "text/html")
+    @GetMapping(value = ERROR_PATH, produces = "text/html")
     public String errorHtml(HttpServletRequest request) {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
@@ -62,7 +65,7 @@ public class AppErrorController implements ErrorController {
     /**
      * Supports other formats like JSON, XML
      */
-    @RequestMapping(value = ERROR_PATH)
+    @GetMapping(value = ERROR_PATH)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
         Map<String, Object> body = getErrorAttributes(request, getTraceParameter(request));
@@ -103,7 +106,7 @@ public class AppErrorController implements ErrorController {
             try {
                 return HttpStatus.valueOf(statusCode);
             } catch (Exception ex) {
-                System.err.println(ex.getMessage());
+                log.error("Вызвано исключение при выводе ошибки {}",ex.getMessage());
             }
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;

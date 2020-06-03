@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -17,8 +18,10 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 public class ControllerUtils {
+    private ControllerUtils(){}
+
     static Map<String, String> getErrors(BindingResult bindingResult) {
         Collector<FieldError, ?, Map<String, String>> collector = Collectors.toMap(
                 fieldError -> fieldError.getField() + "Error",
@@ -35,7 +38,7 @@ public class ControllerUtils {
      */
     public static HttpHeaders getHeaders(Object body, String clientID, String clientKey) throws JsonProcessingException {
         String bodyJSON = new ObjectMapper().writeValueAsString(body);
-        System.out.println(bodyJSON);
+        log.info(bodyJSON);
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Client-ID", clientID);
         headers.add("X-Client-Sign",
@@ -46,7 +49,7 @@ public class ControllerUtils {
     public static void checkSigns(String body, String clientID, String clientKey, String requestClientSign, String name_method) throws SignsNotEquals {
         String myClientSing = Hashing.sha256().hashString(clientID + body + clientKey, StandardCharsets.UTF_8).toString();
         if (requestClientSign.equals(myClientSing)) {
-            System.out.println("Подписи " + name_method + " равны");
+            log.info("Подписи " + name_method + " равны");
         } else {
             throw new SignsNotEquals(name_method, requestClientSign, myClientSing);
         }

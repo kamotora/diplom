@@ -20,8 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import lombok.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -37,6 +36,7 @@ import static org.thymeleaf.util.StringUtils.isEmptyOrWhitespace;
  */
 @RestController
 @RequestMapping("api/")
+@Slf4j
 public class NumberInfoController {
     private final RuleService ruleService;
     private final SettingsService settingsService;
@@ -54,8 +54,6 @@ public class NumberInfoController {
         this.clientService = clientService;
         this.logService = logService;
     }
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(NumberInfoController.class);
 
     /**
      * Обработка запроса по get_number_info от ВАТС
@@ -79,23 +77,21 @@ public class NumberInfoController {
             settings = settingsService.getSettings();
         } catch (SettingsNotFound e) {
             // Настроек нет
-            LOGGER.error(ERROR_TITLE);
-            LOGGER.error(String.format("ТЕКСТ ОШИБКИ: %s Получили запрос на get_number_info, header.X-Client-ID = %s \n" +
-                    "header.X-Client-Sign = %s \n, body = %s", e.getMessage(), clientID, clientSign, numberInfo.toString()));
+            log.error(ERROR_TITLE);
+            log.error("ОШИБКА:{}  Получили запрос на get_number_info, header.X-Client-ID = {}%n" +
+                    "header.X-Client-Sign = {} %n, body = {}", e, clientID, clientSign, numberInfo);
             return ResponseEntity.status(500).body(new NumberInfoAnswer(500, e.getMessage()));
         }
 
-        //Отладочная инфа - вывод тела todo удалить после отладки
-        LOGGER.warn(String.format("Получили запрос на get_number_info, header.X-Client-ID = %s \n" +
-                "header.X-Client-Sign = %s \n, body как строка = %s, body как объект = %s", clientID, clientSign, body, numberInfo.toString()));
-
-        if (Strings.isNullOrEmpty(clientID) || Strings.isNullOrEmpty(clientSign))
-            LOGGER.error("Headers не получены. Проверь name");
+        //Отладочная инфа - вывод тела
+        // todo удалить после отладки
+        log.warn(String.format("Получили запрос на get_number_info, header.X-Client-ID = %s %n" +
+                "header.X-Client-Sign = %s %n, body как строка = %s, body как объект = %s", clientID, clientSign, body, numberInfo.toString()));
 
         if (!clientID.equals(settings.getClientID())) {
-            LOGGER.error(ERROR_TITLE);
-            LOGGER.error("ClientID не совпадают");
-            LOGGER.error(String.format("Получили ClientID %s \n В настройках ClientID %s", clientID, settings.getClientID()));
+            log.error(ERROR_TITLE);
+            log.error("ClientID не совпадают");
+            log.error("Получили ClientID {} %n В настройках ClientID {}", clientID, settings.getClientID());
         }
 
         try {
@@ -129,27 +125,28 @@ public class NumberInfoController {
 
             //Делаем заголовки, нужные для ВАТС
             HttpHeaders headers = ControllerUtils.getHeaders(answer, clientID, settings.getClientKey());
-            //TODO удалить после отладки
-            System.err.println(ResponseEntity.status(200).headers(headers).body(answer));
-            //
-            LOGGER.info(SUCCESS_TITLE);
+            // Вывод тела ответа
+            // TODO удалить после отладки
+            log.warn("Тело ответа: {}",ResponseEntity.status(200).headers(headers).body(answer));
+            // Вывод сообщения об успехе
+            log.info(SUCCESS_TITLE);
             return ResponseEntity.ok().headers(headers).body(answer);
         } catch (SignsNotEquals signsNotEquals) {
-            LOGGER.error(ERROR_TITLE);
-            LOGGER.error(signsNotEquals.getMessage());
+            log.error(ERROR_TITLE);
+            log.error(signsNotEquals.getMessage());
             return ResponseEntity.status(403).body(new NumberInfoAnswer(403, "Подписи не равны"));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            LOGGER.error(ERROR_TITLE);
-            LOGGER.error("Не удалось получить JSON ответа");
+            log.error(ERROR_TITLE);
+            log.error("Не удалось получить JSON ответа");
             return ResponseEntity.status(500).body(new NumberInfoAnswer(500, "Не удалось получить JSON ответа"));
         } catch (NotFoundRequestNumberException e) {
-            LOGGER.warn(WARN_TITLE);
-            LOGGER.warn(e.getMessage());
+            log.warn(WARN_TITLE);
+            log.warn(e.getMessage());
             return ResponseEntity.status(404).body(new NumberInfoAnswer(404, e.getMessage()));
         } catch (Exception e) {
-            LOGGER.error("");
-            LOGGER.error(e.getMessage());
+            log.error("");
+            log.error(e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).body(new NumberInfoAnswer(500, "Неизвестная ошибка"));
         }

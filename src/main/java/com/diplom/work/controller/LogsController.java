@@ -6,6 +6,7 @@ import com.diplom.work.core.json.view.Views;
 import com.diplom.work.svc.CallService;
 import com.diplom.work.svc.LogService;
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@Slf4j
 public class LogsController {
     private final LogService logService;
     private final CallService callService;
@@ -70,8 +72,7 @@ public class LogsController {
             ids.forEach(logService::deleteOneLog);
             model.addAttribute("goodMessage", "Удалено");
         } catch (Exception exception) {
-            exception.printStackTrace(System.err);
-            System.err.println(exception.getMessage());
+            log.error("Ошибка при удалении лога: {}",exception.getMessage());
             model.addAttribute("badMessage", "Возникла ошибка при удалении");
         }
         return "fragments/messages :: messages";

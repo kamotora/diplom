@@ -4,15 +4,14 @@ import com.diplom.work.controller.ControllerUtils;
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Log;
 import com.diplom.work.core.Settings;
-import com.diplom.work.core.json.NumberInfo;
+import com.diplom.work.exceptions.ManagerNumberNotFoundException;
 import com.diplom.work.exceptions.SignsNotEquals;
 import com.diplom.work.repo.LogRepository;
 import com.diplom.work.svc.ClientService;
 import com.diplom.work.svc.SettingsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +19,16 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Обработка запроса по call_events от ВАТС
- * */
+ */
 @RestController
+@Slf4j
 @RequestMapping("api/")
 public class CallEventController {
     private final LogRepository logRepository;
     private final SettingsService settingsService;
     private final ClientService clientService;
+
+    private static final String ERROR_TITLE = "############################ ОШИБОЧКА! ############################";
 
     @Autowired
     public CallEventController(LogRepository logRepository, SettingsService settingsService, ClientService clientService) {
@@ -34,10 +36,6 @@ public class CallEventController {
         this.settingsService = settingsService;
         this.clientService = clientService;
     }
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CallEventController.class);
-
-
 
     /**
      * Обработка запроса по call_events от ВАТС
@@ -86,23 +84,23 @@ public class CallEventController {
                     client.setLastManagerNumber(managerNumber);
                     clientService.save(client);
                 } else
-                    throw new Exception("Не найден номер менеджера");
+                    throw new ManagerNumberNotFoundException();
             }
         } catch (SignsNotEquals signsNotEquals) {
-            LOGGER.error("############################ ОШИБОЧКА! ############################");
-            LOGGER.error(signsNotEquals.getMessage());
+            log.error(ERROR_TITLE);
+            log.error(signsNotEquals.getMessage());
             return ResponseEntity.status(403).build();
         } catch (Exception e) {
             // Настроек нет
-            LOGGER.error("############################ ОШИБОЧКА! ############################");
-            LOGGER.error(String.format("ТЕКСТ ОШИБКИ: %s Получили запрос на call_events, header.X-Client-ID = %s \n" +
-                    "header.X-Client-Sign = %s \n, body = %s", e.getMessage(), clientID, clientSign, callEvent.toString()));
+            log.error(ERROR_TITLE);
+            log.error("ТЕКСТ ОШИБКИ: {}. Получили запрос на call_events, header.X-Client-ID = {} %n" +
+                    "header.X-Client-Sign = {} %n, body = {}", e, clientID, clientSign, callEvent);
             return ResponseEntity.status(500).build();
         }
 
         // Сохраняем лог
         logRepository.save(callEvent);
-        LOGGER.warn("Получили запрос на call_events, body = " + callEvent.toString());
+        log.warn("Получили запрос на call_events, body = {}", callEvent);
         return ResponseEntity.ok().build();
     }
 

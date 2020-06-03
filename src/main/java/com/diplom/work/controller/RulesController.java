@@ -13,6 +13,7 @@ import com.diplom.work.svc.RuleService;
 import com.diplom.work.svc.SettingsService;
 import com.diplom.work.svc.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 @Controller
+@Slf4j
 public class RulesController {
 
     private final RuleService ruleService;
@@ -172,8 +174,7 @@ public class RulesController {
             ids.forEach(ruleService::deleteOneRow);
             model.addAttribute("goodMessage", "Удалено");
         } catch (Exception exception) {
-            exception.printStackTrace(System.err);
-            System.err.println(exception.getMessage());
+            log.error("Ошибка при удалении правила: {}",exception.getMessage());
             model.addAttribute("badMessage", "Не удалось удалить!");
         }
         return "fragments/messages :: messages";

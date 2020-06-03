@@ -8,6 +8,7 @@ import com.diplom.work.exceptions.ClientNotFound;
 import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.svc.ClientService;
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 @Controller
+@Slf4j
 public class ClientController {
 
     private final ClientService clientService;
@@ -130,8 +132,7 @@ public class ClientController {
         } catch (ClientNotFound | ClientException exception) {
             model.addAttribute("badMessage", exception.getMessage());
         } catch (Exception exception) {
-            exception.printStackTrace(System.err);
-            System.err.println(exception.getMessage());
+            log.error("Вызвано исключение при удалении клиента: {}", exception.getMessage());
             model.addAttribute("badMessage", "Не удалось удалить!");
         }
         return "fragments/messages :: messages";
