@@ -24,6 +24,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -39,17 +40,17 @@ public class CallService {
         objectMapper = new ObjectMapper();
     }
 
-    public CallInfo getCallInfoBySessionID(@NonNull String sessionID) throws SettingsNotFound, JsonProcessingException {
+    public Optional<CallInfo> getCallInfoBySessionID(@NonNull String sessionID) throws SettingsNotFound, JsonProcessingException {
         String body = objectMapper.createObjectNode().put("session_id", sessionID).toString();
         ResponseEntity<String> response = requestService.postRequest(CALL_INFO_METHOD_NAME, body);
         try {
-            return objectMapper.readValue(response.getBody(), CallInfo.class);
+            return Optional.of(objectMapper.readValue(response.getBody(), CallInfo.class));
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
     }
 
-    public GetRecord getRecordBySessionID(@NonNull String sessionID, @Nullable String ip_address) throws SettingsNotFound, JsonProcessingException {
+    public Optional<GetRecord> getRecordBySessionID(@NonNull String sessionID, @Nullable String ip_address) throws SettingsNotFound, JsonProcessingException {
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("session_id", sessionID);
         if (ip_address != null)
@@ -57,9 +58,9 @@ public class CallService {
         String body = objectNode.toString();
         ResponseEntity<String> response = requestService.postRequest(GET_RECORD_METHOD_NAME, body);
         try {
-            return objectMapper.readValue(response.getBody(), GetRecord.class);
+            return Optional.of(objectMapper.readValue(response.getBody(), GetRecord.class));
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
     }
 }
