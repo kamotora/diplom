@@ -1,6 +1,7 @@
 package com.diplom.work.controller;
 
 import com.diplom.work.core.Log;
+import com.diplom.work.core.dto.CallInfo;
 import com.diplom.work.core.dto.GetRecord;
 import com.diplom.work.core.dto.LogFilterDto;
 import com.diplom.work.core.json.view.Views;
@@ -85,11 +86,12 @@ public class LogsController {
      * и выводим её
      */
     @GetMapping("log/{id}/view")
-    public ResponseEntity<String> showCallInfo(@PathVariable("id") Log log) {
+    public ResponseEntity<CallInfo> showCallInfo(@PathVariable("id") Log log) {
+        CallInfo errorInfo = new CallInfo(-1000,"Не удалось получить запись",null);
         try {
-            return ResponseEntity.ok(callService.getCallInfoBySessionID(log.getSession_id()).toString());
+            return ResponseEntity.of(callService.getCallInfoBySessionID(log.getSession_id()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.toString());
+            return ResponseEntity.status(500).body(errorInfo);
         }
     }
 
@@ -102,11 +104,11 @@ public class LogsController {
     @GetMapping("log/{id}/record")
     public ResponseEntity<GetRecord> showCallRecord(@PathVariable("id") Log log, Model model, HttpServletRequest request) {
         String ipClient = request.getHeader("X-Forwarded-For");
+        GetRecord errorRecord = new GetRecord("228","Не удалось получить запись","");
         try {
-            GetRecord record = callService.getRecordBySessionID(log.getSession_id(), ipClient);
-            return ResponseEntity.ok(record);
+            return ResponseEntity.of(callService.getRecordBySessionID(log.getSession_id(), ipClient));
         } catch (Exception e) {
-            return null;
+            return ResponseEntity.status(500).body(errorRecord);
         }
     }
 

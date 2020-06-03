@@ -1,6 +1,7 @@
 package com.diplom.work.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 
@@ -12,6 +13,7 @@ import lombok.ToString;
  * *
  */
 @Data
+@AllArgsConstructor
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CallInfo {
