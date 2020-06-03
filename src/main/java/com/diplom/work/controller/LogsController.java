@@ -72,7 +72,7 @@ public class LogsController {
             ids.forEach(logService::deleteOneLog);
             model.addAttribute("goodMessage", "Удалено");
         } catch (Exception exception) {
-            log.error("Ошибка при удалении лога: {}",exception.getMessage());
+            log.error("Ошибка при удалении лога: {}", exception.getMessage());
             model.addAttribute("badMessage", "Возникла ошибка при удалении");
         }
         return "fragments/messages :: messages";

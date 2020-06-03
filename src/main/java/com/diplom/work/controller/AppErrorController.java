@@ -1,13 +1,13 @@
 package com.diplom.work.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -93,10 +93,11 @@ public class AppErrorController implements ErrorController {
     }
 
     private Map<String, Object> getErrorAttributes(HttpServletRequest request,
-                                                   boolean includeStackTrace) {
+                                                   boolean isStackTrace) {
         WebRequest requestAttributes = new ServletWebRequest(request);
         return this.errorAttributes.getErrorAttributes(requestAttributes,
-                includeStackTrace);
+                ErrorAttributeOptions.of(isStackTrace ? ErrorAttributeOptions.Include.STACK_TRACE :
+                        ErrorAttributeOptions.Include.EXCEPTION));
     }
 
     private HttpStatus getStatus(HttpServletRequest request) {
@@ -106,7 +107,7 @@ public class AppErrorController implements ErrorController {
             try {
                 return HttpStatus.valueOf(statusCode);
             } catch (Exception ex) {
-                log.error("Вызвано исключение при выводе ошибки {}",ex.getMessage());
+                log.error("Вызвано исключение при выводе ошибки {}", ex.getMessage());
             }
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;

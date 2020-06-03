@@ -2,14 +2,12 @@ package com.diplom.work.controller.api;
 
 import com.diplom.work.core.Rule;
 import com.diplom.work.core.json.view.Views;
-import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.ManagerIsNull;
 import com.diplom.work.exceptions.TimeIncorrect;
 import com.diplom.work.svc.RuleService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

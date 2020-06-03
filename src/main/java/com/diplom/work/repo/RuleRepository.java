@@ -12,4 +12,6 @@ public interface RuleRepository extends JpaRepository<Rule,Long> {
     Set<Rule> findAllByIsForAllClientsIsTrue();
     //Список правил для сотрудника
     List<Rule> findAllByManager(User user);
+    //Список правил для сотрудника + умные правила
+    List<Rule> findAllByManagerOrIsSmartTrue(User user);
 }

@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class ControllerUtils {
-    private ControllerUtils(){}
+    private ControllerUtils() {
+    }
 
     static Map<String, String> getErrors(BindingResult bindingResult) {
         Collector<FieldError, ?, Map<String, String>> collector = Collectors.toMap(

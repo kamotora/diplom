@@ -61,7 +61,7 @@ public class RulesController {
                 .map(Settings::getIsUsersCanViewOnlyTheirRules).orElse(false);
         // Если нужно, то показываем только правила с участием менеджера
         if (isUserCanViewOnlyTheirRules && user.getRoles().contains(Role.USER)) {
-            return ResponseEntity.ok(ruleService.getRulesForUser(user));
+            return ResponseEntity.ok(ruleService.getRulesForUserAndSmartRules(user));
         }
         return ResponseEntity.ok(ruleService.getAll());
     }

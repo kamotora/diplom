@@ -129,6 +129,11 @@ public class RuleService {
         return ruleRepository.findAllByManager(user);
     }
 
+    //Список правил для сотрудника + умные правила
+    public List<Rule> getRulesForUserAndSmartRules(User user){
+        return ruleRepository.findAllByManagerOrIsSmartTrue(user);
+    }
+
     public Rule save(Rule rule) throws TimeIncorrect, ManagerIsNull {
         if (rule.getIsForAllClients() == null)
             rule.setIsForAllClients(false);

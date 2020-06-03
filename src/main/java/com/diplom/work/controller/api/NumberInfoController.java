@@ -18,7 +18,6 @@ import com.diplom.work.svc.RuleService;
 import com.diplom.work.svc.SettingsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Strings;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,7 +126,7 @@ public class NumberInfoController {
             HttpHeaders headers = ControllerUtils.getHeaders(answer, clientID, settings.getClientKey());
             // Вывод тела ответа
             // TODO удалить после отладки
-            log.warn("Тело ответа: {}",ResponseEntity.status(200).headers(headers).body(answer));
+            log.warn("Тело ответа: {}", ResponseEntity.status(200).headers(headers).body(answer));
             // Вывод сообщения об успехе
             log.info(SUCCESS_TITLE);
             return ResponseEntity.ok().headers(headers).body(answer);

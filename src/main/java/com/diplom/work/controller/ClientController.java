@@ -33,6 +33,7 @@ public class ClientController {
     /**
      * Страница с таблицей "Список  клиентов"
      * Данные получаются через api
+     *
      * @see com.diplom.work.controller.api.ApiClientController
      */
     @GetMapping("/clients")

@@ -3,13 +3,13 @@ package com.diplom.work.core;
 import java.time.DayOfWeek;
 
 public enum Days {
-    MONDAY("Пн"),
-    TUESDAY("Вт"),
-    WEDNESDAY("Ср"),
-    THURSDAY("Чт"),
-    FRIDAY("Пт"),
-    SATURDAY("Сб"),
-    SUNDAY("Вс");
+    Monday("Пн"),
+    Tuesday("Вт"),
+    Wednesday("Ср"),
+    Thursday("Чт"),
+    Friday("Пт"),
+    Saturday("Сб"),
+    Sunday("Вс");
 
     private final String name;
 
@@ -23,13 +23,13 @@ public enum Days {
 
     public static Days getByDayOfWeek(DayOfWeek dayOfWeek){
         switch (dayOfWeek){
-            case MONDAY: return MONDAY;
-            case TUESDAY: return TUESDAY;
-            case WEDNESDAY: return WEDNESDAY;
-            case THURSDAY: return THURSDAY;
-            case FRIDAY: return FRIDAY;
-            case SATURDAY: return SATURDAY;
-            case SUNDAY: return SUNDAY;
+            case MONDAY: return Monday;
+            case TUESDAY: return Tuesday;
+            case WEDNESDAY: return Wednesday;
+            case THURSDAY: return Thursday;
+            case FRIDAY: return Friday;
+            case SATURDAY: return Saturday;
+            case SUNDAY: return Sunday;
             default: return null;
         }
     }
