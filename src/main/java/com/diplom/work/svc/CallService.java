@@ -40,17 +40,17 @@ public class CallService {
         objectMapper = new ObjectMapper();
     }
 
-    public Optional<CallInfo> getCallInfoBySessionID(@NonNull String sessionID) throws SettingsNotFound, JsonProcessingException {
+    public CallInfo getCallInfoBySessionID(@NonNull String sessionID) throws SettingsNotFound, JsonProcessingException {
         String body = objectMapper.createObjectNode().put("session_id", sessionID).toString();
         ResponseEntity<String> response = requestService.postRequest(CALL_INFO_METHOD_NAME, body);
         try {
-            return Optional.of(objectMapper.readValue(response.getBody(), CallInfo.class));
+            return objectMapper.readValue(response.getBody(), CallInfo.class);
         } catch (Exception e) {
-            return Optional.empty();
+            return null;
         }
     }
 
-    public Optional<GetRecord> getRecordBySessionID(@NonNull String sessionID, @Nullable String ip_address) throws SettingsNotFound, JsonProcessingException {
+    public GetRecord getRecordBySessionID(@NonNull String sessionID, @Nullable String ip_address) throws SettingsNotFound, JsonProcessingException {
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("session_id", sessionID);
         if (ip_address != null)
@@ -58,9 +58,9 @@ public class CallService {
         String body = objectNode.toString();
         ResponseEntity<String> response = requestService.postRequest(GET_RECORD_METHOD_NAME, body);
         try {
-            return Optional.of(objectMapper.readValue(response.getBody(), GetRecord.class));
+            return objectMapper.readValue(response.getBody(), GetRecord.class);
         } catch (Exception e) {
-            return Optional.empty();
+            return null;
         }
     }
 }

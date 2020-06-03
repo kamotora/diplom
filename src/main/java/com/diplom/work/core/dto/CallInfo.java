@@ -16,7 +16,6 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CallInfo {
