@@ -35,6 +35,7 @@ public class UserService implements UserDetailsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(NumberInfoController.class);
     private final TokenService tokenService;
 
+    private static final String USER_NOT_FOUND_MSG = "Такой пользователь не найден";
 
     @Autowired
     public UserService(UserRepository userRepo, PasswordEncoder passwordEncoder, TokenService tokenService) {
@@ -58,10 +59,10 @@ public class UserService implements UserDetailsService {
 
     public boolean deleteUserById(Long id) throws UsernameNotFoundException {
         if (id == null || id == 0)
-            throw new UsernameNotFoundException("Такой пользователь не найден");
-        User user = userRepo.findById(id).orElseThrow(() -> new UsernameNotFoundException("Такой пользователь не найден"));
+            throw new UsernameNotFoundException(USER_NOT_FOUND_MSG);
+        User user = userRepo.findById(id).orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_MSG));
         if (user == null)
-            throw new UsernameNotFoundException("Такой пользователь не найден");
+            throw new UsernameNotFoundException(USER_NOT_FOUND_MSG);
         user.setRoles(new HashSet<>());
         userRepo.save(user);
         userRepo.delete(user);
@@ -76,7 +77,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepo.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException(USER_NOT_FOUND_MSG);
         }
         return user;
     }

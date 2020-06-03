@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.3.0.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>com.diplom</groupId>
     <artifactId>work</artifactId>
@@ -17,6 +17,12 @@
 
     <properties>
         <java.version>11</java.version>
+
+        <!-- Sonar-->
+        <sonar.projectKey>kamotora_diplom</sonar.projectKey>
+        <sonar.organization>kamotora</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.login>f711e7e6a422456c46ed81ba09791ab3c6dbcf31</sonar.login>
     </properties>
 
     <dependencies>
@@ -81,7 +87,12 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+            <version>1.4.200</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

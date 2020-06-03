@@ -9,8 +9,10 @@ import lombok.NonNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.thymeleaf.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -67,9 +69,19 @@ public class ControllerUtils {
 
         String result;
         result = sip.substring(start, finish);
-        if (result.isEmpty())
+        if (StringUtils.isEmptyOrWhitespace(result))
             throw new NumberParseException(sip);
 
         return result;
+    }
+
+    public static String randomString(int len) {
+        final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        SecureRandom rnd = new SecureRandom();
+
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++)
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        return sb.toString();
     }
 }

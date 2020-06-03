@@ -1,7 +1,6 @@
 package com.diplom.work.config;
 
 import com.diplom.work.svc.TokenDetailsService;
-import com.diplom.work.svc.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

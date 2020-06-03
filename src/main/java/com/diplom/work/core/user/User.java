@@ -45,9 +45,6 @@ public class User implements UserDetails {
     @JsonView(Views.allUser.class)
     private Set<Role> roles = new HashSet<>();
 
-    public User() {
-    }
-
     /**
      * @return Возвращает права, предоставленные пользователю.
      */

@@ -125,9 +125,6 @@ public class Rule {
     @JsonView(Views.simpleObject.class)
     private String timeFinishString;
 
-    public Rule() {
-    }
-
     /**
      * Конвертирует <code>timeStartString</code> в объект класса Time
      * @return время начала

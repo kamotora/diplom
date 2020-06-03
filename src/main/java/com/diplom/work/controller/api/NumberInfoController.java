@@ -34,7 +34,7 @@ import static org.thymeleaf.util.StringUtils.isEmptyOrWhitespace;
 
 /**
  * Обработка запроса по get_number_info от ВАТС
- * */
+ */
 @RestController
 @RequestMapping("api/")
 public class NumberInfoController {
@@ -42,6 +42,10 @@ public class NumberInfoController {
     private final SettingsService settingsService;
     private final ClientService clientService;
     private final LogService logService;
+
+    private static final String SUCCESS_TITLE = "++++++++++++++++++++++++++++ SUCCESS! ++++++++++++++++++++++++++++";
+    private static final String WARN_TITLE = "---------------------------- Предупреждение! -----------------------";
+    private static final String ERROR_TITLE = "############################ ОШИБОЧКА! ############################";
 
     @Autowired
     public NumberInfoController(RuleService ruleService, SettingsService settingsService, ClientService clientService, LogService logService) {
@@ -75,7 +79,7 @@ public class NumberInfoController {
             settings = settingsService.getSettings();
         } catch (SettingsNotFound e) {
             // Настроек нет
-            LOGGER.error("############################ ОШИБОЧКА! ############################");
+            LOGGER.error(ERROR_TITLE);
             LOGGER.error(String.format("ТЕКСТ ОШИБКИ: %s Получили запрос на get_number_info, header.X-Client-ID = %s \n" +
                     "header.X-Client-Sign = %s \n, body = %s", e.getMessage(), clientID, clientSign, numberInfo.toString()));
             return ResponseEntity.status(500).body(new NumberInfoAnswer(500, e.getMessage()));
@@ -89,7 +93,7 @@ public class NumberInfoController {
             LOGGER.error("Headers не получены. Проверь name");
 
         if (!clientID.equals(settings.getClientID())) {
-            LOGGER.error("############################ ОШИБОЧКА! ############################");
+            LOGGER.error(ERROR_TITLE);
             LOGGER.error("ClientID не совпадают");
             LOGGER.error(String.format("Получили ClientID %s \n В настройках ClientID %s", clientID, settings.getClientID()));
         }
@@ -115,10 +119,9 @@ public class NumberInfoController {
             // Фильтруем по времени, ищем первое правило с наибольшим приоритетом (число наименьшее), если правил нет, то null
             Rule rule = allRules.stream()
                     .filter(ruleService::isRuleCanUseNow)
-                    .min(new RulePriorityComparator()).orElse(null);
+                    .min(new RulePriorityComparator())
+                    .orElseThrow(() -> new NotFoundRequestNumberException(numberInfo.getFrom_number()));
 
-            if (rule == null)
-                throw new NotFoundRequestNumberException(numberInfo.getFrom_number());
             // Формируем ответ
             NumberInfoAnswer answer = getAnswer(client, rule);
             if (answer == null)
@@ -129,23 +132,23 @@ public class NumberInfoController {
             //TODO удалить после отладки
             System.err.println(ResponseEntity.status(200).headers(headers).body(answer));
             //
-            LOGGER.warn("############################ SUCCESS! ############################");
+            LOGGER.info(SUCCESS_TITLE);
             return ResponseEntity.ok().headers(headers).body(answer);
         } catch (SignsNotEquals signsNotEquals) {
-            LOGGER.error("############################ ОШИБОЧКА! ############################");
+            LOGGER.error(ERROR_TITLE);
             LOGGER.error(signsNotEquals.getMessage());
             return ResponseEntity.status(403).body(new NumberInfoAnswer(403, "Подписи не равны"));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            LOGGER.error("############################ ОШИБОЧКА! ############################");
+            LOGGER.error(ERROR_TITLE);
             LOGGER.error("Не удалось получить JSON ответа");
             return ResponseEntity.status(500).body(new NumberInfoAnswer(500, "Не удалось получить JSON ответа"));
         } catch (NotFoundRequestNumberException e) {
-            LOGGER.warn("---------------------------- Предупреждение! -----------------------");
-            LOGGER.error(e.getMessage());
+            LOGGER.warn(WARN_TITLE);
+            LOGGER.warn(e.getMessage());
             return ResponseEntity.status(404).body(new NumberInfoAnswer(404, e.getMessage()));
         } catch (Exception e) {
-            LOGGER.error("############################ ОШИБОЧКА! ############################");
+            LOGGER.error("");
             LOGGER.error(e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).body(new NumberInfoAnswer(500, "Неизвестная ошибка"));
@@ -169,7 +172,7 @@ public class NumberInfoController {
             // Если информации нет, не теряем надежды и пробуем найти в логах
             String pin = logService.findLastPinByClientNumber(client.getNumber());
             if (pin != null) {
-                return new NumberInfoAnswer(pin,client);
+                return new NumberInfoAnswer(pin, client);
             }
         }
         //Маршрутизируем стандартно - на указанный номер
