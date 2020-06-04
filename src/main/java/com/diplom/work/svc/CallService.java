@@ -6,6 +6,7 @@ import com.diplom.work.exceptions.SettingsNotFound;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
 import lombok.NonNull;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +42,11 @@ public class CallService {
     }
 
     public CallInfo getCallInfoBySessionID(@NonNull String sessionID) throws SettingsNotFound, JsonProcessingException {
+        Gson gson = new Gson();
         String body = objectMapper.createObjectNode().put("session_id", sessionID).toString();
         ResponseEntity<String> response = requestService.postRequest(CALL_INFO_METHOD_NAME, body);
         try {
-            return objectMapper.readValue(response.getBody(), CallInfo.class);
+            return gson.fromJson(response.getBody(), CallInfo.class);
         } catch (Exception e) {
             return null;
         }
@@ -57,8 +59,9 @@ public class CallService {
             objectNode.put("ip_adress", ip_address);
         String body = objectNode.toString();
         ResponseEntity<String> response = requestService.postRequest(GET_RECORD_METHOD_NAME, body);
+        Gson gson = new Gson();
         try {
-            return objectMapper.readValue(response.getBody(), GetRecord.class);
+            return gson.fromJson(response.getBody(), GetRecord.class);
         } catch (Exception e) {
             return null;
         }

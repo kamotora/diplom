@@ -20,6 +20,7 @@
         <div class="mb-3 row">
             <h3 th:text="${callInfo.info} ? 'Просмотр вызова ' + ${nameSession} : ${callInfo.resultMessage}"></h3>
         </div>
+
         <form id = "logForm" th:object="${callInfo}" name = "logForm">
             <div class="form-group row">
                 <label for="call_type" class="col-md-2 col-form-label">Тип звонка: </label>

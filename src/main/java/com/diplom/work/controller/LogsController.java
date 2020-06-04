@@ -8,6 +8,8 @@ import com.diplom.work.core.json.view.Views;
 import com.diplom.work.svc.CallService;
 import com.diplom.work.svc.LogService;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -86,28 +88,24 @@ public class LogsController {
     public String showCallInfo(@PathVariable("id") Log log, Model model,HttpServletRequest request){
         CallInfo errorInfo = new CallInfo(-1000, "Не удалось получить инфу", null);
         try{
-            /**
-             * Это для отладки
-             */
-
-            CallInfo callInfo = new CallInfo(0,"Основная информация по вызову", new CallInfo.Info(1,2,1,"89545342312","210","123212321",null,null,"10.10.2020",5,"краткий лог",false,true,true,"textForError","statusError"));
+            //System.out.println("sdfsdf");
+            /*CallInfo callInfo = new CallInfo(0,"Основная информация по вызову", new CallInfo.Info(1,2,1,"89545342312","210","123212321",null,null,"10.10.2020",5,"краткий лог",false,true,true,"textForError","statusError"));
             GetRecord record = new GetRecord("0","Запись разговора","https://api.cloudpbx.rt.ru/records_new_scheme/record/download/9c8518024e2af41bf1056773219997d6/188254033196");
             model.addAttribute("nameSession", log.getSession_id());
             model.addAttribute("callInfo", callInfo);
             model.addAttribute("record", record);
-
-            /**
-             * Эт если с сервака
-             */
-            /*
+*/
+            //Gson gson = new Gson();
             String ipClient = request.getHeader("X-Forwarded-For");
+            //String json = "{\"result\":0,\"resultMessage\":\"\",\"info\":{\"call_type\":1,\"direction\":2,\"state\":1,\"orig_number\":\"sip:akb211@873427.20.rt.ru\",\"orig_pin\":\"211\",\"dest_number\":\"sip:89139992528@873427.20.rt.ru\",\"answering_sipuri\":null,\"answering_pin\":null,\"start_call_date\":\"1591257743\",\"duration\":56,\"session_log\":\"0:ct:89139992528;47:cc:89139992528;104:cd:akb211;\",\"is_voicemail\":false,\"is_record\":true,\"is_fax\":false,\"status_code\":\"0\",\"status_string\":\"\"}}";
             CallInfo callInfo = callService.getCallInfoBySessionID(log.getSession_id());
             GetRecord record = callService.getRecordBySessionID(log.getSession_id(),ipClient);
             model.addAttribute("nameSession", log.getSession_id());
             model.addAttribute("callInfo", callInfo);
-            model.addAttribute("record", record);*/
+            model.addAttribute("record", record);
             return "log";
         }catch(Exception e){
+            System.out.println("Пиздец как заебало");
             model.addAttribute("callInfo", errorInfo);
             return "log";
         }
@@ -117,7 +115,7 @@ public class LogsController {
      * Получаем от ВАТС инфу о вызове
      * и выводим её
      */
-    /*
+/*
     @GetMapping("log/{id}/view")
     public ResponseEntity<CallInfo> showCallInfo(@PathVariable("id") Log log) {
         CallInfo errorInfo = new CallInfo(-1000,"Не удалось получить инфу",null);
