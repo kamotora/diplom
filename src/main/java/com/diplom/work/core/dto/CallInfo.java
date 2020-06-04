@@ -1,10 +1,8 @@
 package com.diplom.work.core.dto;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * Для парсинга JSON ответа с сервера, метод call_info
@@ -39,7 +37,26 @@ public class CallInfo {
     private Info info;
 
     @Data
-    static class Info {
+    public static class Info {
+        public Info(Integer call_type, Integer direction, Integer state, String orig_number, String orig_pin, String dest_number, String answering_sipuri, String answering_pin, String start_call_date, Integer duration, String session_log, Boolean is_voicemail, Boolean is_record, Boolean is_fax, String status_code, String status_string) {
+            this.call_type = call_type;
+            this.direction = direction;
+            this.state = state;
+            this.orig_number = orig_number;
+            this.orig_pin = orig_pin;
+            this.dest_number = dest_number;
+            this.answering_sipuri = answering_sipuri;
+            this.answering_pin = answering_pin;
+            this.start_call_date = start_call_date;
+            this.duration = duration;
+            this.session_log = session_log;
+            this.is_voicemail = is_voicemail;
+            this.is_record = is_record;
+            this.is_fax = is_fax;
+            this.status_code = status_code;
+            this.status_string = status_string;
+        }
+
         /**
          * 1 – обычный звонок
          * 3 – callback
@@ -128,6 +145,33 @@ public class CallInfo {
          * null - да
          * */
         private String status_string;
+
+
+
+        public String getCallTypeName(){
+            switch(call_type){
+                case(1): return "обычный звонок";
+                case(3): return "callback";
+                default: return "Неизвестный тип";
+            }
+        }
+
+        public String getDirectionName(){
+            switch(direction){
+                case(1): return "входящий";
+                case(2): return "исходящий";
+                case(3): return "внутренний";
+                default: return "неизвестный";
+            }
+        }
+
+        public String getStateName(){
+            switch(state){
+                case(1): return "да";
+                case(2): return "нет";
+                default: return "неизвестно";
+            }
+        }
 
     }
 }

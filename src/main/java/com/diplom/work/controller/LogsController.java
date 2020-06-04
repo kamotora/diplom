@@ -81,10 +81,43 @@ public class LogsController {
         return "fragments/messages :: messages";
     }
 
+
+    @GetMapping("/log/{id}/view")
+    public String showCallInfo(@PathVariable("id") Log log, Model model,HttpServletRequest request){
+        CallInfo errorInfo = new CallInfo(-1000, "Не удалось получить инфу", null);
+        try{
+            /**
+             * Это для отладки
+             */
+
+            CallInfo callInfo = new CallInfo(0,"Основная информация по вызову", new CallInfo.Info(1,2,1,"89545342312","210","123212321",null,null,"10.10.2020",5,"краткий лог",false,true,true,"textForError","statusError"));
+            GetRecord record = new GetRecord("0","Запись разговора","https://api.cloudpbx.rt.ru/records_new_scheme/record/download/9c8518024e2af41bf1056773219997d6/188254033196");
+            model.addAttribute("nameSession", log.getSession_id());
+            model.addAttribute("callInfo", callInfo);
+            model.addAttribute("record", record);
+
+            /**
+             * Эт если с сервака
+             */
+            /*
+            String ipClient = request.getHeader("X-Forwarded-For");
+            CallInfo callInfo = callService.getCallInfoBySessionID(log.getSession_id());
+            GetRecord record = callService.getRecordBySessionID(log.getSession_id(),ipClient);
+            model.addAttribute("nameSession", log.getSession_id());
+            model.addAttribute("callInfo", callInfo);
+            model.addAttribute("record", record);*/
+            return "log";
+        }catch(Exception e){
+            model.addAttribute("callInfo", errorInfo);
+            return "log";
+        }
+    }
+
     /**
      * Получаем от ВАТС инфу о вызове
      * и выводим её
      */
+    /*
     @GetMapping("log/{id}/view")
     public ResponseEntity<CallInfo> showCallInfo(@PathVariable("id") Log log) {
         CallInfo errorInfo = new CallInfo(-1000,"Не удалось получить инфу",null);
@@ -94,7 +127,7 @@ public class LogsController {
             return ResponseEntity.badRequest().body(errorInfo);
         }
     }
-
+*/
     //TECT
 
     /**

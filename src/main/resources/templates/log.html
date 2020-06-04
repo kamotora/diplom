@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="auto" class="h-100">
+<head>
+    <th:block
+            th:replace="fragments/head :: headForTable('Просмотр вызова')">
+    </th:block>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body class="d-flex flex-column h-100">
+<header>
+    <div th:replace="fragments/navbars :: selectNavbar"></div>
+</header>
+
+<main role="main" class="flex-shrink-0">
+    <div class="container">
+        <div class="mb-3 row">
+            <h3 th:text="${callInfo.info} ? 'Просмотр вызова ' + ${nameSession} : ${callInfo.resultMessage}"></h3>
+        </div>
+        <form id = "logForm" th:object="${callInfo}" name = "logForm">
+            <div class="form-group row">
+                <label for="call_type" class="col-md-2 col-form-label">Тип звонка: </label>
+                <div class="col-md-3">
+                    <input type="text" readonly class="form-control-plaintext" id="call_type" th:value="*{info.callTypeName}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="direction" class="col-sm-2 col-form-label">Направление звонка: </label>
+                <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" id="direction" th:value="*{info.directionName}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="state" class="col-md-2 col-form-label">Был принят: </label>
+                <div class="col-md-1">
+                    <input type="text" readonly class="form-control-plaintext" id="state" th:value="*{info.stateName}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="orig_number" class="col-md-3 col-form-label">Номер вызывающего абонента: </label>
+                <div class="col-md-3 ">
+                    <input type="text" readonly class="form-control-plaintext" id="orig_number" th:value="*{info.orig_number}">
+                </div>
+            </div>
+            <div class = "form-group row">
+                <label for="orig_pin" class="col-md-3 col-form-label ">PIN вызывающего абонента: </label>
+                <div class="col-md-1">
+                    <input type="text" readonly class="form-control-plaintext" id="orig_pin" th:value="*{info.orig_pin} ? *{info.orig_pin} : '-'">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="dest_number" class="col-md-3 col-form-label">Номер вызываемого абонента: </label>
+                <div class="col-md-3">
+                    <input type="text" readonly class="form-control-plaintext" id="dest_number" th:value="*{info.dest_number}">
+                </div>
+            </div>
+            <div class = "form-group row">
+                <label for="answering_pin" class="col-md-3 ml-0 mr-0">PIN первого ответившего абонента: </label>
+                <div class="col-md-1 ml-0 mr-0">
+                    <input type="text" readonly class="form-control-plaintext" id="answering_pin" th:value="*{info.answering_pin} ? *{info.answering_pin} : '-'">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="duration" class="col-md-3 col-form-label">Длительность разговора(сек): </label>
+                <div class="col-md-1">
+                    <input type="text" readonly class="form-control-plaintext" id="duration" th:value="*{info.duration}">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="isRecord" class="col-md-3 col-form-label">Наличие записи разговора: </label>
+                <div class="col-md-1">
+                    <input type="text" readonly class="form-control-plaintext" id="isRecord" th:value="*{info.is_record}? 'да' : 'нет'">
+                </div>
+            </div>
+            <div class="form-group">
+                <audio controls th:hidden = "*{!info.is_record}">
+                    <source  th:src="${record.url}" type="audio/mpeg">
+                </audio>
+                <span tabindex="0" data-toggle="tooltip" data-placement="top"
+                      title="Используется одноразовая ссылка на файл с записью. Для повторного прослушивания рекомендуется заново просмотреть лог">
+                    <i class="far fa-question-circle"></i>
+                </span>
+            </div>
+        </form>
+    </div>
+</main>
+<footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
+</body>
+</html>

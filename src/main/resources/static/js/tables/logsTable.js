@@ -210,11 +210,11 @@ $(document).ready(function () {
     function onViewClick(value, row, index) {
         window.location = '/log/' + row.id + '/view';
     }
-
+    /*
     function onRecordClick(value, row, index) {
         window.location = '/log/' + row.id + '/record';
     }
-
+*/
     $(function () {
         $table.bootstrapTable('destroy').bootstrapTable({
             columns: [{
@@ -274,18 +274,12 @@ $(document).ready(function () {
                     'click .view': function (e, value, row, index) {
                         onViewClick(value, row, index)
                     },
-                    'click .record': function (e, value, row, index) {
-                        onRecordClick(value, row, index)
-                    },
                     'click .remove': function (e, value, row, index) {
                         deleteLogByIds([row.id])
                     }
                 },
                 formatter: [
                     '<a class="view" href="javascript:void(0)" title="Посмотреть инфу о звонке">',
-                    '<i class="fa fa-eye"></i>',
-                    '</a>  ',
-                    '<a class="record" href="javascript:void(0)" title="Посмотреть запись (временно здесь)">',
                     '<i class="fa fa-eye"></i>',
                     '</a>  ',
                     '<a class="remove" href="javascript:void(0)" title="Удалить">',
