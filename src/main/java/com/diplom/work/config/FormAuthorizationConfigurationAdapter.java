@@ -34,7 +34,7 @@ public class FormAuthorizationConfigurationAdapter extends WebSecurityConfigurer
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .successForwardUrl("/home")
+                .successForwardUrl("/")
                 .loginPage("/login")
                 .permitAll()
                 .and()

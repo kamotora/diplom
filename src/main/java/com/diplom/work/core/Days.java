@@ -1,6 +1,7 @@
 package com.diplom.work.core;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 public enum Days {
     Monday("Пн"),
@@ -19,6 +20,10 @@ public enum Days {
 
     public String getName() {
         return name;
+    }
+
+    public static Days getTodayDay(){
+        return getByDayOfWeek(DayOfWeek.from(LocalDate.now()));
     }
 
     public static Days getByDayOfWeek(DayOfWeek dayOfWeek){

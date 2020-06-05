@@ -1,5 +1,6 @@
 package com.diplom.work.core.json;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
  *  * */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public final class NumberInfo {
     private String domain;
     private String from_number;

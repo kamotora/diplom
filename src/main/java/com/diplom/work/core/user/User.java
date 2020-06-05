@@ -3,8 +3,10 @@ package com.diplom.work.core.user;
 import com.diplom.work.core.json.view.Views;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,6 +18,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "usr")
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = {"id","username","password"})
 public class User implements UserDetails {
     @Id
