@@ -65,17 +65,6 @@ public class RuleService {
         return ruleRepository.findAllByIsForAllClientsIsTrue();
     }
 
-    public Rule saveWithClients(Rule rule, Set<Client> clientsForEditableRule) throws ManagerIsNull, TimeIncorrect {
-        //Затираем инфу о конкретных клиентах, если для всех, чтобы не мешалась
-        rule = save(rule);
-        if (rule.getIsForAllClients())
-            rule.setClients(new HashSet<>());
-        else {
-            rule.setClients(clientsForEditableRule);
-        }
-        return ruleRepository.save(rule);
-    }
-
     /**
      * Может ли правило быть использовано в данный момент по времени и дню
      *
@@ -91,7 +80,7 @@ public class RuleService {
             }
         }
 
-        if (isDayEquals) {
+        if (isDayEquals && rule.getTimeStart() != null && rule.getTimeFinish() != null) {
             LocalTime start = rule.getTimeStart().toLocalTime();
             LocalTime finish = rule.getTimeFinish().toLocalTime();
             LocalTime nowTime = LocalTime.now();
@@ -160,8 +149,4 @@ public class RuleService {
         return ruleRepository.save(ruleFromDb);
     }
 
-    public void removeClientFromRule(Rule rule, Client client) {
-        rule.getClients().remove(client);
-        ruleRepository.save(rule);
-    }
 }

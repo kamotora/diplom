@@ -89,7 +89,7 @@ public class Rule {
     @ElementCollection(targetClass = Days.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "rule_days", joinColumns = @JoinColumn(name = "rule_id"))
     @Enumerated(EnumType.STRING)
-    private Set<Days> days;
+    private Set<Days> days = new HashSet<>();
 
     //Приоритет
     @Column(name = "priority", nullable = true)

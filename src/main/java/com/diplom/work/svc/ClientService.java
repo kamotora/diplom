@@ -85,7 +85,6 @@ public class ClientService {
         if (clientFromBd != null) {
             // Меняем список правил, в которых участвует клиент
             // Т.к. rule является "главным", меняем через него
-            // todo сделать попроще если можно
             for (Rule rule : clientFromBd.getRules()) {
                 rule.getClients().remove(clientFromBd);
                 ruleRepository.save(rule);
