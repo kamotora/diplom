@@ -18,17 +18,14 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.sql.Time;
 import java.time.LocalTime;
 
 import static org.junit.Assert.assertTrue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -42,6 +39,7 @@ public class RestTest {
     private UserRepository userRepository;
     @Autowired
     private SettingsService settingsService;
+
     @Test
     public void restForUnauthorized() throws Exception {
         this.mockMvc.perform(get("/rest/rule/all")
@@ -64,7 +62,7 @@ public class RestTest {
         settingsService.save(settings);
         String token = userRepository.findByUsername("admin").getToken();
         this.mockMvc.perform(get("/rest/client/all")
-                .header("X-AUTH-TOKEN",token)
+                .header("X-AUTH-TOKEN", token)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isOk());
     }

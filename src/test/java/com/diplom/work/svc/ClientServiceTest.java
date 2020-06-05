@@ -27,10 +27,6 @@ public class ClientServiceTest {
     private final ClientService clientService = new ClientService(clientRepository,ruleRepository);
 
     @Test
-    public void getFirstByNumberEquals() {
-    }
-
-    @Test
     public void save() {
         final Client client = new Client();
         final String TEL = "+7(912)-345-66-37";
@@ -42,9 +38,8 @@ public class ClientServiceTest {
         client.setRules(Set.of(rule));
         assertThrows(NumberParseException.class, () -> clientService.save(client));
         client.setNumber(TEL);
-        Client res = null;
         try {
-            res = clientService.save(client);
+            clientService.save(client);
         } catch (NumberParseException exception) {
             exception.printStackTrace();
             fail(exception.getMessage());

@@ -50,8 +50,7 @@ public class RuleServiceTest {
         incorrectRule.setTimeStart(Time.valueOf(LocalTime.now()));
         assertThrows(TimeIncorrect.class, () -> ruleService.save(incorrectRule));
         incorrectRule.setTimeFinish(Time.valueOf(LocalTime.now().minusHours(1)));
-        Rule correctRule = incorrectRule;
-        assertNull(ruleService.save(correctRule));
-        Mockito.verify(ruleRepository, Mockito.times(1)).save(correctRule);
+        assertNull(ruleService.save(incorrectRule));
+        Mockito.verify(ruleRepository, Mockito.times(1)).save(incorrectRule);
     }
 }

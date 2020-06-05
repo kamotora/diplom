@@ -69,8 +69,8 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    public void save(User user) {
-        userRepo.save(user);
+    public User save(User user) {
+        return userRepo.save(user);
     }
 
     @Override
