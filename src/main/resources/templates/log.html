@@ -18,9 +18,9 @@
 <main role="main" class="flex-shrink-0">
     <div class="container">
         <div class="mb-3 row">
-            <h3 th:text="${callInfo.info} ? 'Просмотр вызова ' + ${nameSession} : ${callInfo.resultMessage}"></h3>
+            <h3 th:text="${callInfo} ? 'Просмотр вызова ' + ${nameSession} : ${messageError} + ': ' + ${nameSession}"></h3>
         </div>
-
+        <div th:if = "${callInfo}">
         <form id = "logForm" th:object="${callInfo}" name = "logForm">
             <div class="form-group row">
                 <label for="call_type" class="col-md-2 col-form-label">Тип звонка: </label>
@@ -77,16 +77,19 @@
                     <input type="text" readonly class="form-control-plaintext" id="isRecord" th:value="*{info.is_record}? 'да' : 'нет'">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" th:if = "${record}">
                 <audio controls th:hidden = "*{!info.is_record}">
                     <source  th:src="${record.url}" type="audio/mpeg">
                 </audio>
+            </div>
+            <div th:unless="${record}">
                 <span tabindex="0" data-toggle="tooltip" data-placement="top"
-                      title="Используется одноразовая ссылка на файл с записью. Для повторного прослушивания рекомендуется заново просмотреть лог">
+                      title="Не удалоьс получить запись. Возможно она повреждена">
                     <i class="far fa-question-circle"></i>
                 </span>
             </div>
         </form>
+        </div>
     </div>
 </main>
 <footer class="footer navbar-fixed-bottom mt-auto py-3" th:include="fragments/footer :: footerForTables"></footer>
