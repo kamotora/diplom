@@ -11,3 +11,5 @@ cache:
 script:
   # other script steps might be done before running the actual analysis
   - sonar-scanner
+  before_install:
+  - chmod +x mvnw
