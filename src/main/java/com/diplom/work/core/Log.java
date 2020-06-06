@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "logs")
 @Data
-@EqualsAndHashCode(of = {"id", "session_id"})
+@EqualsAndHashCode
 public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,7 +72,7 @@ public class Log {
 
     @Transient
     public LocalDateTime getTimestampInDateTimeFormat() {
-        if (timestamp == null)
+        if (timestamp == null && timestampInDateTimeFormat == null)
             return null;
         if (timestampInDateTimeFormat == null)
             timestampInDateTimeFormat = Timestamp.valueOf(timestamp).toLocalDateTime();

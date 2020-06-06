@@ -1,13 +1,11 @@
 package com.diplom.work.svc;
 
-import com.diplom.work.core.Client;
 import com.diplom.work.core.Days;
 import com.diplom.work.core.Rule;
 import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.ManagerIsNull;
 import com.diplom.work.exceptions.TimeIncorrect;
 import com.diplom.work.repo.RuleRepository;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +13,7 @@ import org.thymeleaf.util.StringUtils;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -114,12 +109,12 @@ public class RuleService {
     }
 
     //Список правил для сотрудника
-    public List<Rule> getRulesForUser(User user){
+    public List<Rule> getRulesForUser(User user) {
         return ruleRepository.findAllByManager(user);
     }
 
     //Список правил для сотрудника + умные правила
-    public List<Rule> getRulesForUserAndSmartRules(User user){
+    public List<Rule> getRulesForUserAndSmartRules(User user) {
         return ruleRepository.findAllByManagerOrIsSmartTrue(user);
     }
 
@@ -130,7 +125,7 @@ public class RuleService {
             rule.setIsSmart(false);
 
         //Если умное правило, затираем инфу о менеджерах, чтобы не мешалась
-        if (rule.getIsSmart()) {
+        if (Boolean.TRUE.equals(rule.getIsSmart())) {
             rule.setManager(null);
             rule.setManagerNumber(null);
         } else if (rule.getManager() == null && StringUtils.isEmptyOrWhitespace(rule.getManagerNumber()))

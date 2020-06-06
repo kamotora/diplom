@@ -80,14 +80,15 @@ public class RestTest {
         rule.getDays().add(Days.Friday);
         client.getRules().add(rule);
         String s = new ObjectMapper().writeValueAsString(client);
-        this.mockMvc.perform(post("/rest/client")
+        final MvcResult resultAddClient = this.mockMvc.perform(post("/rest/client")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(s))
                 .andDo(print())
-                .andExpect(status().isOk());
-        MvcResult result = this.mockMvc.perform(get("/rest/client/all")
+                .andExpect(status().isOk()).andReturn();
+        MvcResult resultAllClients = this.mockMvc.perform(get("/rest/client/all")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isOk()).andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("\"id\":1"));
+        final Client addedClient = new ObjectMapper().readValue(resultAddClient.getResponse().getContentAsString(), Client.class);
+        assertTrue(resultAllClients.getResponse().getContentAsString().contains("\"id\":"+addedClient.getId()));
     }
 }

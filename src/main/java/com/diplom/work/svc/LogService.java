@@ -7,6 +7,7 @@ import com.diplom.work.repo.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,15 +33,28 @@ public class LogService {
         all.sort(Comparator.comparing(Log::getTimestampInDateTimeFormat).reversed());
         return all;
     }
+
     /**
      * Поиск всех логов по фильтру
      * если logFilterDto.getStartDate() или logFilterDto.getFinishDate() null, то они не учитываются
-     * */
+     */
     public List<Log> findAllByFilter(LogFilterDto logFilterDto) {
         return logRepository.findAll().stream().filter(log ->
-                (logFilterDto.getStartDate() == null || log.getTimestampInDateTimeFormat().isAfter(logFilterDto.getStartDate()))
-                        && (logFilterDto.getFinishDate() == null ||
-                        log.getTimestampInDateTimeFormat().isBefore(logFilterDto.getFinishDate().plusDays(1))))
+                {
+                    if (log == null || log.getTimestampInDateTimeFormat() == null)
+                        return false;
+                    LocalDate logDate = log.getTimestampInDateTimeFormat().toLocalDate();
+                    LocalDate startDate = logFilterDto.getStartDate() != null
+                            ? logFilterDto.getStartDate().toLocalDate() : null;
+                    LocalDate finishDate = logFilterDto.getFinishDate() != null
+                            ? logFilterDto.getFinishDate().toLocalDate() : null;
+                    boolean logDateAfterOrEqualStart =
+                            startDate == null || logDate.isAfter(startDate) || logDate.isEqual(startDate);
+                    boolean logDateBeforeOrEqualFinish =
+                            finishDate == null || logDate.isBefore(finishDate) || logDate.isEqual(finishDate);
+                    return logDateAfterOrEqualStart && logDateBeforeOrEqualFinish;
+                }
+        )
                 .collect(Collectors.toList());
     }
 

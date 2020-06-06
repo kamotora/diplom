@@ -50,7 +50,7 @@ public class ClientController {
      *
      * @return все клиенты в виде JSON
      */
-    @GetMapping(path = "/client/all", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/client/table", produces = {MediaType.APPLICATION_JSON_VALUE})
     @JsonView(Views.forTable.class)
     public ResponseEntity<List<Client>> getAllClientsForTable() {
         return ResponseEntity.ok().body(clientService.getAll());

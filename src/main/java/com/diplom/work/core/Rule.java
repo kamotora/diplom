@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeParseException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,6 +29,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @EqualsAndHashCode(of = {"id", "name", "isSmart", "isForAllClients"})
 @ToString
+@Slf4j
 public class Rule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -153,7 +156,7 @@ public class Rule {
             try {
                 return new Time(dateFormat.parse(string).getTime());
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.error("Исключение в методе Rule.getTimeFromString",e);
             }
         }
         return null;

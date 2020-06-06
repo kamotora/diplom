@@ -111,7 +111,12 @@ public class User implements UserDetails {
         return isActive();
     }
 
-    //TODO временно
+    /**
+     * В приложении можно выбрать одну роль
+     * Спринг допускает несколько
+     * Поэтому костыль
+     * @return первую роль из списка или null, если ролей не указано
+     * */
     @JsonView(Views.forTable.class)
     @JsonGetter("role")
     public String getFirstRoleName() {

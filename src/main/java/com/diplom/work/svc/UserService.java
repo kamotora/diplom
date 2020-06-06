@@ -1,6 +1,5 @@
 package com.diplom.work.svc;
 
-import com.diplom.work.controller.api.NumberInfoController;
 import com.diplom.work.core.dto.UserEditDto;
 import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
@@ -9,9 +8,7 @@ import com.diplom.work.exceptions.OldPasswordsNotEquals;
 import com.diplom.work.exceptions.UsernameAlreadyExist;
 import com.diplom.work.repo.UserRepository;
 import lombok.NonNull;
-import lombok.extern.log4j.Log4j2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,12 +24,11 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-@Log4j2
+@Slf4j
 public class UserService implements UserDetailsService {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NumberInfoController.class);
     private final TokenService tokenService;
 
     private static final String USER_NOT_FOUND_MSG = "Такой пользователь не найден";
@@ -53,11 +49,11 @@ public class UserService implements UserDetailsService {
             defaultAdmin.getRoles().add(Role.ADMIN);
             defaultAdmin.setActive(true);
             userRepo.save(defaultAdmin);
-            LOGGER.info("Был создан администратор по умолчанию:\n Логин:admin\nПароль:admin");
+            log.info("Был создан администратор по умолчанию:\n Логин:admin\nПароль:admin");
         }
     }
 
-    public boolean deleteUserById(Long id) throws UsernameNotFoundException {
+    public boolean deleteUserById(Long id) {
         if (id == null || id == 0)
             throw new UsernameNotFoundException(USER_NOT_FOUND_MSG);
         User user = userRepo.findById(id).orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_MSG));
@@ -74,7 +70,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         User user = userRepo.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(USER_NOT_FOUND_MSG);

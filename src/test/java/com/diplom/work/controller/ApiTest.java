@@ -60,6 +60,8 @@ public class ApiTest {
 
     @Before
     public void setUp() {
+        //На всякий случай удалим, вдруг что то осталось от других тестов
+        settingsRepository.deleteAll();
         Settings settings = new Settings();
         settings.setIsNeedCheckSign(true);
         settings.setClientID(ControllerUtils.randomString(32));

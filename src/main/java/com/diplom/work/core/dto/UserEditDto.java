@@ -10,8 +10,9 @@ import org.springframework.beans.BeanUtils;
 
 /**
  * Для представления юзера на форме
+ *
  * @see lombok.Lombok
- * */
+ */
 
 @Getter
 @Setter
@@ -31,9 +32,7 @@ public class UserEditDto {
     private Role role;
 
     public UserEditDto(User user) {
-        BeanUtils.copyProperties(user,this,"roles", "password");
+        BeanUtils.copyProperties(user, this, "roles", "password");
         this.role = user.getFirstRole();
     }
-
-
 }

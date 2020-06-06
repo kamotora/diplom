@@ -1,7 +1,7 @@
 package com.diplom.work.controller;
 
-import com.diplom.work.core.Rule;
-import com.diplom.work.repo.RuleRepository;
+import com.diplom.work.core.Client;
+import com.diplom.work.repo.ClientRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,46 +27,43 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource("/application-test.properties")
 @WithUserDetails(value = "admin", userDetailsServiceBeanName = "userService")
-public class RulesControllerTest {
+public class ClientControllerTest {
     @Autowired
-    private RuleRepository ruleRepository;
+    private ClientRepository clientRepository;
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void rulesTableExistTest() throws Exception {
-        this.mockMvc.perform(get("/rules"))
+    public void clientsTableExistTest() throws Exception {
+        this.mockMvc.perform(get("/clients"))
                 .andDo(print())
                 .andExpect(authenticated())
-                .andExpect(xpath("//*[@id='RulesTable']").exists());
+                .andExpect(xpath("//*[@id='clientsTable']").exists());
     }
 
     @Test
-    public void rulesTableGetData() throws Exception {
-        this.mockMvc.perform(get("/rule/table"))
+    public void clientsTableGetData() throws Exception {
+        this.mockMvc.perform(get("/client/table"))
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void ruleDelete() throws Exception {
-        Rule rule = new Rule();
-        rule.setName("test");
-        rule.setIsSmart(true);
-        rule.setIsForAllClients(true);
-        rule.setTimeStartString("10:10");
-        rule.setTimeFinishString("11:11");
-        rule = ruleRepository.save(rule);
-        assertNotNull(rule.getId());
-        assertTrue(ruleRepository.existsById(rule.getId()));
+    public void clientDelete() throws Exception {
+        Client client = new Client();
+        client.setName("test");
+        client.setNumber("123");
+        client = clientRepository.save(client);
+        assertNotNull(client.getId());
+        assertTrue(clientRepository.existsById(client.getId()));
 
-        this.mockMvc.perform(delete("/rule").with(csrf())
+        this.mockMvc.perform(delete("/client").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("[" + rule.getId() + "]"))
+                .content("[" + client.getId() + "]"))
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(status().isOk());
-        assertFalse(ruleRepository.existsById(rule.getId()));
+        assertFalse(clientRepository.existsById(client.getId()));
     }
 }
