@@ -1,15 +1,18 @@
-language: java
-sudo: true
+sudo: false
+install: true
 dist: xenial
 jdk: openjdk11
 addons:
   sonarcloud:
     organization: "kamotora" # the key of the org you chose at step #3
+script:
+  # JaCoCo is used to have code coverage, "-Pcoverage" activates the maven profile in the pom.xml
+  - mvn clean verify sonar:sonar -Pcoverage 
+
 cache:
   directories:
+    - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'
-script:
-  # other script steps might be done before running the actual analysis
-  - sonar-scanner
+
   before_install:
   - chmod +x mvnw
