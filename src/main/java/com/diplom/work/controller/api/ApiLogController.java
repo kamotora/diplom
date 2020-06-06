@@ -3,6 +3,7 @@ package com.diplom.work.controller.api;
 import com.diplom.work.core.Log;
 import com.diplom.work.core.dto.LogFilterDto;
 import com.diplom.work.svc.LogService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("rest/logs")
+@Slf4j
 public class ApiLogController {
 
     private final LogService logService;
-
     @Autowired
     public ApiLogController(LogService logService) {
         this.logService = logService;
@@ -46,8 +47,8 @@ public class ApiLogController {
         int numerusOutbound = 0;
         int numerusInternal = 0;
 
-        for (Log log : logs) {
-            switch (log.getType()) {
+        for (Log curLog : logs) {
+            switch (curLog.getType()) {
                 case "incoming":
                     numerusIncoming++;
                     break;
@@ -58,7 +59,7 @@ public class ApiLogController {
                     numerusInternal++;
                     break;
                 default:
-                    System.err.println("Неизвестный тип лога");
+                    log.error("Неизвестный тип лога");
             }
         }
         listDataForGraphic.add(numerusIncoming);

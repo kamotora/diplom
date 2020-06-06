@@ -115,6 +115,8 @@ public class User implements UserDetails {
     @JsonView(Views.forTable.class)
     @JsonGetter("role")
     public String getFirstRoleName() {
+        if(roles.isEmpty())
+            return null;
         return getFirstRole().getAuthority();
     }
     @Transient

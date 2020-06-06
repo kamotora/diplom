@@ -1,18 +1,17 @@
 package com.diplom.work.core.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.thymeleaf.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public final class LogFilterDto {
     private String startDate;
     private String finishDate;

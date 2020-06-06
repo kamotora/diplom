@@ -25,6 +25,9 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private static final String GOODMESSAGE_ATTRIBUTE_NAME = "goodMessage";
+    private static final String BADMESSAGE_ATTRIBUTE_NAME = "badMessage";
+
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -96,12 +99,12 @@ public class UserController {
     public String deleteUser(Model model, @RequestBody List<Long> ids) {
         try {
             ids.forEach(userService::deleteUserById);
-            model.addAttribute("goodMessage", "Удалено!");
+            model.addAttribute(GOODMESSAGE_ATTRIBUTE_NAME, "Удалено!");
         } catch (UsernameNotFoundException exception) {
-            model.addAttribute("badMessage", "Такого пользователя не найдено");
+            model.addAttribute(BADMESSAGE_ATTRIBUTE_NAME, "Такого пользователя не найдено");
         }
         catch (Exception e){
-            model.addAttribute("badMessage", "Возникла ошибка при удалении");
+            model.addAttribute(BADMESSAGE_ATTRIBUTE_NAME, "Возникла ошибка при удалении");
         }
         return "fragments/messages :: messages";
     }
@@ -117,10 +120,10 @@ public class UserController {
             userService.save(user);
         } catch (UsernameAlreadyExist | NewPasswordsNotEquals exception) {
             initPage(model, user);
-            model.addAttribute("badMessage", exception.getMessage());
+            model.addAttribute(BADMESSAGE_ATTRIBUTE_NAME, exception.getMessage());
             return "user";
         }
-        model.addAttribute("goodMessage", "Сохранено!");
+        model.addAttribute(GOODMESSAGE_ATTRIBUTE_NAME, "Сохранено!");
         initPage(model, user);
         return "user";
     }

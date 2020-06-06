@@ -59,12 +59,4 @@ public class LoginTest {
                 .andExpect(status().isForbidden());
     }
 
-//    @Test
-//    public void apiWorked() throws Exception {
-//        this.mockMvc.perform(post("/api/get_number_info")
-//                .content("{\"domain\":\"domain@test.com\",\"from_number\":\"7912345678\",\"request_number\":\"733333333\"}")
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andDo(print())
-//                .andExpect(status().isInternalServerError());
-//    }
 }

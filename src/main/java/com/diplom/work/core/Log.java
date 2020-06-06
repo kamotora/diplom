@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "logs")
 @Data
+@EqualsAndHashCode(of = {"id", "session_id"})
 public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,6 +72,8 @@ public class Log {
 
     @Transient
     public LocalDateTime getTimestampInDateTimeFormat() {
+        if (timestamp == null)
+            return null;
         if (timestampInDateTimeFormat == null)
             timestampInDateTimeFormat = Timestamp.valueOf(timestamp).toLocalDateTime();
         return timestampInDateTimeFormat;
@@ -78,7 +82,7 @@ public class Log {
     public boolean getIs_recordAsBool() {
         if (is_record == null || is_record.isEmpty())
             return false;
-        return is_record.strip().toLowerCase().equals("true");
+        return is_record.strip().equalsIgnoreCase("true");
     }
 
     /**

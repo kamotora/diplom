@@ -28,7 +28,7 @@ public class AppErrorController implements ErrorController {
      */
     private final ErrorAttributes errorAttributes;
 
-    private final static String ERROR_PATH = "/error";
+    private static final String ERROR_PATH = "/error";
 
 
     public AppErrorController(ErrorAttributes errorAttributes) {

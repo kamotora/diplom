@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @PreAuthorize("hasAuthority('Администратор')")
 public class SettingsController {
     private final SettingsService settingsService;
+    private static final String SETTINGS_ATTRIBUTE_NAME = "settings";
+    private static final String SETTINGS_PAGE_NAME = SETTINGS_ATTRIBUTE_NAME;
 
     @Autowired
     public SettingsController(SettingsService settingsService) {
@@ -26,16 +28,16 @@ public class SettingsController {
         if (isSaved != null)
             model.addAttribute("goodMessage", "Сохранено!");
         try {
-            model.addAttribute("settings", settingsService.getSettings());
+            model.addAttribute(SETTINGS_ATTRIBUTE_NAME, settingsService.getSettings());
         } catch (SettingsNotFound exception) {
-            model.addAttribute("settings", new Settings());
+            model.addAttribute(SETTINGS_ATTRIBUTE_NAME, new Settings());
         }
-        return "settings";
+        return SETTINGS_PAGE_NAME;
     }
 
     @PostMapping(path = "settings")
     public String showPage(Model model, Settings settings) {
         settingsService.save(settings);
-        return "redirect:/settings?saved";
+        return "redirect:/"+SETTINGS_PAGE_NAME+"?saved";
     }
 }

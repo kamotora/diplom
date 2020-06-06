@@ -65,9 +65,8 @@ public class NumberInfoController {
      */
     @PostMapping(path = "get_number_info",
             consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    //TODO required убрать после отладки
-    public ResponseEntity<NumberInfoAnswer> getNewCall(@RequestHeader(name = "X-Client-ID", required = false) String clientID,
-                                                       @RequestHeader(name = "X-Client-Sign", required = false) String clientSign,
+    public ResponseEntity<NumberInfoAnswer> getNewCall(@RequestHeader(name = "X-Client-ID") String clientID,
+                                                       @RequestHeader(name = "X-Client-Sign") String clientSign,
                                                        @RequestBody String body) throws JsonProcessingException {
         NumberInfo numberInfo = new ObjectMapper().readValue(body, NumberInfo.class);
         // Получаем настройки
@@ -83,8 +82,7 @@ public class NumberInfoController {
         }
 
         //Отладочная инфа - вывод тела
-        // todo удалить после отладки
-        log.warn(String.format("Получили запрос на get_number_info, header.X-Client-ID = %s %n" +
+        log.info(String.format("Получили запрос на get_number_info, header.X-Client-ID = %s %n" +
                 "header.X-Client-Sign = %s %n, body как строка = %s, body как объект = %s", clientID, clientSign, body, numberInfo.toString()));
 
         if (!clientID.equals(settings.getClientID())) {
@@ -95,7 +93,7 @@ public class NumberInfoController {
 
         try {
             //Проверяем подпись
-            if (settings.getIsNeedCheckSign())
+            if (Boolean.TRUE.equals(settings.getIsNeedCheckSign()))
                 ControllerUtils.checkSigns(body, settings.getClientID(), settings.getClientKey(), clientSign, "get_number_info");
             // Находим клиента
             Client client = clientService.getFirstByNumberSubstr(numberInfo.getFrom_number());
@@ -125,8 +123,7 @@ public class NumberInfoController {
             //Делаем заголовки, нужные для ВАТС
             HttpHeaders headers = ControllerUtils.getHeaders(answer, clientID, settings.getClientKey());
             // Вывод тела ответа
-            // TODO удалить после отладки
-            log.warn("Тело ответа: {}", ResponseEntity.status(200).headers(headers).body(answer));
+            log.info("Тело ответа: {}", ResponseEntity.status(200).headers(headers).body(answer));
             // Вывод сообщения об успехе
             log.info(SUCCESS_TITLE);
             return ResponseEntity.ok().headers(headers).body(answer);
@@ -135,7 +132,6 @@ public class NumberInfoController {
             log.error(signsNotEquals.getMessage());
             return ResponseEntity.status(403).body(new NumberInfoAnswer(403, "Подписи не равны"));
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
             log.error(ERROR_TITLE);
             log.error("Не удалось получить JSON ответа");
             return ResponseEntity.status(500).body(new NumberInfoAnswer(500, "Не удалось получить JSON ответа"));
@@ -146,7 +142,6 @@ public class NumberInfoController {
         } catch (Exception e) {
             log.error("");
             log.error(e.getMessage());
-            e.printStackTrace();
             return ResponseEntity.status(500).body(new NumberInfoAnswer(500, "Неизвестная ошибка"));
         }
     }
@@ -161,7 +156,7 @@ public class NumberInfoController {
      * @see NumberInfoAnswer
      */
     public NumberInfoAnswer getAnswer(@NonNull Client client, @NonNull Rule rule) throws NumberParseException {
-        if (rule.getIsSmart()) {
+        if (Boolean.TRUE.equals(rule.getIsSmart())) {
             // Если есть инфа о последнем разговоре
             if (!isEmptyOrWhitespace(client.getLastManagerNumber()))
                 return new NumberInfoAnswer(client.getLastManagerNumber(), client);

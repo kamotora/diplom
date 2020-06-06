@@ -1,4 +1,4 @@
-package com.diplom.work;
+package com.diplom.work.controller;
 
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Days;

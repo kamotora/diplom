@@ -28,11 +28,15 @@ import java.util.Set;
 @Controller
 @Slf4j
 public class RulesController {
-
     private final RuleService ruleService;
     private final UserService userService;
     private final SettingsService settingsService;
 
+    private static final String USERS_ATTRUBUTE_NAME = "users";
+    private static final String IS_USER_ATTRIBUTE_NAME = "isUser";
+    private static final String GOODMESSAGE_ATTRIBUTE_NAME = "goodMessage";
+    private static final String BADMESSAGE_ATTRIBUTE_NAME = "badMessage";
+    public static final String ALL_DAYS_ATTRIBUTE_NAME = "allDays";
     @Autowired
     public RulesController(RuleService ruleService, UserService userService, SettingsService settingsService) {
         this.ruleService = ruleService;
@@ -53,7 +57,7 @@ public class RulesController {
      *
      * @return всех правил в виде JSON
      */
-    @GetMapping(path = "/rule/all", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/rule/table", produces = {MediaType.APPLICATION_JSON_VALUE})
     @JsonView(Views.forTable.class)
     public ResponseEntity<List<Rule>> getAllRules(@AuthenticationPrincipal User user) {
         // Смотрим настройки
@@ -78,17 +82,16 @@ public class RulesController {
                 .map(Settings::getIsUsersCanAddRulesOnlyMyself).orElse(false);
         // Если нужно, автоматом добавляем менеджера
         if (isUserCanAddInRuleOnlyMyself && user.getRoles().contains(Role.USER)) {
-            model.addAttribute("isUser", "true");
-            model.addAttribute("isUser", "true");
-            model.addAttribute("users", user);
+            model.addAttribute(IS_USER_ATTRIBUTE_NAME, "true");
+            model.addAttribute(USERS_ATTRUBUTE_NAME, user);
             Rule rule = new Rule();
             rule.setManager(user);
             model.addAttribute(rule);
         } else {
-            model.addAttribute("users", userService.findAll());
+            model.addAttribute(USERS_ATTRUBUTE_NAME, userService.findAll());
             model.addAttribute("rule", new Rule());
         }
-        model.addAttribute("allDays", Days.values());
+        model.addAttribute(ALL_DAYS_ATTRIBUTE_NAME, Days.values());
         return "rule";
     }
 
@@ -105,11 +108,11 @@ public class RulesController {
         boolean isUserCanAddInRuleOnlyMyself = settingsService.getSettingsOptional()
                 .map(Settings::getIsUsersCanAddRulesOnlyMyself).orElse(false);
         if (isUserCanAddInRuleOnlyMyself && user.getRoles().contains(Role.USER)) {
-            model.addAttribute("isUser", "true");
+            model.addAttribute(IS_USER_ATTRIBUTE_NAME, "true");
         }
         model.addAttribute("rule", rule);
-        model.addAttribute("users", userService.findAll());
-        model.addAttribute("allDays", Days.values());
+        model.addAttribute(USERS_ATTRUBUTE_NAME, userService.findAll());
+        model.addAttribute(ALL_DAYS_ATTRIBUTE_NAME, Days.values());
         return "rule";
     }
 
@@ -122,14 +125,14 @@ public class RulesController {
     @GetMapping("/rule/{id}/view")
     public String getViewPage(@PathVariable("id") Rule rule, Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("rule", rule);
-        model.addAttribute("users", userService.findAll());
-        model.addAttribute("allDays", Days.values());
+        model.addAttribute(USERS_ATTRUBUTE_NAME, userService.findAll());
+        model.addAttribute(ALL_DAYS_ATTRIBUTE_NAME, Days.values());
         model.addAttribute("isView", "true");
         // Смотрим настройки
         boolean isUserCanAddInRuleOnlyMyself = settingsService.getSettingsOptional()
                 .map(Settings::getIsUsersCanAddRulesOnlyMyself).orElse(false);
         if (isUserCanAddInRuleOnlyMyself && user.getRoles().contains(Role.USER)) {
-            model.addAttribute("isUser", "true");
+            model.addAttribute(IS_USER_ATTRIBUTE_NAME, "true");
         }
         return "rule";
     }
@@ -143,11 +146,11 @@ public class RulesController {
     public String saveRule(Model model, Rule rule, @AuthenticationPrincipal User user) {
         try {
             rule = ruleService.save(rule);
-            model.addAttribute("goodMessage", "Сохранено");
+            model.addAttribute(GOODMESSAGE_ATTRIBUTE_NAME, "Сохранено");
         } catch (TimeIncorrect timeIncorrect) {
-            model.addAttribute("badMessage", "Дни/время указаны неверно");
+            model.addAttribute(BADMESSAGE_ATTRIBUTE_NAME, "Дни/время указаны неверно");
         } catch (ManagerIsNull managerIsNull) {
-            model.addAttribute("badMessage", "Выберите менеджера или укажите 'Умная маршрутизация'");
+            model.addAttribute(BADMESSAGE_ATTRIBUTE_NAME, "Выберите менеджера или укажите 'Умная маршрутизация'");
         }
         return getPageForEditRule(rule, model, user);
     }
@@ -172,10 +175,10 @@ public class RulesController {
     public String deleteRule(Model model, @RequestBody List<Long> ids) {
         try {
             ids.forEach(ruleService::deleteOneRow);
-            model.addAttribute("goodMessage", "Удалено");
+            model.addAttribute(GOODMESSAGE_ATTRIBUTE_NAME, "Удалено");
         } catch (Exception exception) {
             log.error("Ошибка при удалении правила: {}",exception.getMessage());
-            model.addAttribute("badMessage", "Не удалось удалить!");
+            model.addAttribute(BADMESSAGE_ATTRIBUTE_NAME, "Не удалось удалить!");
         }
         return "fragments/messages :: messages";
     }

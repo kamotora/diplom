@@ -8,10 +8,7 @@ import com.diplom.work.core.json.view.Views;
 import com.diplom.work.svc.CallService;
 import com.diplom.work.svc.LogService;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.Call;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +44,7 @@ public class LogsController {
      *
      * @return всех логов в виде JSON
      */
-    @GetMapping(path = "/logs", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/logs/table", produces = {MediaType.APPLICATION_JSON_VALUE})
     @JsonView(Views.forTable.class)
     public ResponseEntity<List<Log>> getLogsForTable() {
         List<Log> ok = logService.findAllByOrderByTimestampAsc();
@@ -59,7 +56,7 @@ public class LogsController {
      *
      * @return всех логов в виде JSON
      */
-    @PostMapping(path = "/logs", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "/logs/table", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     @JsonView(Views.forTable.class)
     public ResponseEntity<List<Log>> getLogsForTableByFilter(@RequestBody LogFilterDto logFilterDto) {
         List<Log> logs = logService.findAllByFilter(logFilterDto);
@@ -84,27 +81,20 @@ public class LogsController {
         return "fragments/messages :: messages";
     }
 
-
+    /**
+     * Получаем от ВАТС инфу о вызове
+     * и выводим её
+     */
     @GetMapping("/log/{id}/view")
-    public String showCallInfo(@PathVariable("id") Log log, Model model,HttpServletRequest request){
-        //CallInfo errorInfo = new CallInfo(-1000, "Не удалось получить информацию по вызову", null);
-        try{
-
-            //Gson gson = new Gson();
+    public String showCallInfo(@PathVariable("id") Log log, Model model, HttpServletRequest request) {
+        try {
             String ipClient = request.getHeader("X-Forwarded-For");
-            //String json = "{\"result\":0,\"resultMessage\":\"\",\"info\":{\"call_type\":1,\"direction\":2,\"state\":1,\"orig_number\":\"sip:akb211@873427.20.rt.ru\",\"orig_pin\":\"211\",\"dest_number\":\"sip:89139992528@873427.20.rt.ru\",\"answering_sipuri\":null,\"answering_pin\":null,\"start_call_date\":\"1591257743\",\"duration\":56,\"session_log\":\"0:ct:89139992528;47:cc:89139992528;104:cd:akb211;\",\"is_voicemail\":false,\"is_record\":true,\"is_fax\":false,\"status_code\":\"0\",\"status_string\":\"\"}}";
-            //String jsonRecord = "{\"result\": \"20\",\n" +
-            //        "        \"resultMessage\": \"Невозможно получить запись по данной сессии\",\n" +
-            //        "        \"url\": \"\"}";
-            //CallInfo callInfo = gson.fromJson(json, CallInfo.class);//callService.getCallInfoBySessionID(log.getSession_id());
-            //GetRecord record = gson.fromJson(jsonRecord, GetRecord.class);
-            //GetRecord record = callService.getRecordBySessionID(log.getSession_id(),ipClient);
             CallInfo callInfo = callService.getCallInfoBySessionID(log.getSession_id());
             GetRecord record = callService.getRecordBySessionID(log.getSession_id(), ipClient);
-            if(!record.getResult().equals("0")){
+            if (!record.getResult().equals("0")) {
                 record = null;
             }
-            if(callInfo.getInfo() == null){
+            if (callInfo.getInfo() == null) {
                 callInfo = null;
                 model.addAttribute("messageError", "Не удалось получить информацию по вызову");
             }
@@ -112,7 +102,7 @@ public class LogsController {
             model.addAttribute("callInfo", callInfo);
             model.addAttribute("record", record);
             return "log";
-        }catch(Exception e){
+        } catch (Exception e) {
 
             model.addAttribute("messageError", "Не удалось получить информацию по вызову");
             model.addAttribute("nameSession", log.getSession_id());
@@ -121,29 +111,12 @@ public class LogsController {
     }
 
     /**
-     * Получаем от ВАТС инфу о вызове
-     * и выводим её
-     */
-/*
-    @GetMapping("log/{id}/view")
-    public ResponseEntity<CallInfo> showCallInfo(@PathVariable("id") Log log) {
-        CallInfo errorInfo = new CallInfo(-1000,"Не удалось получить инфу",null);
-        try {
-            return ResponseEntity.ok(callService.getCallInfoBySessionID(log.getSession_id()));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(errorInfo);
-        }
-    }
-*/
-    //TECT
-
-    /**
      * Получаем от ВАТС запись звонка
      * но пока нихуя не работает ибо метод отлключен и хз как отлаживать
      */
     @GetMapping("log/{id}/record")
     public ResponseEntity<GetRecord> showCallRecord(@PathVariable("id") Log log, Model model, HttpServletRequest request) {
-        GetRecord errorRecord = new GetRecord("-1000","Не удалось получить запись","");
+        GetRecord errorRecord = new GetRecord("-1000", "Не удалось получить запись", "");
         String ipClient = request.getHeader("X-Forwarded-For");
         try {
             GetRecord record = callService.getRecordBySessionID(log.getSession_id(), ipClient);

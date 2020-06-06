@@ -15,7 +15,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -26,7 +25,7 @@ import java.util.Set;
 @Table(name = "rule")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-@EqualsAndHashCode(of = {"id","name","isSmart", "isForAllClients"})
+@EqualsAndHashCode(of = {"id", "name", "isSmart", "isForAllClients"})
 @ToString
 public class Rule {
     @Id
@@ -127,8 +126,9 @@ public class Rule {
 
     /**
      * Конвертирует <code>timeStartString</code> в объект класса Time
+     *
      * @return время начала
-     * */
+     */
     public Time getTimeStart() {
         if (timeStart == null)
             timeStart = getTimeFromString(timeStartString);
@@ -138,8 +138,9 @@ public class Rule {
 
     /**
      * Конвертирует <code>timeFinishString</code> в объект класса Time
+     *
      * @return время окончания
-     * */
+     */
     public Time getTimeFinish() {
         if (timeFinish == null)
             timeFinish = getTimeFromString(timeFinishString);
