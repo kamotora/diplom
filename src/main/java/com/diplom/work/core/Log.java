@@ -25,20 +25,20 @@ import java.time.LocalDateTime;
 public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(Views.onlyId.class)
+    @JsonView(Views.OnlyId.class)
     private Long id;
 
     @Column(name = "session_id")
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     private String session_id;
 
     @Column(name = "timestamp")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     private String timestamp;
 
     @Transient
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private LocalDateTime timestampInDateTimeFormat;
 
     @Column(name = "type")
@@ -48,26 +48,26 @@ public class Log {
     private String state;
 
     @Column(name = "from_number")
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     private String from_number;
 
     @Column(name = "from_pin")
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String from_pin;
 
     @Column(name = "request_number")
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     private String request_number;
 
     @Column(name = "request_pin")
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String request_pin;
 
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String disconnect_reason;
 
     //true,false
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String is_record;
 
     @Transient
@@ -95,7 +95,7 @@ public class Log {
      * disconnected – о завершении разговора
      * end – о завершении вызова
      */
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     @JsonGetter("state_call")
     public String getStateName() {
         switch (state) {
@@ -123,7 +123,7 @@ public class Log {
      * outbound – исходящий
      * internal – внутренний
      */
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     @JsonGetter("type")
     public String getTypeName() {
         switch (type) {

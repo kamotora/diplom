@@ -45,7 +45,7 @@ public class LogsController {
      * @return всех логов в виде JSON
      */
     @GetMapping(path = "/logs/table", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     public ResponseEntity<List<Log>> getLogsForTable() {
         List<Log> ok = logService.findAllByOrderByTimestampAsc();
         return ResponseEntity.ok(ok);
@@ -57,7 +57,7 @@ public class LogsController {
      * @return всех логов в виде JSON
      */
     @PostMapping(path = "/logs/table", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     public ResponseEntity<List<Log>> getLogsForTableByFilter(@RequestBody LogFilterDto logFilterDto) {
         List<Log> logs = logService.findAllByFilter(logFilterDto);
         return ResponseEntity.ok(logs);

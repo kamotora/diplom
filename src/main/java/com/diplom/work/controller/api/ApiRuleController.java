@@ -34,7 +34,7 @@ public class ApiRuleController {
      * @return все клиенты в виде JSON
      */
     @GetMapping(path = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.allRule.class)
+    @JsonView(Views.AllRule.class)
     public List<Rule> getAllRules() {
         return ruleService.getAll();
     }

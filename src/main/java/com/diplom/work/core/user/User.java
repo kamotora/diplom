@@ -4,7 +4,6 @@ import com.diplom.work.core.json.view.Views;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,40 +12,39 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "usr")
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id","username","password"})
+@EqualsAndHashCode(of = {"id", "username", "password"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(Views.onlyId.class)
+    @JsonView(Views.OnlyId.class)
     private Long id;
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     @Column(length = 1024, nullable = false)
     private String username;
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     @Column(length = 1024, nullable = false)
     private String password;
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     @Column(length = 2048)
     private String name;
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     private String number;
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String email;
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String token;
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private boolean active;
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    @JsonView(Views.allUser.class)
+    @JsonView(Views.AllUser.class)
     private Set<Role> roles = new HashSet<>();
 
     /**
@@ -115,15 +113,17 @@ public class User implements UserDetails {
      * В приложении можно выбрать одну роль
      * Спринг допускает несколько
      * Поэтому костыль
+     *
      * @return первую роль из списка или null, если ролей не указано
-     * */
-    @JsonView(Views.forTable.class)
+     */
+    @JsonView(Views.ForTable.class)
     @JsonGetter("role")
     public String getFirstRoleName() {
-        if(roles.isEmpty())
+        if (roles.isEmpty())
             return null;
         return getFirstRole().getAuthority();
     }
+
     @Transient
     public Role getFirstRole() {
         return roles.iterator().next();

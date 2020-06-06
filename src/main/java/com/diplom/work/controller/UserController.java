@@ -6,7 +6,6 @@ import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.NewPasswordsNotEquals;
 import com.diplom.work.exceptions.UsernameAlreadyExist;
-import com.diplom.work.svc.TokenService;
 import com.diplom.work.svc.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +47,7 @@ public class UserController {
      * @return всех пользователи в виде JSON
      */
     @GetMapping(path = "users/table", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     public ResponseEntity<List<User>> getUsersForTable() {
         return ResponseEntity.ok(userService.findAll());
     }

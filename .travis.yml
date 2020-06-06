@@ -1,7 +1,8 @@
-sudo: false
+os: linux
 install: true
 dist: xenial
 jdk: openjdk11
+language: java
 addons:
   sonarcloud:
     organization: "kamotora" # the key of the org you chose at step #3

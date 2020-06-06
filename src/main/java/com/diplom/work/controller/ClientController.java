@@ -51,7 +51,7 @@ public class ClientController {
      * @return все клиенты в виде JSON
      */
     @GetMapping(path = "/client/table", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     public ResponseEntity<List<Client>> getAllClientsForTable() {
         return ResponseEntity.ok().body(clientService.getAll());
     }
@@ -96,7 +96,7 @@ public class ClientController {
      * @return всех правил в виде JSON
      */
     @GetMapping(path = "/client/{id}/rules", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     public ResponseEntity<Set<Rule>> getRulesForClient(@PathVariable("id") Client client) {
         return ResponseEntity.ok(client.getRules());
     }

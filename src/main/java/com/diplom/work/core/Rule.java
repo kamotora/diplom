@@ -15,7 +15,6 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeParseException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,21 +32,21 @@ import java.util.Set;
 public class Rule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(Views.onlyId.class)
+    @JsonView(Views.OnlyId.class)
     private Long id;
 
     /**
      * Наименование правила
      */
     @Column(name = "name", nullable = false)
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     private String name;
 
     /**
      * Номер менеджера (null, если указан <code>manager</code>)
      */
     @Column(name = "manager_number", nullable = true)
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String managerNumber;
 
     /**
@@ -55,21 +54,21 @@ public class Rule {
      */
     @ManyToOne
     @JoinColumn(name = "manager_id", nullable = true)
-    @JsonView(Views.allRule.class)
+    @JsonView(Views.AllRule.class)
     private User manager;
 
     /**
      * True, если активирнована умная маршрутиазация
      */
     @Column(name = "is_smart", nullable = false)
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private Boolean isSmart;
 
     /**
      * True,если правило работает для всех клиентов
      */
     @Column(name = "is_for_all_clients", nullable = false)
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private Boolean isForAllClients;
 
     /**
@@ -82,7 +81,7 @@ public class Rule {
             joinColumns = @JoinColumn(name = "rule_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id")
     )
-    @JsonView(Views.allRule.class)
+    @JsonView(Views.AllRule.class)
     private Set<Client> clients = new HashSet<>();
 
     /**
@@ -95,7 +94,7 @@ public class Rule {
 
     //Приоритет
     @Column(name = "priority", nullable = true)
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     private Integer priority;
 
     /**
@@ -116,7 +115,7 @@ public class Rule {
      * Время начала действия правила в виде строки
      * Используется для ввода с формы и вывода на форму
      */
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String timeStartString;
 
 
@@ -124,7 +123,7 @@ public class Rule {
      * Время окончания действия правила в виде строки
      * Используется для ввода с формы и вывода на форму
      */
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String timeFinishString;
 
     /**
@@ -156,7 +155,7 @@ public class Rule {
             try {
                 return new Time(dateFormat.parse(string).getTime());
             } catch (ParseException e) {
-                log.error("Исключение в методе Rule.getTimeFromString",e);
+                log.error("Исключение в методе Rule.getTimeFromString", e);
             }
         }
         return null;

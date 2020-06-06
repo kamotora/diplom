@@ -58,7 +58,7 @@ public class RulesController {
      * @return всех правил в виде JSON
      */
     @GetMapping(path = "/rule/table", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     public ResponseEntity<List<Rule>> getAllRules(@AuthenticationPrincipal User user) {
         // Смотрим настройки
         boolean isUserCanViewOnlyTheirRules = settingsService.getSettingsOptional()
@@ -161,7 +161,7 @@ public class RulesController {
      * @return всех клиентов в виде JSON
      */
     @GetMapping(path = "/rule/{id}/clients", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     public ResponseEntity<Set<Client>> getUsersForTable(@PathVariable("id") Rule rule) {
         return ResponseEntity.ok(rule.getClients());
     }
