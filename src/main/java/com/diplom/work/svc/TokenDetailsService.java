@@ -19,11 +19,11 @@ public class TokenDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String token) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String token) {
         Settings settings = settingsService.getSettingsOptional()
                 .orElseThrow(() -> new UsernameNotFoundException("Настройки не настроены"));
 
-        if(settings.getIsTokensActivate() != null && settings.getIsTokensActivate())
+        if (settings.getIsTokensActivate() != null && Boolean.TRUE.equals(settings.getIsTokensActivate()))
             return userService.findByToken(token)
                     .orElseThrow(() -> new UsernameNotFoundException("Пользователя с таким токеном не существует!"));
         else

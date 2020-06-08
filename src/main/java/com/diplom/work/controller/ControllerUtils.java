@@ -52,12 +52,12 @@ public class ControllerUtils {
         return headers;
     }
 
-    public static void checkSigns(String body, String clientID, String clientKey, String requestClientSign, String name_method) throws SignsNotEquals {
+    public static void checkSigns(String body, String clientID, String clientKey, String requestClientSign, String nameMethod) throws SignsNotEquals {
         String myClientSing = Hashing.sha256().hashString(clientID + body + clientKey, StandardCharsets.UTF_8).toString();
         if (requestClientSign.equals(myClientSing)) {
-            log.info("Подписи " + name_method + " равны");
+            log.info("Подписи " + nameMethod + " равны");
         } else {
-            throw new SignsNotEquals(name_method, requestClientSign, myClientSing);
+            throw new SignsNotEquals(nameMethod, requestClientSign, myClientSing);
         }
     }
 

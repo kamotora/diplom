@@ -22,20 +22,20 @@ import java.util.Set;
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(Views.onlyId.class)
+    @JsonView(Views.OnlyId.class)
     private Long id;
 
     /**
      * ФИО клиента
      */
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     @Column(length = 1024)
     private String name;
 
     /**
      * Номер телефона
      */
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     @Column(nullable = false)
     private String number;
 
@@ -43,14 +43,14 @@ public class Client {
      * Последний номер в виде PIN, с которым был разговор у клиента
      */
     @Column(name = "last_manager_number", nullable = true)
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String lastManagerNumber;
 
     /**
      * Список правил, где участвует данный клиент
      */
     @ManyToMany(targetEntity = Rule.class, mappedBy = "clients", fetch = FetchType.EAGER)
-    @JsonView(Views.allClient.class)
+    @JsonView(Views.AllClient.class)
     private Set<Rule> rules = new HashSet<>();
 
     public Client(String number) {

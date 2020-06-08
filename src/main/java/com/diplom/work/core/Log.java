@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -20,23 +21,24 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "logs")
 @Data
+@EqualsAndHashCode
 public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(Views.onlyId.class)
+    @JsonView(Views.OnlyId.class)
     private Long id;
 
     @Column(name = "session_id")
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     private String session_id;
 
     @Column(name = "timestamp")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     private String timestamp;
 
     @Transient
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private LocalDateTime timestampInDateTimeFormat;
 
     @Column(name = "type")
@@ -46,30 +48,32 @@ public class Log {
     private String state;
 
     @Column(name = "from_number")
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     private String from_number;
 
     @Column(name = "from_pin")
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String from_pin;
 
     @Column(name = "request_number")
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     private String request_number;
 
     @Column(name = "request_pin")
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String request_pin;
 
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String disconnect_reason;
 
     //true,false
-    @JsonView(Views.simpleObject.class)
+    @JsonView(Views.SimpleObject.class)
     private String is_record;
 
     @Transient
     public LocalDateTime getTimestampInDateTimeFormat() {
+        if (timestamp == null && timestampInDateTimeFormat == null)
+            return null;
         if (timestampInDateTimeFormat == null)
             timestampInDateTimeFormat = Timestamp.valueOf(timestamp).toLocalDateTime();
         return timestampInDateTimeFormat;
@@ -78,7 +82,7 @@ public class Log {
     public boolean getIs_recordAsBool() {
         if (is_record == null || is_record.isEmpty())
             return false;
-        return is_record.strip().toLowerCase().equals("true");
+        return is_record.strip().equalsIgnoreCase("true");
     }
 
     /**
@@ -91,7 +95,7 @@ public class Log {
      * disconnected – о завершении разговора
      * end – о завершении вызова
      */
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     @JsonGetter("state_call")
     public String getStateName() {
         switch (state) {
@@ -119,7 +123,7 @@ public class Log {
      * outbound – исходящий
      * internal – внутренний
      */
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     @JsonGetter("type")
     public String getTypeName() {
         switch (type) {

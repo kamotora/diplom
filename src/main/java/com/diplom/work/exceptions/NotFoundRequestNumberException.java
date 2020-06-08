@@ -1,6 +1,6 @@
 package com.diplom.work.exceptions;
 
-public class NotFoundRequestNumberException extends Throwable {
+public class NotFoundRequestNumberException extends Exception {
     public NotFoundRequestNumberException() {
         super("Не найдено информации о том, куда перенаправлять");
     }

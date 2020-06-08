@@ -28,7 +28,7 @@ public class AppErrorController implements ErrorController {
      */
     private final ErrorAttributes errorAttributes;
 
-    private final static String ERROR_PATH = "/error";
+    private static final String ERROR_PATH = "/error";
 
 
     public AppErrorController(ErrorAttributes errorAttributes) {
@@ -89,7 +89,7 @@ public class AppErrorController implements ErrorController {
         if (parameter == null) {
             return false;
         }
-        return !"false".equals(parameter.toLowerCase());
+        return !"false".equalsIgnoreCase(parameter);
     }
 
     private Map<String, Object> getErrorAttributes(HttpServletRequest request,

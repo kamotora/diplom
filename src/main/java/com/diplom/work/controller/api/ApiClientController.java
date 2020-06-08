@@ -34,7 +34,7 @@ public class ApiClientController {
      * @return все клиенты в виде JSON
      */
     @GetMapping(path = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.allClient.class)
+    @JsonView(Views.AllClient.class)
     public List<Client> getAllClients() {
         return clientService.getAll();
     }
@@ -49,7 +49,7 @@ public class ApiClientController {
      * @see Client
      */
     @PostMapping(path = "", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.allClient.class)
+    @JsonView(Views.AllClient.class)
     public Client addClient(@RequestBody Client client) throws NumberParseException {
         return clientService.save(client);
     }
@@ -66,7 +66,7 @@ public class ApiClientController {
      * @see Client
      */
     @PutMapping(path = "", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.allClient.class)
+    @JsonView(Views.AllClient.class)
     public Client updateClient(@RequestBody Client client) {
         return clientService.updateExistingClient(client);
     }
@@ -80,7 +80,7 @@ public class ApiClientController {
      * @see Client
      */
     @DeleteMapping(path = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.allClient.class)
+    @JsonView(Views.AllClient.class)
     public boolean deleteClient(@PathVariable("id") Client client) {
         try {
             return clientService.deleteClient(client);
@@ -97,7 +97,7 @@ public class ApiClientController {
      * @see Client
      */
     @DeleteMapping(path = "", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.allClient.class)
+    @JsonView(Views.AllClient.class)
     public boolean deleteClients(@RequestBody List<Long> ids) {
         for (Long id : ids) {
             try {

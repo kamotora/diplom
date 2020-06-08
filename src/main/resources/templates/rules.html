@@ -20,7 +20,7 @@
         <div id="messages" th:replace="fragments/messages :: messages"></div>
 
         <div id="toolbar">
-            <button id="remove" class="btn btn-danger" disabled>
+            <button id="remove" class="btn btn-danger" disabled="disabled">
                 <i class="glyphicon glyphicon-remove"></i> Удалить выбранные
             </button>
             <button id="add" name="add" class="btn btn-primary" th:onclick="|window.location.href='/rule'|">
@@ -45,7 +45,7 @@
                 data-show-pagination-switch="true"
                 data-pagination="true"
                 data-page-list="[10, 25, 50, 100, all]"
-                data-url="rule/all"
+                data-url="rule/table"
                 class="table table-bordered table-hover table-striped"
         >
         </table>

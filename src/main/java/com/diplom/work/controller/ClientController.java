@@ -24,6 +24,10 @@ import java.util.Set;
 public class ClientController {
 
     private final ClientService clientService;
+    private static final String CLIENT_ATTRIBUTE_NAME = "client";
+    private static final String CLIENT_FORMPAGE_NAME = CLIENT_ATTRIBUTE_NAME;
+    private static final String GOODMESSAGE_ATTRIBUTE_NAME = "goodMessage";
+    private static final String BADMESSAGE_ATTRIBUTE_NAME = "badMessage";
 
     @Autowired
     public ClientController(ClientService clientService) {
@@ -46,8 +50,8 @@ public class ClientController {
      *
      * @return все клиенты в виде JSON
      */
-    @GetMapping(path = "/client/all", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.forTable.class)
+    @GetMapping(path = "/client/table", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @JsonView(Views.ForTable.class)
     public ResponseEntity<List<Client>> getAllClientsForTable() {
         return ResponseEntity.ok().body(clientService.getAll());
     }
@@ -60,8 +64,8 @@ public class ClientController {
      */
     @GetMapping("/client/{id}")
     public String getPageForEditClient(Model model, @PathVariable("id") Client client) {
-        model.addAttribute("client", client);
-        return "client";
+        model.addAttribute(CLIENT_ATTRIBUTE_NAME, client);
+        return CLIENT_FORMPAGE_NAME;
     }
 
     /**
@@ -71,8 +75,7 @@ public class ClientController {
      */
     @GetMapping("/client")
     public String getPageForAddClient(Model model) {
-        model.addAttribute("client", new Client());
-        return "client";
+        return getPageForEditClient(model, new Client());
     }
 
     /**
@@ -82,9 +85,9 @@ public class ClientController {
      */
     @GetMapping("/client/{id}/view")
     public String getViewPage(@PathVariable("id") Client client, Model model) {
-        model.addAttribute("client", client);
+        model.addAttribute(CLIENT_ATTRIBUTE_NAME, client);
         model.addAttribute("isView", "true");
-        return "client";
+        return CLIENT_FORMPAGE_NAME;
     }
 
     /**
@@ -93,7 +96,7 @@ public class ClientController {
      * @return всех правил в виде JSON
      */
     @GetMapping(path = "/client/{id}/rules", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(Views.forTable.class)
+    @JsonView(Views.ForTable.class)
     public ResponseEntity<Set<Rule>> getRulesForClient(@PathVariable("id") Client client) {
         return ResponseEntity.ok(client.getRules());
     }
@@ -108,11 +111,11 @@ public class ClientController {
     public String saveClient(Model model, Client client) {
         try {
             client = clientService.save(client);
-            model.addAttribute("goodMessage", "Сохранено");
+            model.addAttribute(GOODMESSAGE_ATTRIBUTE_NAME, "Сохранено");
         } catch (NumberParseException e) {
-            model.addAttribute("badMessage", e.getMessage());
+            model.addAttribute(BADMESSAGE_ATTRIBUTE_NAME, e.getMessage());
         } catch (Exception e) {
-            model.addAttribute("badMessage", "Возникла неизвестная ошибка при сохранении :(");
+            model.addAttribute(BADMESSAGE_ATTRIBUTE_NAME, "Возникла неизвестная ошибка при сохранении :(");
         }
         return getPageForEditClient(model, client);
     }
@@ -129,12 +132,12 @@ public class ClientController {
         try {
             for (Long id : ids)
                 clientService.deleteClientById(id);
-            model.addAttribute("goodMessage", "Удалено");
+            model.addAttribute(GOODMESSAGE_ATTRIBUTE_NAME, "Удалено");
         } catch (ClientNotFound | ClientException exception) {
-            model.addAttribute("badMessage", exception.getMessage());
+            model.addAttribute(BADMESSAGE_ATTRIBUTE_NAME, exception.getMessage());
         } catch (Exception exception) {
             log.error("Вызвано исключение при удалении клиента: {}", exception.getMessage());
-            model.addAttribute("badMessage", "Не удалось удалить!");
+            model.addAttribute(BADMESSAGE_ATTRIBUTE_NAME, "Не удалось удалить!");
         }
         return "fragments/messages :: messages";
     }

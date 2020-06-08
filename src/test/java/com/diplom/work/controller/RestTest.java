@@ -1,11 +1,11 @@
-package com.diplom.work;
+package com.diplom.work.controller;
 
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Days;
 import com.diplom.work.core.Rule;
 import com.diplom.work.core.Settings;
-import com.diplom.work.repo.UserRepository;
 import com.diplom.work.svc.SettingsService;
+import com.diplom.work.svc.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +36,7 @@ public class RestTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
     @Autowired
     private SettingsService settingsService;
 
@@ -60,7 +60,8 @@ public class RestTest {
         Settings settings = new Settings();
         settings.setIsTokensActivate(true);
         settingsService.save(settings);
-        String token = userRepository.findByUsername("admin").getToken();
+        userService.createTokensIfNotExists();
+        String token = userService.findByUsername("admin").getToken();
         this.mockMvc.perform(get("/rest/client/all")
                 .header("X-AUTH-TOKEN", token)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -80,14 +81,15 @@ public class RestTest {
         rule.getDays().add(Days.Friday);
         client.getRules().add(rule);
         String s = new ObjectMapper().writeValueAsString(client);
-        this.mockMvc.perform(post("/rest/client")
+        final MvcResult resultAddClient = this.mockMvc.perform(post("/rest/client")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(s))
                 .andDo(print())
-                .andExpect(status().isOk());
-        MvcResult result = this.mockMvc.perform(get("/rest/client/all")
+                .andExpect(status().isOk()).andReturn();
+        MvcResult resultAllClients = this.mockMvc.perform(get("/rest/client/all")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isOk()).andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("\"id\":1"));
+        final Client addedClient = new ObjectMapper().readValue(resultAddClient.getResponse().getContentAsString(), Client.class);
+        assertTrue(resultAllClients.getResponse().getContentAsString().contains("\"id\":" + addedClient.getId()));
     }
 }

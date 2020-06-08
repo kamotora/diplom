@@ -59,7 +59,7 @@ public class CallEventController {
             Settings settings = settingsService.getSettings();
 
             //Проверяем подпись
-            if (settings.getIsNeedCheckSign())
+            if (Boolean.TRUE.equals(settings.getIsNeedCheckSign()))
                 ControllerUtils.checkSigns(body, settings.getClientID(), settings.getClientKey(), clientSign, "call_events");
 
             // Если это начало разговора и входящий или исходящий вызов
@@ -67,7 +67,8 @@ public class CallEventController {
             // ищем клиента в базе по номеру
             // обновляем последнего говорившего с клиентом
             if (callEvent.isCall() && !callEvent.isInternal()) {
-                String clientNumber, managerNumber;
+                String clientNumber;
+                String managerNumber;
                 if (callEvent.isIncoming()) {
                     clientNumber = ControllerUtils.parseNumberFromSip(callEvent.getFrom_number());
                     managerNumber = callEvent.getRequest_pin();
