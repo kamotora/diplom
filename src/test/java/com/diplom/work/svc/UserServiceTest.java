@@ -4,6 +4,7 @@ import com.diplom.work.core.dto.UserDto;
 import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.NewPasswordsNotEquals;
+import com.diplom.work.exceptions.OldPasswordsNotEquals;
 import com.diplom.work.exceptions.UsernameAlreadyExist;
 import com.diplom.work.repo.UserRepository;
 import org.hamcrest.CoreMatchers;
@@ -54,5 +55,25 @@ public class UserServiceTest {
                 .when(userRepository)
                 .findByUsername("admin");
         assertNotNull(userService.loadUserByUsername("admin"));
+    }
+
+    @Test
+    public void changePassword() throws OldPasswordsNotEquals, NewPasswordsNotEquals {
+        final String OLD_PASSWORD = "123(#*FOC)";
+        final String ENCODED_OLD_PASSWORD = "encodedPass";
+        final String NEW_PASSWORD = "($(JRJQWNI#";
+        Mockito.doReturn(ENCODED_OLD_PASSWORD).when(passwordEncoder).encode(OLD_PASSWORD);
+        Mockito.doReturn(true).when(passwordEncoder).matches(OLD_PASSWORD,ENCODED_OLD_PASSWORD);
+        User oldUser = new User();
+        oldUser.setPassword(passwordEncoder.encode(OLD_PASSWORD));
+        UserDto newUser = new UserDto();
+        assertThrows(NewPasswordsNotEquals.class, () -> userService.changePassword(oldUser,newUser));
+        newUser.setPassword1(NEW_PASSWORD);
+        newUser.setPassword2(NEW_PASSWORD+" ");
+        assertThrows(NewPasswordsNotEquals.class, () -> userService.changePassword(oldUser,newUser));
+        newUser.setPassword2(NEW_PASSWORD);
+        assertThrows(OldPasswordsNotEquals.class, () -> userService.changePassword(oldUser,newUser));
+        newUser.setOldPassword(OLD_PASSWORD);
+        assertTrue(userService.changePassword(oldUser,newUser));
     }
 }
