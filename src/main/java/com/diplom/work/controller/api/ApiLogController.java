@@ -2,10 +2,12 @@ package com.diplom.work.controller.api;
 
 import com.diplom.work.core.Log;
 import com.diplom.work.core.dto.LogFilterDto;
+import com.diplom.work.core.user.User;
 import com.diplom.work.svc.LogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.List;
 public class ApiLogController {
 
     private final LogService logService;
+
     @Autowired
     public ApiLogController(LogService logService) {
         this.logService = logService;
@@ -28,14 +31,14 @@ public class ApiLogController {
      *
      */
     @GetMapping(path = "/dataGraphic", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<Number> getDataForGraphic() {
-        List<Log> logs = logService.findAllByOrderByTimestampAsc();
+    public List<Number> getDataForGraphic(@AuthenticationPrincipal User user) {
+        List<Log> logs = logService.findAll(user, null);
         return getNumerusList(logs);
     }
 
     @PostMapping(path = "/updateDataForGraphics", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<Number> getUpdateDataForGraphic(@RequestBody LogFilterDto logFilterDto) {
-        List<Log> logs = logService.findAllByFilter(logFilterDto);
+    public List<Number> getUpdateDataForGraphic(@RequestBody LogFilterDto logFilterDto, @AuthenticationPrincipal User user) {
+        List<Log> logs = logService.findAll(user, logFilterDto);
         return getNumerusList(logs);
     }
 

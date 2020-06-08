@@ -1,6 +1,5 @@
 package com.diplom.work.controller;
 
-import com.diplom.work.controller.ControllerUtils;
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Days;
 import com.diplom.work.core.Rule;
@@ -96,7 +95,7 @@ public class ApiTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody))
                 .andDo(print()).andExpect(status().isOk());
-        assertEquals(1, logService.findAllByOrderByTimestampAsc().size());
+        assertEquals(1, logService.findAll(null,null).size());
     }
 
     @Test
@@ -111,7 +110,7 @@ public class ApiTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody))
                 .andDo(print()).andExpect(status().isForbidden());
-        assertEquals(0, logService.findAllByOrderByTimestampAsc().size());
+        assertEquals(0, logService.findAll(null,null).size());
     }
 
     @Test

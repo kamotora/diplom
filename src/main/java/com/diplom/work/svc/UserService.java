@@ -53,6 +53,10 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public User findByUsername(String username) {
+        return userRepo.findByUsername(username);
+    }
+
     public boolean deleteUserById(Long id) {
         if (id == null || id == 0)
             throw new UsernameNotFoundException(USER_NOT_FOUND_MSG);
@@ -71,7 +75,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepo.findByUsername(username);
+        User user = findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(USER_NOT_FOUND_MSG);
         }

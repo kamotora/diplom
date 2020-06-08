@@ -2,9 +2,13 @@ package com.diplom.work.svc;
 
 import com.diplom.work.controller.ControllerUtils;
 import com.diplom.work.core.Log;
+import com.diplom.work.core.Settings;
 import com.diplom.work.core.dto.LogFilterDto;
+import com.diplom.work.core.user.Role;
+import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.repo.LogRepository;
+import com.diplom.work.repo.SettingsRepository;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -17,7 +21,8 @@ import static org.mockito.Mockito.mock;
 
 public class LogServiceTest {
     private final LogRepository logRepository = mock(LogRepository.class);
-    private final LogService logService = new LogService(logRepository);
+    private final SettingsService settingsService = mock(SettingsService.class);
+    private final LogService logService = new LogService(logRepository, settingsService);
 
     @Test
     public void deleteOneLog() {
@@ -35,7 +40,7 @@ public class LogServiceTest {
         assertNotNull(logFilterDto.getStartDate());
         assertNotNull(logFilterDto.getFinishDate());
         LocalDateTime curDate = logFilterDto.getStartDate();
-        while(curDate.isBefore(logFilterDto.getFinishDate())){
+        while (curDate.isBefore(logFilterDto.getFinishDate())) {
             final Log log = new Log();
             log.setTimestampInDateTimeFormat(curDate);
             correctLogs.add(log);
@@ -43,7 +48,7 @@ public class LogServiceTest {
         }
         curDate = logFilterDto.getFinishDate().plusDays(2);
         List<Log> unCorrectLogs = new ArrayList<>();
-        for (int i = 0; i < 10; i++){
+        for (int i = 0; i < 10; i++) {
             final Log log = new Log();
             log.setTimestampInDateTimeFormat(curDate);
             unCorrectLogs.add(log);
@@ -54,7 +59,7 @@ public class LogServiceTest {
         Mockito.doReturn(all)
                 .when(logRepository)
                 .findAll();
-        final List<Log> allByFilter = logService.findAllByFilter(logFilterDto);
+        final List<Log> allByFilter = logService.findAll(null, logFilterDto);
         assertTrue(allByFilter.containsAll(correctLogs) && correctLogs.containsAll(allByFilter));
         allByFilter.retainAll(unCorrectLogs);
         assertTrue(allByFilter.isEmpty());
@@ -70,16 +75,15 @@ public class LogServiceTest {
         final int MAX_DAY = 150;
         final int MAX_LOGS = 10;
         // Создаем MAX_LOGS логов с рандомным номером менеджера
-        for (int i = 0; i < MAX_LOGS; i++){
+        for (int i = 0; i < MAX_LOGS; i++) {
             final Log log = new Log();
             log.setTimestampInDateTimeFormat(now.plusDays(random.nextInt(MAX_DAY)));
             allLogs.add(log);
-            if(random.nextBoolean()){
+            if (random.nextBoolean()) {
                 log.setType("outbound");
                 log.setFrom_pin(String.valueOf(random.nextInt()));
                 log.setRequest_number(SIP_CLIENT_NUMBER);
-            }
-            else {
+            } else {
                 log.setType("incoming");
                 log.setFrom_number(SIP_CLIENT_NUMBER);
                 log.setRequest_pin(String.valueOf(random.nextInt()));
@@ -87,13 +91,12 @@ public class LogServiceTest {
         }
         // Создаем самый последний по дате лог с нужным номером менеджера
         final Log correctLog = new Log();
-        correctLog.setTimestampInDateTimeFormat(now.plusDays(MAX_DAY+1));
-        if(random.nextBoolean()){
+        correctLog.setTimestampInDateTimeFormat(now.plusDays(MAX_DAY + 1));
+        if (random.nextBoolean()) {
             correctLog.setType("outbound");
             correctLog.setFrom_pin(CORRECT_MANAGER_NUMBER);
             correctLog.setRequest_number(SIP_CLIENT_NUMBER);
-        }
-        else {
+        } else {
             correctLog.setType("incoming");
             correctLog.setFrom_number(SIP_CLIENT_NUMBER);
             correctLog.setRequest_pin(CORRECT_MANAGER_NUMBER);
@@ -104,6 +107,89 @@ public class LogServiceTest {
                 .findAllByState("connected");
         final String lastPinByClientNumber = logService.
                 findLastPinByClientNumber(ControllerUtils.parseNumberFromSip(SIP_CLIENT_NUMBER));
-        assertEquals(lastPinByClientNumber,CORRECT_MANAGER_NUMBER);
+        assertEquals(lastPinByClientNumber, CORRECT_MANAGER_NUMBER);
+    }
+
+    @Test
+    public void findAllByOrderByManagerNumber() {
+        // Задаем в настройках, что нужно фильтровать по номеру
+        Settings settings = new Settings();
+        settings.setIsUsersCanViewLogOnlyMyself(true);
+        Mockito.doReturn(Optional.of(settings))
+                .when(settingsService)
+                .getSettingsOptional();
+
+        final String CORRECT_MANAGER_NUMBER = "123";
+        final List<Log> correctLogs = new ArrayList<>();
+        final int SIZE_CORRECT_LOGS_LIST = 20;
+        final Random random = new Random();
+        for (int i = 0; i < SIZE_CORRECT_LOGS_LIST; i++) {
+            final Log log = new Log();
+            log.setTimestampInDateTimeFormat(LocalDateTime.now());
+            if (random.nextBoolean()) {
+                log.setFrom_pin(CORRECT_MANAGER_NUMBER);
+            } else {
+                log.setRequest_pin(CORRECT_MANAGER_NUMBER);
+            }
+            correctLogs.add(log);
+        }
+
+        final List<Log> uncorrectLogs = new ArrayList<>();
+        final int SIZE_UNCORRECT_LOGS_LIST = 50;
+
+        for (int i = 0; i < SIZE_UNCORRECT_LOGS_LIST; i++) {
+            final Log log = new Log();
+            log.setTimestampInDateTimeFormat(LocalDateTime.now());
+            String randomManagerNumber;
+            do {
+                randomManagerNumber = String.valueOf(random.nextInt(999));
+            } while (randomManagerNumber.equals(CORRECT_MANAGER_NUMBER));
+            if (random.nextBoolean()) {
+                log.setFrom_pin(randomManagerNumber);
+            } else {
+                log.setRequest_pin(randomManagerNumber);
+            }
+            uncorrectLogs.add(log);
+        }
+        final List<Log> allLogs = new ArrayList<>(correctLogs);
+        allLogs.addAll(uncorrectLogs);
+        Mockito.doReturn(allLogs)
+                .when(logRepository)
+                .findAll();
+        final User user = new User();
+        user.setNumber(CORRECT_MANAGER_NUMBER);
+        user.getRoles().add(Role.USER);
+        final List<Log> allByManagerNumber = logService.findAll(user, null);
+
+        assertTrue(allByManagerNumber.containsAll(correctLogs) && correctLogs.containsAll(allByManagerNumber));
+        allByManagerNumber.retainAll(uncorrectLogs);
+        assertTrue(allByManagerNumber.isEmpty());
+    }
+
+    @Test
+    public void findAllByOrderByTimestampDesc() {
+        final List<Log> logs = new ArrayList<>();
+        final int SIZE_LOGS_LIST = 20;
+        final int RANDOM_BOUND = 50;
+        final Random random = new Random();
+        for (int i = 0; i < SIZE_LOGS_LIST; i++) {
+            final Log log = new Log();
+            log.setTimestampInDateTimeFormat(
+                    LocalDateTime
+                            .now()
+                            .plusDays(random.nextInt(RANDOM_BOUND))
+                            .plusHours(random.nextInt(RANDOM_BOUND))
+                            .plusMinutes(random.nextInt(RANDOM_BOUND))
+                            .plusSeconds(random.nextInt(RANDOM_BOUND))
+            );
+            logs.add(log);
+        }
+        Mockito.doReturn(logs)
+                .when(logRepository)
+                .findAll();
+        final List<Log> allByOrderByTimestampDesc = logService.findAll(null, null);
+        for (int i = 1; i < SIZE_LOGS_LIST; i++)
+            assertFalse(allByOrderByTimestampDesc.get(i - 1).getTimestampInDateTimeFormat()
+                    .compareTo(allByOrderByTimestampDesc.get(i).getTimestampInDateTimeFormat()) < 0);
     }
 }
