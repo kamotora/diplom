@@ -1,6 +1,6 @@
 package com.diplom.work.controller;
 
-import com.diplom.work.core.dto.UserEditDto;
+import com.diplom.work.core.dto.UserDto;
 import com.diplom.work.core.json.view.Views;
 import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
@@ -58,7 +58,7 @@ public class UserController {
      */
     @GetMapping("user")
     public String userAddForm(Model model) {
-        initPage(model, new UserEditDto());
+        initPage(model, new UserDto());
         return "user";
     }
 
@@ -69,7 +69,7 @@ public class UserController {
      */
     @GetMapping("user/{id}")
     public String userEditForm(@PathVariable("id") User user, Model model) {
-        initPage(model, new UserEditDto(user));
+        initPage(model, new UserDto(user));
         return "user";
     }
 
@@ -114,7 +114,7 @@ public class UserController {
      * @param user - данные с формы
      */
     @PostMapping("user")
-    public String saveUser(UserEditDto user, Model model) {
+    public String saveUser(UserDto user, Model model) {
         try {
             userService.save(user);
         } catch (UsernameAlreadyExist | NewPasswordsNotEquals exception) {
@@ -146,7 +146,7 @@ public class UserController {
      *
      * @param user - что отобразить на форме и куда данные с формы запишутся
      */
-    private void initPage(Model model, UserEditDto user) {
+    private void initPage(Model model, UserDto user) {
         model.addAttribute("allRoles", Role.values());
         model.addAttribute("user", user);
     }

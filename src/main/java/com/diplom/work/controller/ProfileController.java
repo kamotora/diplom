@@ -1,6 +1,6 @@
 package com.diplom.work.controller;
 
-import com.diplom.work.core.dto.UserEditDto;
+import com.diplom.work.core.dto.UserDto;
 import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.NewPasswordsNotEquals;
 import com.diplom.work.exceptions.OldPasswordsNotEquals;
@@ -36,7 +36,7 @@ public class ProfileController {
             , @RequestParam(name = "saved", required = false) String isSaved) {
         if (isSaved != null)
             model.addAttribute("goodMessage", "Сохранено!");
-        model.addAttribute("user", new UserEditDto(user));
+        model.addAttribute("user", new UserDto(user));
         return "profile";
     }
 
@@ -49,7 +49,7 @@ public class ProfileController {
      */
     @PostMapping(path = "profile/changePass", consumes = {MediaType.APPLICATION_JSON_VALUE}
             , produces = {MediaType.TEXT_PLAIN_VALUE})
-    public ResponseEntity<String> changePass(@RequestBody UserEditDto formUser, @AuthenticationPrincipal User user) {
+    public ResponseEntity<String> changePass(@RequestBody UserDto formUser, @AuthenticationPrincipal User user) {
         try {
             userService.changePassword(user, formUser);
         } catch (OldPasswordsNotEquals | NewPasswordsNotEquals exception) {

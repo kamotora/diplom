@@ -18,7 +18,7 @@ import org.springframework.beans.BeanUtils;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
-public class UserEditDto {
+public class UserDto {
     private Long id;
     private String username;
     private String oldPassword;
@@ -31,7 +31,7 @@ public class UserEditDto {
     private boolean active;
     private Role role;
 
-    public UserEditDto(User user) {
+    public UserDto(User user) {
         BeanUtils.copyProperties(user, this, "roles", "password");
         this.role = user.getFirstRole();
     }

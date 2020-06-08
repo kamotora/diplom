@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.thymeleaf.util.StringUtils;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,16 +15,16 @@ public final class LogFilterDto {
     private String startDate;
     private String finishDate;
 
-    public LocalDateTime getStartDate() {
+    public LocalDate getStartDate() {
         if (StringUtils.isEmptyOrWhitespace(startDate))
             return null;
-        return LocalDate.parse(startDate).atStartOfDay();
+        return LocalDate.parse(startDate);
     }
 
-    public LocalDateTime getFinishDate() {
+    public LocalDate getFinishDate() {
         if (StringUtils.isEmptyOrWhitespace(finishDate))
             return null;
-        return LocalDate.parse(finishDate).atStartOfDay();
+        return LocalDate.parse(finishDate);
     }
 
     @JsonSetter("startDate")

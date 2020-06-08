@@ -1,7 +1,6 @@
 package com.diplom.work.controller;
 
 import com.diplom.work.core.Log;
-import com.diplom.work.core.Settings;
 import com.diplom.work.core.dto.CallInfo;
 import com.diplom.work.core.dto.GetRecord;
 import com.diplom.work.core.dto.LogFilterDto;
@@ -9,7 +8,6 @@ import com.diplom.work.core.json.view.Views;
 import com.diplom.work.core.user.User;
 import com.diplom.work.svc.CallService;
 import com.diplom.work.svc.LogService;
-import com.diplom.work.svc.SettingsService;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,20 +20,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @Slf4j
 public class LogsController {
     private final LogService logService;
     private final CallService callService;
-    private final SettingsService settingsService;
 
     @Autowired
-    public LogsController(LogService logService, CallService callService, SettingsService settingsService) {
+    public LogsController(LogService logService, CallService callService) {
         this.logService = logService;
         this.callService = callService;
-        this.settingsService = settingsService;
     }
 
     /**
@@ -54,7 +49,6 @@ public class LogsController {
     @GetMapping(path = "/logs/table", produces = {MediaType.APPLICATION_JSON_VALUE})
     @JsonView(Views.ForTable.class)
     public ResponseEntity<List<Log>> getLogsForTable(@AuthenticationPrincipal User user) {
-        final Optional<Settings> settingsOptional = settingsService.getSettingsOptional();
         return ResponseEntity.ok(logService.findAll(user, null));
     }
 

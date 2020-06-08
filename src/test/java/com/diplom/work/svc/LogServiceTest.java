@@ -39,10 +39,10 @@ public class LogServiceTest {
                 , LocalDate.now().toString());
         assertNotNull(logFilterDto.getStartDate());
         assertNotNull(logFilterDto.getFinishDate());
-        LocalDateTime curDate = logFilterDto.getStartDate();
+        LocalDate curDate = logFilterDto.getStartDate();
         while (curDate.isBefore(logFilterDto.getFinishDate())) {
             final Log log = new Log();
-            log.setTimestampInDateTimeFormat(curDate);
+            log.setTimestampInDateTimeFormat(curDate.atStartOfDay());
             correctLogs.add(log);
             curDate = curDate.plusDays(1);
         }
@@ -50,7 +50,7 @@ public class LogServiceTest {
         List<Log> unCorrectLogs = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             final Log log = new Log();
-            log.setTimestampInDateTimeFormat(curDate);
+            log.setTimestampInDateTimeFormat(curDate.atStartOfDay());
             unCorrectLogs.add(log);
             curDate = curDate.plusDays(1);
         }

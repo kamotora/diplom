@@ -63,22 +63,20 @@ public class LogService {
                         && user != null
                         && user.getRoles().contains(Role.USER)
                         && !isEmptyOrWhitespace(user.getNumber()))
-        )
+        ) {
             stream = stream.filter(log -> user.getNumber().equals(log.getRequest_pin()) || user.getNumber().equals(log.getFrom_pin()));
+        }
         // Добавляем фильтр по датам
-        if (logFilterDto != null)
-            stream = stream.filter(log ->
-                    {
-                        if (log == null || log.getTimestampInDateTimeFormat() == null)
-                            return false;
-                        LocalDate logDate = log.getTimestampInDateTimeFormat().toLocalDate();
-                        LocalDate startDate = logFilterDto.getStartDate() != null ? logFilterDto.getStartDate().toLocalDate() : null;
-                        LocalDate finishDate = logFilterDto.getFinishDate() != null ? logFilterDto.getFinishDate().toLocalDate() : null;
-                        boolean logDateAfterOrEqualStart = startDate == null || startDate.compareTo(logDate) < 1;
-                        boolean logDateBeforeOrEqualFinish = finishDate == null || finishDate.compareTo(logDate) > -1;
-                        return logDateAfterOrEqualStart && logDateBeforeOrEqualFinish;
-                    }
-            );
+        if (logFilterDto != null) {
+            stream = stream.filter(log -> {
+                if (log.getTimestampInDateTimeFormat() == null)
+                    return false;
+                LocalDate logDate = log.getTimestampInDateTimeFormat().toLocalDate();
+                return (logFilterDto.getStartDate() == null || logFilterDto.getStartDate().compareTo(logDate) < 1) &&
+                        (logFilterDto.getFinishDate() == null || logFilterDto.getFinishDate().compareTo(logDate) > -1);
+
+            });
+        }
         return stream.collect(Collectors.toList());
     }
 

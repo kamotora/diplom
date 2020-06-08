@@ -1,6 +1,6 @@
 package com.diplom.work.svc;
 
-import com.diplom.work.core.dto.UserEditDto;
+import com.diplom.work.core.dto.UserDto;
 import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.NewPasswordsNotEquals;
@@ -90,7 +90,7 @@ public class UserService implements UserDetailsService {
         return userRepo.findAllByRolesContaining(role);
     }
 
-    public User save(UserEditDto user) throws NewPasswordsNotEquals, UsernameAlreadyExist {
+    public User save(UserDto user) throws NewPasswordsNotEquals, UsernameAlreadyExist {
         User result = findByIdOrCreateNewUser(user.getId());
         boolean isNewUser = (user.getId() == null || user.getId() == 0);
         boolean needSetPassword = false;
@@ -129,7 +129,7 @@ public class UserService implements UserDetailsService {
         return userRepo.findById(id).orElse(new User());
     }
 
-    public boolean changePassword(User oldUser, UserEditDto newUser) throws NewPasswordsNotEquals, OldPasswordsNotEquals {
+    public boolean changePassword(User oldUser, UserDto newUser) throws NewPasswordsNotEquals, OldPasswordsNotEquals {
         if (StringUtils.isEmptyOrWhitespace(newUser.getPassword1()) || StringUtils.isEmptyOrWhitespace(newUser.getPassword2()) || !newUser.getPassword1().equals(newUser.getPassword2())) {
             throw new NewPasswordsNotEquals();
         }

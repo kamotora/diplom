@@ -1,6 +1,6 @@
 package com.diplom.work.svc;
 
-import com.diplom.work.core.dto.UserEditDto;
+import com.diplom.work.core.dto.UserDto;
 import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.NewPasswordsNotEquals;
@@ -25,7 +25,7 @@ public class UserServiceTest {
 
     @Test
     public void save() {
-        UserEditDto dto = new UserEditDto();
+        UserDto dto = new UserDto();
         final String PASSWORD = "pass";
         final String USERNAME = "user";
         dto.setUsername(USERNAME);

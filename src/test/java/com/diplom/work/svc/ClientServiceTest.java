@@ -2,21 +2,14 @@ package com.diplom.work.svc;
 
 import com.diplom.work.core.Client;
 import com.diplom.work.core.Rule;
-import com.diplom.work.core.dto.UserEditDto;
-import com.diplom.work.core.user.Role;
-import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.*;
 import com.diplom.work.repo.ClientRepository;
 import com.diplom.work.repo.RuleRepository;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
