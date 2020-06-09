@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Nullable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,7 +39,7 @@ public class LogService {
     }
 
     /**
-     * Вернуть все логи.
+     * Вернуть все логи, отсортированные по дате (сначала - новые).
      * Указать <code>user</code>, если нужно отобразить звонки, где менеджер участвует в качестве вызывающего или вызываемого абонента
      * При этом будет проверка, если у user роль - пользователь и стоит ли галка в настройках
      * Иначе фильтр не сработает
@@ -46,14 +48,12 @@ public class LogService {
      *
      * @param user         текущий пользователь
      * @param logFilterDto дата начала и окончания для фильтра
-     * @return список логов
+     * @return список логов, отсортированных по дате и удовлетворяющие фильтрам
      */
 
     public List<Log> findAll(@Nullable User user, @Nullable LogFilterDto logFilterDto) {
         final List<Log> all = logRepository.findAll();
-        Stream<Log> stream = all.stream();
-        // Добавляем сортировку по дате (сначала - новые)
-        stream = stream.sorted(Comparator.comparing(Log::getTimestampInDateTimeFormat).reversed());
+        List<Predicate<Log>> predicates = new ArrayList<>();
         final Optional<Settings> settingsOptional = settingsService.getSettingsOptional();
 
         // Добавляем фильтр по номеру менеджера
@@ -64,11 +64,11 @@ public class LogService {
                         && user.getRoles().contains(Role.USER)
                         && !isEmptyOrWhitespace(user.getNumber()))
         ) {
-            stream = stream.filter(log -> user.getNumber().equals(log.getRequest_pin()) || user.getNumber().equals(log.getFrom_pin()));
+            predicates.add(log -> user.getNumber().equals(log.getRequest_pin()) || user.getNumber().equals(log.getFrom_pin()));
         }
         // Добавляем фильтр по датам
         if (logFilterDto != null) {
-            stream = stream.filter(log -> {
+            predicates.add(log -> {
                 if (log.getTimestampInDateTimeFormat() == null)
                     return false;
                 LocalDate logDate = log.getTimestampInDateTimeFormat().toLocalDate();
@@ -77,7 +77,8 @@ public class LogService {
 
             });
         }
-        return stream.collect(Collectors.toList());
+        return all.stream().sorted(Comparator.comparing(Log::getTimestampInDateTimeFormat).reversed())
+                .filter(predicates.stream().reduce(Predicate::and).orElse(x -> true)).collect(Collectors.toList());
     }
 
 

@@ -59,8 +59,8 @@ public class LogsController {
      */
     @PostMapping(path = "/logs/table", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     @JsonView(Views.ForTable.class)
-    public ResponseEntity<List<Log>> getLogsForTableByFilter(@RequestBody LogFilterDto logFilterDto) {
-        List<Log> logs = logService.findAll(null, logFilterDto);
+    public ResponseEntity<List<Log>> getLogsForTableByFilter(@RequestBody LogFilterDto logFilterDto, @AuthenticationPrincipal User user) {
+        List<Log> logs = logService.findAll(user, logFilterDto);
         return ResponseEntity.ok(logs);
     }
 
