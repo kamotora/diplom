@@ -140,7 +140,7 @@ $(document).ready(function () {
                 startDate: startDate,
                 finishDate: finishDate
             }),
-            url: "/logs",
+            url: "/logs/table",
             beforeSend: function(xhr) {
                 // here it is
                 xhr.setRequestHeader(header, token);
