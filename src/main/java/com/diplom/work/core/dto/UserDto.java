@@ -33,6 +33,7 @@ public class UserDto {
 
     public UserDto(User user) {
         BeanUtils.copyProperties(user, this, "roles", "password");
-        this.role = user.getFirstRole();
+        if (!user.getRoles().isEmpty())
+            this.role = user.getFirstRole();
     }
 }
