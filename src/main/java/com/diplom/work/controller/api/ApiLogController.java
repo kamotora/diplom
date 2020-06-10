@@ -8,7 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,18 +26,6 @@ public class ApiLogController {
     @Autowired
     public ApiLogController(LogService logService) {
         this.logService = logService;
-    }
-
-
-    /*
-     * Возврат значений для графика
-     *
-     */
-    @Deprecated
-    @GetMapping(path = "/dataGraphic", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<Number> getDataForGraphic(@AuthenticationPrincipal User user) {
-        List<Log> logs = logService.findAll(user, null);
-        return getNumerusList(logs);
     }
 
     @PostMapping(path = "/updateDataForGraphics", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})

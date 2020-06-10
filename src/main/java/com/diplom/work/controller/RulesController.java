@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +28,7 @@ import java.util.Set;
 
 @Controller
 @Slf4j
+@PreAuthorize("hasAuthority('Администратор') || hasAuthority('Пользователь')")
 public class RulesController {
     private final RuleService ruleService;
     private final UserService userService;
