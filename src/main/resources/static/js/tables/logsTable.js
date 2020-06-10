@@ -127,9 +127,6 @@ $(document).ready(function () {
     $startFilter.click(function () {
         const startDate = $('#startDate').val();
         const finishDate = $('#finishDate').val();
-        if(startDate === undefined || finishDate === undefined || startDate === "" || finishDate === "")
-            // TODO Тут можно вывести красиво
-            return false;
         $.ajax({
             type: "POST",
             headers: {
@@ -183,9 +180,9 @@ $(document).ready(function () {
     $resetFilter.click(function () {
         $table.bootstrapTable('refresh');
         $.ajax({
-            type: "GET",
+            type: "POST",
             async: false,
-            url:"/rest/logs/dataGraphic",
+            url:"/rest/logs/updateDataForGraphics",
             beforeSend: function(xhr) {
                 // here it is
                 xhr.setRequestHeader(header, token);
@@ -210,11 +207,7 @@ $(document).ready(function () {
     function onViewClick(value, row, index) {
         window.location = '/log/' + row.id + '/view';
     }
-    /*
-    function onRecordClick(value, row, index) {
-        window.location = '/log/' + row.id + '/record';
-    }
-*/
+
     $(function () {
         $table.bootstrapTable('destroy').bootstrapTable({
             columns: [{
@@ -306,14 +299,12 @@ $(document).ready(function () {
     })
 
     //Графики
-
     $(function () {
         //Считаем скок каждого вызова
-
         $.ajax({
-            type: "GET",
+            type: "POST",
             async: false,
-            url:"/rest/logs/dataGraphic",
+            url:"/rest/logs/updateDataForGraphics",
             success: function(data){
                 getGraphics(data);
             },

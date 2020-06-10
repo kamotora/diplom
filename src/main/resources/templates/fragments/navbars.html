@@ -27,7 +27,7 @@
                     </div>
                 </li>
                 <!-- Клиенты -->
-                <li class="nav-item dropdown" sec:authorize="hasAuthority('Администратор')">
+                <li class="nav-item dropdown" sec:authorize="hasAuthority('Администратор') || hasAuthority('Пользователь')">
                     <a class="nav-link dropdown-toggle"  id="navbarClients" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
                         Клиенты

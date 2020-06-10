@@ -30,6 +30,7 @@ public class ApiLogController {
      * Возврат значений для графика
      *
      */
+    @Deprecated
     @GetMapping(path = "/dataGraphic", produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<Number> getDataForGraphic(@AuthenticationPrincipal User user) {
         List<Log> logs = logService.findAll(user, null);
@@ -37,7 +38,7 @@ public class ApiLogController {
     }
 
     @PostMapping(path = "/updateDataForGraphics", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<Number> getUpdateDataForGraphic(@RequestBody LogFilterDto logFilterDto, @AuthenticationPrincipal User user) {
+    public List<Number> getUpdateDataForGraphic(@RequestBody(required = false) LogFilterDto logFilterDto, @AuthenticationPrincipal User user) {
         List<Log> logs = logService.findAll(user, logFilterDto);
         return getNumerusList(logs);
     }
