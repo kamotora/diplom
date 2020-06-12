@@ -5,7 +5,6 @@ import com.diplom.work.core.dto.CallInfo;
 import com.diplom.work.core.dto.GetRecord;
 import com.diplom.work.exceptions.SettingsNotFound;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.junit.Before;
@@ -45,25 +44,26 @@ public class CallServiceTest {
         callInfo.setResult(0);
         callInfo.setInfo(info);
         callInfo.setResultMessage("test Message");
+        System.out.println(callInfo);
         String body = objectMapper.createObjectNode().put("session_id", SESSION_ID).toString();
-        ResponseEntity<String> response = ResponseEntity.ok(gson.toJson(callInfo,CallInfo.class));
+        ResponseEntity<String> response = ResponseEntity.ok(gson.toJson(callInfo, CallInfo.class));
         Mockito
                 .doReturn(response)
                 .when(requestService)
                 .postRequest(CallService.CALL_INFO_METHOD_NAME, body);
-        CallInfo callInfoBySessionID = callService.getCallInfoBySessionID(SESSION_ID);
+        final CallInfo callInfoBySessionID = callService.getCallInfoBySessionID(SESSION_ID);
         assertEquals(callInfo, callInfoBySessionID);
     }
 
     @Test
     public void getRecordBySessionID() throws SettingsNotFound, JsonProcessingException {
-        GetRecord getRecord = new GetRecord();
+        final GetRecord getRecord = new GetRecord();
         getRecord.setResult("0");
         getRecord.setResultMessage("test Message");
         getRecord.setUrl("test url");
         String body = objectMapper.createObjectNode()
                 .put("session_id", SESSION_ID).put("ip_adress", IP_ADDRESS).toString();
-        ResponseEntity<String> response = ResponseEntity.ok(gson.toJson(getRecord,GetRecord.class));
+        ResponseEntity<String> response = ResponseEntity.ok(gson.toJson(getRecord, GetRecord.class));
         Mockito
                 .doReturn(response)
                 .when(requestService)

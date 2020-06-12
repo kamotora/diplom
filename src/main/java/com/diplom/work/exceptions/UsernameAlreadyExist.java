@@ -5,7 +5,4 @@ public class UsernameAlreadyExist extends Exception{
         super("Пользователь с таким логином уже есть!");
     }
 
-    public UsernameAlreadyExist(String message) {
-        super(message);
-    }
 }

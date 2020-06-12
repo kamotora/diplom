@@ -17,8 +17,8 @@ public class UtilsTest {
         final String key = "OQNFOI5213QNEFOI135QNEOFINQE";
         final NumberInfo numberInfo = new NumberInfo();
         numberInfo.setDomain("873427.20.rt.ru");
-        numberInfo.setFrom_number("79131234567");
-        numberInfo.setRequest_number("79112233445");
+        numberInfo.setFromNumber("79131234567");
+        numberInfo.setRequestNumber("79112233445");
         final String correctSign = "f8f23ae57b0355cdb43a856574ed89d7fdb9b0108ccb45845a77ad9d9c538172";
         try {
             HttpHeaders headers = ControllerUtils.getHeaders(numberInfo, ID, key);
@@ -43,8 +43,6 @@ public class UtilsTest {
 
         final String uncorrectStr1 = "sip:";
         final String uncorrectStr2 = "79131234567";
-        final String nullStr = null;
-        final String emptyStr = "";
         final String blankStr = "sip:     @";
         try {
             Assert.assertEquals(ControllerUtils.parseNumberFromSip(correctStr1), number1);
@@ -55,7 +53,6 @@ public class UtilsTest {
         }
         Assert.assertThrows(NumberParseException.class, () -> ControllerUtils.parseNumberFromSip(uncorrectStr1));
         Assert.assertThrows(NumberParseException.class, () -> ControllerUtils.parseNumberFromSip(uncorrectStr2));
-        Assert.assertThrows(NullPointerException.class, () -> ControllerUtils.parseNumberFromSip(nullStr));
         Assert.assertThrows(NumberParseException.class, () -> ControllerUtils.parseNumberFromSip(blankStr));
     }
 }

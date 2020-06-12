@@ -10,11 +10,11 @@
 
 // The one and only way of getting global scope in all environments
 // https://stackoverflow.com/q/3277182/1008999
-var _global = typeof window === 'object' && window.window === window
-  ? window : typeof self === 'object' && self.self === self
-  ? self : typeof global === 'object' && global.global === global
-  ? global
-  : this
+const _global = typeof window === 'object' && window.window === window
+    ? window : typeof self === 'object' && self.self === self
+        ? self : typeof global === 'object' && global.global === global
+            ? global
+            : this;
 
 function bom (blob, opts) {
   if (typeof opts === 'undefined') opts = { autoBom: false }
@@ -32,8 +32,8 @@ function bom (blob, opts) {
 }
 
 function download (url, name, opts) {
-  var xhr = new XMLHttpRequest()
-  xhr.open('GET', url)
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url)
   xhr.responseType = 'blob'
   xhr.onload = function () {
     saveAs(xhr.response, name, opts)
@@ -45,8 +45,8 @@ function download (url, name, opts) {
 }
 
 function corsEnabled (url) {
-  var xhr = new XMLHttpRequest()
-  // use sync to avoid popup blocker
+    const xhr = new XMLHttpRequest();
+    // use sync to avoid popup blocker
   xhr.open('HEAD', url, false)
   try {
     xhr.send()
@@ -59,8 +59,8 @@ function click (node) {
   try {
     node.dispatchEvent(new MouseEvent('click'))
   } catch (e) {
-    var evt = document.createEvent('MouseEvents')
-    evt.initMouseEvent('click', true, true, window, 0, 0, 0, 80,
+      const evt = document.createEvent('MouseEvents');
+      evt.initMouseEvent('click', true, true, window, 0, 0, 0, 80,
                           20, false, false, false, false, 0, null)
     node.dispatchEvent(evt)
   }
@@ -69,7 +69,7 @@ function click (node) {
 // Detect WebView inside a native macOS app by ruling out all browsers
 // We just need to check for 'Safari' because all other browsers (besides Firefox) include that too
 // https://www.whatismybrowser.com/guides/the-latest-user-agent/macos
-var isMacOSWebView = /Macintosh/.test(navigator.userAgent) && /AppleWebKit/.test(navigator.userAgent) && !/Safari/.test(navigator.userAgent)
+const isMacOSWebView = /Macintosh/.test(navigator.userAgent) && /AppleWebKit/.test(navigator.userAgent) && !/Safari/.test(navigator.userAgent);
 
 var saveAs = _global.saveAs || (
   // probably in some web worker
@@ -79,9 +79,9 @@ var saveAs = _global.saveAs || (
   // Use download attribute first if possible (#193 Lumia mobile) unless this is a macOS WebView
   : ('download' in HTMLAnchorElement.prototype && !isMacOSWebView)
   ? function saveAs (blob, name, opts) {
-    var URL = _global.URL || _global.webkitURL
-    var a = document.createElement('a')
-    name = name || blob.name || 'download'
+          const URL = _global.URL || _global.webkitURL;
+          const a = document.createElement('a');
+          name = name || blob.name || 'download'
 
     a.download = name
     a.rel = 'noopener' // tabnabbing
@@ -116,8 +116,8 @@ var saveAs = _global.saveAs || (
       if (corsEnabled(blob)) {
         download(blob, name, opts)
       } else {
-        var a = document.createElement('a')
-        a.href = blob
+          const a = document.createElement('a');
+          a.href = blob
         a.target = '_blank'
         setTimeout(function () { click(a) })
       }
@@ -138,24 +138,24 @@ var saveAs = _global.saveAs || (
 
     if (typeof blob === 'string') return download(blob, name, opts)
 
-    var force = blob.type === 'application/octet-stream'
-    var isSafari = /constructor/i.test(_global.HTMLElement) || _global.safari
-    var isChromeIOS = /CriOS\/[\d]+/.test(navigator.userAgent)
+              const force = blob.type === 'application/octet-stream';
+              const isSafari = /constructor/i.test(_global.HTMLElement) || _global.safari;
+              const isChromeIOS = /CriOS\/[\d]+/.test(navigator.userAgent);
 
-    if ((isChromeIOS || (force && isSafari) || isMacOSWebView) && typeof FileReader !== 'undefined') {
+              if ((isChromeIOS || (force && isSafari) || isMacOSWebView) && typeof FileReader !== 'undefined') {
       // Safari doesn't allow downloading of blob URLs
-      var reader = new FileReader()
-      reader.onloadend = function () {
-        var url = reader.result
-        url = isChromeIOS ? url : url.replace(/^data:[^;]*;/, 'data:attachment/file;')
+        const reader = new FileReader();
+        reader.onloadend = function () {
+          let url = reader.result;
+          url = isChromeIOS ? url : url.replace(/^data:[^;]*;/, 'data:attachment/file;')
         if (popup) popup.location.href = url
         else location = url
         popup = null // reverse-tabnabbing #460
       }
       reader.readAsDataURL(blob)
     } else {
-      var URL = _global.URL || _global.webkitURL
-      var url = URL.createObjectURL(blob)
+        const URL = _global.URL || _global.webkitURL;
+        var url = URL.createObjectURL(blob)
       if (popup) popup.location = url
       else location.href = url
       popup = null // reverse-tabnabbing #460

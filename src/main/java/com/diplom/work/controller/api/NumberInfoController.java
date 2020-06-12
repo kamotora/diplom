@@ -96,13 +96,13 @@ public class NumberInfoController {
             if (Boolean.TRUE.equals(settings.getIsNeedCheckSign()))
                 ControllerUtils.checkSigns(body, settings.getClientID(), settings.getClientKey(), clientSign, "get_number_info");
             // Находим клиента
-            Client client = clientService.getFirstByNumberSubstr(numberInfo.getFrom_number());
+            Client client = clientService.getFirstByNumberSubstr(numberInfo.getFromNumber());
 
             // Правила для всех используются всегда)
             Set<Rule> allRules = ruleService.getRulesForAll();
             //Если такого клиента нет, создадим
             if (client == null) {
-                client = new Client(numberInfo.getFrom_number());
+                client = new Client(numberInfo.getFromNumber());
                 clientService.save(client);
             } else {
                 //Если клиент есть, добавляем в общую кучу правила с его участием
@@ -113,12 +113,12 @@ public class NumberInfoController {
             Rule rule = allRules.stream()
                     .filter(ruleService::isRuleCanUseNow)
                     .min(new RulePriorityComparator())
-                    .orElseThrow(() -> new NotFoundRequestNumberException(numberInfo.getFrom_number()));
+                    .orElseThrow(() -> new NotFoundRequestNumberException(numberInfo.getFromNumber()));
 
             // Формируем ответ
             NumberInfoAnswer answer = getAnswer(client, rule);
             if (answer == null)
-                throw new NotFoundRequestNumberException(numberInfo.getFrom_number());
+                throw new NotFoundRequestNumberException(numberInfo.getFromNumber());
 
             //Делаем заголовки, нужные для ВАТС
             HttpHeaders headers = ControllerUtils.getHeaders(answer, clientID, settings.getClientKey());

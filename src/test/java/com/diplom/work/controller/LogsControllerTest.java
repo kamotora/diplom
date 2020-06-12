@@ -5,6 +5,7 @@ import com.diplom.work.repo.LogRepository;
 import com.diplom.work.svc.LogService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,8 +15,15 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -94,5 +102,28 @@ public class LogsControllerTest {
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void getLogGraphicsStat() throws Exception {
+        List<Log> logs = new ArrayList<>();
+        String[] typesOfLog = {"incoming", "outbound", "internal"};
+        for (String type : typesOfLog) {
+            Log log = new Log();
+            log.setTimestampInDateTimeFormat(LocalDateTime.now());
+            log.setType(type);
+            logs.add(log);
+        }
+        Mockito
+                .doReturn(logs)
+                .when(logService)
+                .findAll(any(), any());
+        MvcResult mvcResult = this.mockMvc.perform(post("/rest/logs/updateDataForGraphics"))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        assertEquals(contentAsString, "[1,1,1]");
     }
 }

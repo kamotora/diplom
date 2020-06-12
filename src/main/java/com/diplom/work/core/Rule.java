@@ -4,8 +4,9 @@ import com.diplom.work.core.json.view.Views;
 import com.diplom.work.core.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.thymeleaf.util.StringUtils;
@@ -24,10 +25,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "rule")
-@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 @EqualsAndHashCode(of = {"id", "name", "isSmart", "isForAllClients"})
 @ToString
+@Getter
+@Setter
 @Slf4j
 public class Rule {
     @Id

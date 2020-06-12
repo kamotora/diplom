@@ -31,10 +31,6 @@ public class RuleService {
         return ruleRepository.getOne(id);
     }
 
-    public void saveOneRow(Rule rule) {
-        ruleRepository.save(rule);
-    }
-
     public boolean deleteOneRow(Long id) {
         try {
             Rule rule = ruleRepository.getOne(id);
@@ -45,10 +41,6 @@ public class RuleService {
             return false;
         }
         return true;
-    }
-
-    public List<Rule> findAllByOrderByIdAsc() {
-        return ruleRepository.findAllByOrderByIdAsc();
     }
 
     /**
@@ -93,15 +85,6 @@ public class RuleService {
                 return isRuleStartBeforeNow || isRuleFinishAfterNow;
         } else
             return false;
-    }
-
-    /**
-     * Получить первое правило для всех клиентов, которое дейсвтвует в данный момент
-     *
-     * @return правило, подходящее под условие или null, если не найдено
-     */
-    public Rule getFirstRuleForAllCanUseNow() {
-        return getRulesForAll().stream().filter(this::isRuleCanUseNow).findFirst().orElse(null);
     }
 
     public List<Rule> getAll() {

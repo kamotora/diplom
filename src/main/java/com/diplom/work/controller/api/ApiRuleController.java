@@ -1,6 +1,5 @@
 package com.diplom.work.controller.api;
 
-import com.diplom.work.core.Client;
 import com.diplom.work.core.Rule;
 import com.diplom.work.core.json.view.Views;
 import com.diplom.work.exceptions.ManagerIsNull;

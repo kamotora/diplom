@@ -4,8 +4,10 @@ import com.diplom.work.core.json.view.Views;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -20,7 +22,9 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "logs")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @EqualsAndHashCode
 public class Log {
     @Id

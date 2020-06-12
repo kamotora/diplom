@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings("SameReturnValue")
 @Controller
 @Slf4j
 @PreAuthorize("hasAuthority('Администратор') || hasAuthority('Пользователь')")

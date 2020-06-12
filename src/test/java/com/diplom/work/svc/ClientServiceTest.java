@@ -17,7 +17,7 @@ import static org.mockito.Mockito.mock;
 public class ClientServiceTest {
     private final ClientRepository clientRepository = mock(ClientRepository.class);
     private final RuleRepository ruleRepository = mock(RuleRepository.class);
-    private final ClientService clientService = new ClientService(clientRepository,ruleRepository);
+    private final ClientService clientService = new ClientService(clientRepository, ruleRepository);
 
     @Test
     public void save() {
@@ -59,4 +59,15 @@ public class ClientServiceTest {
         assertThrows(ClientException.class, () -> clientService.deleteClient(validClient));
     }
 
+    @Test
+    public void getById() {
+        Client client = new Client();
+        client.setId(1L);
+        client.setNumber("1234");
+        Mockito.doReturn(client)
+                .when(clientRepository)
+                .getOne(client.getId());
+        Client clientFromBd = clientService.getById(client.getId());
+                assertEquals(clientFromBd, client);
+    }
 }

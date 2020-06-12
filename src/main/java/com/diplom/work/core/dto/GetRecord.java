@@ -2,17 +2,16 @@ package com.diplom.work.core.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * Для парсинга JSON ответа с сервера, метод get_record
  * Содержит запись вызова, полученную по его session_id
  *
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString

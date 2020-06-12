@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class ClientService {
@@ -28,9 +27,6 @@ public class ClientService {
         this.ruleRepository = ruleRepository;
     }
 
-    public Set<Client> getAllByRule(@NonNull Rule rule) {
-        return clientRepository.findAllByRulesContaining(rule);
-    }
 
     /**
      * Поиск клиента по точному совпадению номера

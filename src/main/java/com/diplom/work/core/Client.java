@@ -3,10 +3,7 @@ package com.diplom.work.core;
 import com.diplom.work.core.json.view.Views;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -14,10 +11,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "client")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@ToString(of = {"id", "name", "number", "lastManagerNumber"})
-@EqualsAndHashCode(of = {"id", "name", "number", "lastManagerNumber"})
+@EqualsAndHashCode(exclude = {"rules"})
+@ToString(exclude = {"rules"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Client {
     @Id

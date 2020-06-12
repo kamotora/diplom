@@ -1,5 +1,6 @@
 package com.diplom.work.core.json;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public final class NumberInfo {
     private String domain;
-    private String from_number;
-    private String request_number;
+    @JsonProperty("from_number")
+    private String fromNumber;
+    @JsonProperty("request_number")
+    private String requestNumber;
 }

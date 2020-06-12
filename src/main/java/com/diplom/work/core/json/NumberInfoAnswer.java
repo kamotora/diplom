@@ -18,51 +18,51 @@ public class NumberInfoAnswer {
     /**
      * Если всё ок и о клиенте ничего не известно (кроме номера)
      *
-     * @param PIN - куда направить
+     * @param pin - куда направить
      */
-    public NumberInfoAnswer(String PIN) {
+    public NumberInfoAnswer(String pin) {
         this.result = 0;
         this.displayName = "Нет информации о ФИО";
-        this.PIN = PIN;
+        this.PIN = pin;
     }
 
     /**
      * Если всё ок
      *
-     * @param PIN         - куда направить
+     * @param pin         - куда направить
      * @param displayName - ин-фа о вызове (например, ФИО клиента)
      */
-    public NumberInfoAnswer(String PIN, String displayName) {
+    public NumberInfoAnswer(String pin, String displayName) {
         this.result = 0;
         this.displayName = displayName;
-        this.PIN = PIN;
+        this.PIN = pin;
     }
 
     /**
      * Если всё ок + сообщение об успехе
      *
-     * @param PIN         - куда направить
+     * @param pin         - куда направить
      * @param displayName - ин-фа о вызове
      * @param fromNumber  - кто звонит (для вывода сообещния)
      */
-    public NumberInfoAnswer(String PIN, String fromNumber, String displayName) {
+    public NumberInfoAnswer(String pin, String fromNumber, String displayName) {
         this.result = 0;
         this.displayName = displayName;
-        this.PIN = PIN;
-        this.resultMessage = String.format("Успешно перенаправили номер %s на внутренний номер %s", fromNumber, PIN);
+        this.PIN = pin;
+        this.resultMessage = String.format("Успешно перенаправили номер %s на внутренний номер %s", fromNumber, pin);
     }
 
     /**
      * Если всё ок + сообщение об успехе
      *
-     * @param PIN    - куда направить
+     * @param pin    - куда направить
      * @param client - ин-фа о клиенте
      */
-    public NumberInfoAnswer(String PIN, Client client) {
+    public NumberInfoAnswer(String pin, Client client) {
         this.result = 0;
         this.displayName = client.getName();
-        this.PIN = PIN;
-        this.resultMessage = String.format("Успешно перенаправили номер %s на внутренний номер %s", client.getNumber(), PIN);
+        this.PIN = pin;
+        this.resultMessage = String.format("Успешно перенаправили номер %s на внутренний номер %s", client.getNumber(), pin);
     }
 
     /**
@@ -76,11 +76,11 @@ public class NumberInfoAnswer {
         this.resultMessage = resultMessage;
     }
 
-    public NumberInfoAnswer(int result, String resultMessage, String displayName, String PIN) {
+    public NumberInfoAnswer(int result, String resultMessage, String displayName, String pin) {
         this.result = result;
         this.resultMessage = resultMessage;
         this.displayName = displayName;
-        this.PIN = PIN;
+        this.PIN = pin;
     }
 }
 

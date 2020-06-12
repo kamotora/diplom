@@ -15,53 +15,51 @@
 
 (function(view) {
 "use strict";
-var
-	  Uint8Array = view.Uint8Array
-	, HTMLCanvasElement = view.HTMLCanvasElement
-	, canvas_proto = HTMLCanvasElement && HTMLCanvasElement.prototype
-	, is_base64_regex = /\s*;\s*base64\s*(?:;|$)/i
-	, to_data_url = "toDataURL"
-	, base64_ranks
-	, decode_base64 = function(base64) {
-		var
-			  len = base64.length
-			, buffer = new Uint8Array(len / 4 * 3 | 0)
-			, i = 0
-			, outptr = 0
-			, last = [0, 0]
-			, state = 0
-			, save = 0
-			, rank
-			, code
-			, undef
-		;
-		while (len--) {
-			code = base64.charCodeAt(i++);
-			rank = base64_ranks[code-43];
-			if (rank !== 255 && rank !== undef) {
-				last[1] = last[0];
-				last[0] = code;
-				save = (save << 6) | rank;
-				state++;
-				if (state === 4) {
-					buffer[outptr++] = save >>> 16;
-					if (last[1] !== 61 /* padding character */) {
-						buffer[outptr++] = save >>> 8;
-					}
-					if (last[0] !== 61 /* padding character */) {
-						buffer[outptr++] = save;
-					}
-					state = 0;
-				}
-			}
-		}
-		// 2/3 chance there's going to be some null bytes at the end, but that
-		// doesn't really matter with most image formats.
-		// If it somehow matters for you, truncate the buffer up outptr.
-		return buffer;
-	}
-;
-if (Uint8Array) {
+    const Uint8Array = view.Uint8Array
+        , HTMLCanvasElement = view.HTMLCanvasElement
+        , canvas_proto = HTMLCanvasElement && HTMLCanvasElement.prototype
+        , is_base64_regex = /\s*;\s*base64\s*(?:;|$)/i
+    ;let to_data_url = "toDataURL"
+        , base64_ranks
+    ;const decode_base64 = function (base64) {
+            let len = base64.length
+            ;const buffer = new Uint8Array(len / 4 * 3 | 0)
+            ;let i = 0
+                , outptr = 0
+            ;const last = [0, 0]
+            ;let state = 0
+                , save = 0
+                , rank
+                , code
+                , undef
+            ;
+            while (len--) {
+                code = base64.charCodeAt(i++);
+                rank = base64_ranks[code - 43];
+                if (rank !== 255 && rank !== undef) {
+                    last[1] = last[0];
+                    last[0] = code;
+                    save = (save << 6) | rank;
+                    state++;
+                    if (state === 4) {
+                        buffer[outptr++] = save >>> 16;
+                        if (last[1] !== 61 /* padding character */) {
+                            buffer[outptr++] = save >>> 8;
+                        }
+                        if (last[0] !== 61 /* padding character */) {
+                            buffer[outptr++] = save;
+                        }
+                        state = 0;
+                    }
+                }
+            }
+            // 2/3 chance there's going to be some null bytes at the end, but that
+            // doesn't really matter with most image formats.
+            // If it somehow matters for you, truncate the buffer up outptr.
+            return buffer;
+        }
+    ;
+    if (Uint8Array) {
 	base64_ranks = new Uint8Array([
 		  62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1
 		, -1, -1,  0, -1, -1, -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9
@@ -83,15 +81,14 @@ if (HTMLCanvasElement && (!canvas_proto.toBlob || !canvas_proto.toBlobHD)) {
 			return;
 		}
 
-		var
-			  args = Array.prototype.slice.call(arguments, 1)
-			, dataURI = this[to_data_url].apply(this, args)
-			, header_end = dataURI.indexOf(",")
-			, data = dataURI.substring(header_end + 1)
-			, is_base64 = is_base64_regex.test(dataURI.substring(0, header_end))
-			, blob
-		;
-		if (Blob.fake) {
+        const args = Array.prototype.slice.call(arguments, 1)
+            , dataURI = this[to_data_url].apply(this, args)
+            , header_end = dataURI.indexOf(",")
+            , data = dataURI.substring(header_end + 1)
+            , is_base64 = is_base64_regex.test(dataURI.substring(0, header_end))
+        ;let blob
+        ;
+        if (Blob.fake) {
 			// no reason to decode a data: URI that's just going to become a data URI again
 			blob = new Blob
 			if (is_base64) {
@@ -114,8 +111,8 @@ if (HTMLCanvasElement && (!canvas_proto.toBlob || !canvas_proto.toBlobHD)) {
 	if (!canvas_proto.toBlobHD && canvas_proto.toDataURLHD) {
 		canvas_proto.toBlobHD = function() {
 			to_data_url = "toDataURLHD";
-			var blob = this.toBlob();
-			to_data_url = "toDataURL";
+            const blob = this.toBlob();
+            to_data_url = "toDataURL";
 			return blob;
 		}
 	} else {

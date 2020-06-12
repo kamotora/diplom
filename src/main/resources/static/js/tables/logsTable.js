@@ -197,7 +197,7 @@ $(document).ready(function () {
 
     $PNGloadGraphic.click(function(){
 
-        var canvas = document.getElementById("myChart");
+        const canvas = document.getElementById("myChart");
         canvas.toBlob(function(blob){
             saveAs(blob, 'image.jpg');
         });

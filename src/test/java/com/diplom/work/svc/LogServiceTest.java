@@ -8,7 +8,6 @@ import com.diplom.work.core.user.Role;
 import com.diplom.work.core.user.User;
 import com.diplom.work.exceptions.NumberParseException;
 import com.diplom.work.repo.LogRepository;
-import com.diplom.work.repo.SettingsRepository;
 import org.junit.Test;
 import org.mockito.Mockito;
 

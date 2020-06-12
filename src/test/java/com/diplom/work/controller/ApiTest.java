@@ -101,7 +101,7 @@ public class ApiTest {
     @Test
     public void addCallEventWithUnCorrectSign() throws Exception {
         String jsonBody = "{\"disconnect_reason\": \"4\",\"from_number\": \"sip:111@test@domain.com\",\"from_pin\": \"201\",\"is_record\": \"\",\"request_number\": \"sip:8912345678@123.45.67\",\"request_pin\": \"\",\"session_id\": \"1674-aFEQBQE\",\"state\": \"disconnected\",\"timestamp\": \"2020-05-12 10:46:56.725\",\"type\": \"outbound\"}";
-        Settings settings = testSettings();
+        testSettings();
         HttpHeaders headers = new HttpHeaders();
         headers.put("X-Client-ID", Collections.singletonList(ControllerUtils.randomString(32)));
         headers.put("X-Client-Sign", Collections.singletonList(ControllerUtils.randomString(32)));
