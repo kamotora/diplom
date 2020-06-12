@@ -1,5 +1,6 @@
 package com.diplom.work.controller.api;
 
+import com.diplom.work.core.Client;
 import com.diplom.work.core.Rule;
 import com.diplom.work.core.json.view.Views;
 import com.diplom.work.exceptions.ManagerIsNull;
@@ -37,6 +38,17 @@ public class ApiRuleController {
     @JsonView(Views.AllRule.class)
     public List<Rule> getAllRules() {
         return ruleService.getAll();
+    }
+
+    /**
+     * Возврат правила по его id в виде JSON
+     *
+     * @return информация о правиле в виде JSON
+     */
+    @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @JsonView(Views.AllRule.class)
+    public Rule getRuleById(@PathVariable("id") Rule rule) {
+        return rule;
     }
 
     /**

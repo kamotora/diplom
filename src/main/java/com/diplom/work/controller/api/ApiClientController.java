@@ -40,6 +40,17 @@ public class ApiClientController {
     }
 
     /**
+     * Возврат клиента по его id в виде JSON
+     *
+     * @return информация о клиенте в виде JSON
+     */
+    @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @JsonView(Views.AllClient.class)
+    public Client getClientById(@PathVariable("id") Client client) {
+        return client;
+    }
+
+    /**
      * Добавление нового клиента
      *
      * @param client добавляемый клиент в виде json
@@ -62,6 +73,7 @@ public class ApiClientController {
      *               id - id клиента (not null)
      *               number - номер клиента (not null)
      *               name - ФИО клиента (может быть null)
+     *               rules - правила
      * @return Изменённый клиент
      * @see Client
      */

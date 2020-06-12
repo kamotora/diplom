@@ -29,15 +29,15 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
 
-    private final TokenService tokenService;
+    private final TokenGenerator tokenGenerator;
 
     private static final String USER_NOT_FOUND_MSG = "Такой пользователь не найден";
 
     @Autowired
-    public UserService(UserRepository userRepo, PasswordEncoder passwordEncoder, TokenService tokenService) {
+    public UserService(UserRepository userRepo, PasswordEncoder passwordEncoder, TokenGenerator tokenGenerator) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
-        this.tokenService = tokenService;
+        this.tokenGenerator = tokenGenerator;
 
         //Если пользователей вообще нет, создадим админа по-умолчанию
         if (userRepo.count() == 0) {
@@ -148,7 +148,7 @@ public class UserService implements UserDetailsService {
     }
 
     public String changeToken(@NonNull User user) {
-        user.setToken(tokenService.generateToken());
+        user.setToken(tokenGenerator.generateToken());
         return userRepo.save(user).getToken();
     }
 
@@ -158,7 +158,7 @@ public class UserService implements UserDetailsService {
     public void createTokensIfNotExists() {
         for (User user : userRepo.findAll()) {
             if (StringUtils.isEmptyOrWhitespace(user.getToken())) {
-                user.setToken(tokenService.generateToken());
+                user.setToken(tokenGenerator.generateToken());
                 userRepo.save(user);
             }
         }

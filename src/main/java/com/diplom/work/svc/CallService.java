@@ -17,8 +17,8 @@ import javax.annotation.Nullable;
 @Service
 public class CallService {
     private final RequestService requestService;
-    private static final String CALL_INFO_METHOD_NAME = "call_info";
-    private static final String GET_RECORD_METHOD_NAME = "get_record";
+    public static final String CALL_INFO_METHOD_NAME = "call_info";
+    public static final String GET_RECORD_METHOD_NAME = "get_record";
     private final ObjectMapper objectMapper;
 
     @Autowired

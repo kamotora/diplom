@@ -21,8 +21,8 @@ import static org.mockito.Mockito.mock;
 public class UserServiceTest {
     private final UserRepository userRepository = mock(UserRepository.class);
     private final PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
-    private final TokenService tokenService = mock(TokenService.class);
-    private final UserService userService = new UserService(userRepository, passwordEncoder, tokenService);
+    private final TokenGenerator tokenGenerator = mock(TokenGenerator.class);
+    private final UserService userService = new UserService(userRepository, passwordEncoder, tokenGenerator);
 
     @Test
     public void save() {
